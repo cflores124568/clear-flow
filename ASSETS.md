@@ -14,6 +14,10 @@ Every file lives in `src/assets/photos/` and keeps the same name, so a swap is a
 | `svc-junk.jpg` | 1600 × 1200 | Services hover photo 04 | — |
 | `method-window.jpg` | 1200 × 1333 | "Careful is the whole point." | — |
 
+Bird proofing has no photo of its own yet and reuses `svc-solar.jpg`. When a real one exists (critter guard mesh around a rooftop array, 1600 × 1200), save it as `src/assets/photos/svc-birds.jpg`, import it in `src/data/photos.ts` and point `birds` at it.
+
+The 2026 flyers are not a photo source: their before/after solar shots look AI-generated, and the window-cleaning shots appear to be Canva stock, which can't be lifted out for standalone web use.
+
 ## Rules for AI photos
 
 AI photos are illustration, not proof. While any are on the site:
@@ -81,7 +85,7 @@ Real job photos beat any generated image, and real before/after pairs are the st
 
 1. Shoot horizontally (landscape), phone held level, early in the job when the light is low.
 2. For each service, take one **wide** shot (the crew working, the house in frame) and one **close** shot (the tool on the surface).
-3. Take **before and after from the exact same spot**: dusty panels then clean, spotted glass then clear, stained driveway then clean, full garage then empty.
+3. Take **before and after from the exact same spot**: dusty panels then clean, spotted glass then clear, stained driveway then clean, full garage then empty, open gap under the panels then critter guard fitted.
 4. One shot of the truck and gear setup (water tank, filter cart, trailer). A Clear Flow logo is fine here, because it's real.
 5. Keep out customer faces, house numbers, license plates and anything inside the home.
 6. Send the originals (AirDrop or a shared album), not screenshots or texted copies, which lose resolution.

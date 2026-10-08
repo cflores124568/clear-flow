@@ -5,4 +5,5 @@ import windows from '../assets/photos/svc-windows.jpg';
 import pressure from '../assets/photos/svc-pressure.jpg';
 import junk from '../assets/photos/svc-junk.jpg';
 
-export const servicePhotos: Record<ServiceId, ImageMetadata> = { solar, windows, pressure, junk };
+// Bird proofing has no photo of its own yet, so it shares the solar one (see ASSETS.md).
+export const servicePhotos: Record<ServiceId, ImageMetadata> = { solar, birds: solar, windows, pressure, junk };

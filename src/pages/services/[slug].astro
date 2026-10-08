@@ -20,7 +20,7 @@ const photo = servicePhotos[service.id];
 const others = services.filter((s) => s.id !== service.id);
 ---
 
-<Page title={`${service.name} | Clear Flow`} description={`${service.lede} Licensed & Insured. Call ${phone.display}.`}>
+<Page title={`${service.name} | Clear Flow`} description={`${service.lede} Licensed, Bonded & Insured. Call ${phone.display}.`}>
 	<PageHero label="Services" title={service.name} lede={service.lede} image={photo} imageAlt={service.caption}>
 		<div class="svc-hero__actions">
 			<a class="btn" href="#quote">

@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { phone, services, type ServiceId } from '../data/site';
+import { email, phone, services, type ServiceId } from '../data/site';
 
 interface Props {
 	// Services ticked when the page loads, e.g. the one a service page is about.
@@ -23,6 +23,10 @@ const Heading = standalone ? 'h1' : 'h2';
 			<a class="link quote__tap" href={phone.href}>
 				<Icon name="phone" />
 				Tap to call
+			</a>
+			<a class="link quote__email" href={email.href}>
+				<Icon name="envelope" />
+				{email.display}
 			</a>
 		</div>
 
@@ -72,7 +76,7 @@ const Heading = standalone ? 'h1' : 'h2';
 					<Icon name="arrowRight" />
 				</button>
 				<p class="form__note" data-form-status role="status" aria-live="polite">
-					We'll reply with a quote for your property.
+					Estimates are free. We'll reply with a quote for your property.
 				</p>
 			</div>
 
@@ -141,6 +145,14 @@ const Heading = standalone ? 'h1' : 'h2';
 
 	.quote__tap {
 		margin-top: 1.25rem;
+	}
+
+	.quote__email {
+		display: flex;
+		width: fit-content;
+		max-width: 100%;
+		margin-top: 0.75rem;
+		overflow-wrap: anywhere;
 	}
 
 	.form {

@@ -1,6 +1,6 @@
 # Clear Flow
 
-One-page site for Clear Flow (solar panel cleaning, window cleaning, pressure washing, junk removal). Astro, static output, deployed to Cloudflare Pages with one Pages Function for the quote form. Built from the approved "Clear Pass" design frames.
+One-page site for Clear Flow (solar panel cleaning, bird proofing, window cleaning, pressure washing, junk removal). Astro, static output, deployed to Cloudflare Pages with one Pages Function for the quote form. Built from the approved "Clear Pass" design frames.
 
 ```sh
 npm install
@@ -11,11 +11,12 @@ npm run build     # static site in dist/
 ## Before launch
 
 1. **Photos.** The current photos are interim crops. See [ASSETS.md](ASSETS.md) for the replacement list and Codex prompts.
-2. **Copy sign-off.** Only the four service names, `760-422-3069` and "Licensed & Insured" come from the business card. The owner needs to confirm the rest, especially these promises:
+2. **Copy sign-off.** Only the five service names, `760-422-3069`, `clearflowofthedesert@gmail.com`, "Licensed, Bonded & Insured" and "free estimates" come from the business card and flyers. The owner needs to confirm the rest, especially these promises:
    - "No pressure washers on panels, ever." / "Pure-water rinse, no detergent residue."
    - "Inside and out, frames and tracks included." (window scope)
    - "Furniture, yard debris and garage clutter, hauled away." (junk scope)
-   - "Four jobs, one crew you call." (implies a single crew)
+   - "Five jobs, one crew you call." (implies a single crew)
+   - The Bird Proofing page: nest cleanout and critter guard mesh around the array.
    - FAQ answers in `src/data/site.ts`, especially "Do I need to be home?"
    - Each service page's "What's included" list (`includes` in `src/data/site.ts`). These are scope promises.
    - The About page has no owner story yet. Add the owner's name, a short background and a real photo when they're available.
@@ -37,7 +38,7 @@ Every page except `/thanks/` and 404 uses `src/layouts/Page.astro` (header, foot
 
 ## Where things live
 
-- `src/data/site.ts`: phone number, services (including service page copy), FAQ and the nav.
+- `src/data/site.ts`: phone number, email, services (including service page copy), FAQ and the nav.
 - `src/data/photos.ts`: which photo belongs to which service.
 - `src/components/`: one component per page section, in page order in `src/pages/index.astro`.
 - `src/scripts/site.ts`: header state, the shared service selection (hero chips, "Add to quote", form), the services photo, scroll reveals, the process line, the mobile call bar, and form submission.

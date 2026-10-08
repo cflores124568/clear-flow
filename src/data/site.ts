@@ -1,13 +1,19 @@
-// Everything here except the four service names, the phone number and the
-// Licensed & Insured line is proposed copy. Those three come from the business
-// card; the rest needs the owner's sign-off before launch (see README).
+// Everything here except the service names, the phone number, the email and
+// the Licensed, Bonded & Insured line is proposed copy. Those come from the
+// business card and flyers; the rest needs the owner's sign-off before launch
+// (see README).
 
 export const phone = {
 	display: '760-422-3069',
 	href: 'tel:+17604223069',
 };
 
-export type ServiceId = 'solar' | 'windows' | 'pressure' | 'junk';
+export const email = {
+	display: 'clearflowofthedesert@gmail.com',
+	href: 'mailto:clearflowofthedesert@gmail.com',
+};
+
+export type ServiceId = 'solar' | 'birds' | 'windows' | 'pressure' | 'junk';
 
 export type Service = {
 	id: ServiceId;
@@ -35,6 +41,20 @@ export const services: Service[] = [
 			{ title: 'Soft-brush wash', body: 'Every panel, edge to edge, with a brush made for solar glass.' },
 			{ title: 'Pure-water rinse', body: 'Filtered water that dries without spots or residue.' },
 			{ title: 'A look while we are up there', body: "If we see cracked glass or loose wiring, we'll tell you." },
+		],
+	},
+	{
+		id: 'birds',
+		slug: 'bird-proofing',
+		name: 'Bird Proofing',
+		chip: 'Bird proofing',
+		line: 'Critter guard that keeps pigeons out from under your panels.',
+		caption: 'Rooftop solar array',
+		lede: "Pigeons and other critters nest in the gap under rooftop panels. We clear out what's there and fit critter guard around the array so they can't get back in.",
+		includes: [
+			{ title: 'Nest and debris cleanout', body: 'Nesting material and droppings cleared from under the panels.' },
+			{ title: 'Critter guard installation', body: 'Mesh fitted around the edge of the array to close the gap underneath.' },
+			{ title: 'Pair it with a panel wash', body: 'Book it with solar cleaning and both get done in one visit.' },
 		],
 	},
 	{
@@ -84,7 +104,7 @@ export const services: Service[] = [
 export const faqs = [
 	{
 		q: 'Which service is right for my property?',
-		a: "Tell us what you're seeing and we'll recommend the right mix, whether that's one service or all four.",
+		a: "Tell us what you're seeing and we'll recommend the right mix, whether that's one service or all five.",
 	},
 	{
 		q: 'Can I combine services?',

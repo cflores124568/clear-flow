@@ -16,6 +16,7 @@ interface Env {
 // forwarded, so a caller cannot put arbitrary text in the subject line.
 const SERVICES: Record<string, string> = {
 	solar: 'Solar panel cleaning',
+	birds: 'Bird proofing',
 	windows: 'Window cleaning',
 	pressure: 'Pressure washing',
 	junk: 'Junk removal',
