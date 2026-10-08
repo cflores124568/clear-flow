@@ -1,0 +1,46 @@
+---
+// Landing spot for quote requests sent without JavaScript; the function
+// redirects here after a successful send.
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import { phone } from '../data/site';
+---
+
+<Base title="Request sent | Clear Flow" description="Your quote request is on its way to Clear Flow." noindex>
+	<main id="main" class="note container">
+		<a class="note__logo" href="/" aria-label="Clear Flow home"><Logo /></a>
+		<h1 class="display note__title">Request sent.</h1>
+		<p class="lede">Thanks. We'll be in touch with your quote. Need it sooner? Call <a href={phone.href}>{phone.display}</a>.</p>
+		<a class="btn note__back" href="/">Back to the site</a>
+	</main>
+</Base>
+
+<style is:global>
+	.note {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		min-height: 100svh;
+		padding-block: 4rem;
+	}
+
+	.note__logo {
+		display: inline-flex;
+		height: 2rem;
+		margin-bottom: auto;
+	}
+
+	.note__title {
+		font-size: clamp(3rem, 8vw, 6rem);
+	}
+
+	.note .lede {
+		margin-top: 1.25rem;
+	}
+
+	.note__back {
+		align-self: flex-start;
+		margin-top: 2rem;
+		margin-bottom: auto;
+	}
+</style>

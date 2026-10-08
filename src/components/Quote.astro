@@ -1,0 +1,262 @@
+---
+import Icon from './Icon.astro';
+import { phone, services } from '../data/site';
+---
+
+<section class="quote" id="quote" aria-labelledby="quote-title">
+	<div class="container quote__grid">
+		<div class="quote__lead">
+			<p class="label quote__label">Get a quote</p>
+			<h2 id="quote-title" class="display quote__title">Let's clear it up.</h2>
+			<a class="quote__phone" href={phone.href}>{phone.display}</a>
+			<a class="link quote__tap" href={phone.href}>
+				<Icon name="phone" />
+				Tap to call
+			</a>
+		</div>
+
+		<form class="form" action="/api/quote/" method="post" data-quote-form novalidate>
+			<div class="form__fields" data-form-fields>
+				<h3 class="form__title">Request a quote</h3>
+
+				<fieldset class="form__services">
+					<legend class="sr-only">Services</legend>
+					<div class="chips">
+						{
+							services.map((s) => (
+								<label class="chip">
+									<input type="checkbox" name="services" value={s.id} data-service={s.id} />
+									<span>{s.chip}</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<div class="field">
+					<label for="q-name">Name</label>
+					<input id="q-name" name="name" type="text" autocomplete="name" placeholder="Your name" required maxlength="120" />
+				</div>
+				<div class="field">
+					<label for="q-phone">Phone</label>
+					<input
+						id="q-phone"
+						name="phone"
+						type="tel"
+						inputmode="tel"
+						autocomplete="tel"
+						placeholder="Your phone number"
+						required
+						maxlength="40"
+					/>
+				</div>
+
+				<div class="form__trap" aria-hidden="true">
+					<label for="q-botcheck">Leave this empty</label>
+					<input id="q-botcheck" type="text" name="botcheck" tabindex="-1" autocomplete="off" />
+				</div>
+
+				<button class="btn form__submit" type="submit">
+					Send request
+					<Icon name="arrowRight" />
+				</button>
+				<p class="form__note" data-form-status role="status" aria-live="polite">
+					We'll reply with a quote for your property.
+				</p>
+			</div>
+
+			<div class="form__done" data-form-done hidden tabindex="-1">
+				<Icon name="check" class="form__done-icon" />
+				<h3 class="form__title">Request sent.</h3>
+				<p>Thanks. We'll be in touch with your quote. Need it sooner? Call <a href={phone.href}>{phone.display}</a>.</p>
+			</div>
+		</form>
+	</div>
+</section>
+
+<style>
+	.quote {
+		padding-block: var(--section);
+		background: var(--navy);
+		color: #fff;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.quote {
+			background: var(--navy-deep);
+		}
+	}
+
+	.quote__grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+		gap: clamp(2.5rem, 6vw, 6rem);
+		align-items: center;
+	}
+
+	.quote__label {
+		color: var(--teal);
+	}
+
+	.quote__title {
+		margin-top: 1rem;
+		font-size: clamp(2.75rem, 6vw, 5.75rem);
+	}
+
+	.quote__phone {
+		display: block;
+		width: fit-content;
+		margin-top: clamp(1.5rem, 3vw, 2.5rem);
+		font-size: clamp(3rem, 8vw, 7.25rem);
+		font-weight: 400;
+		letter-spacing: -0.045em;
+		line-height: 1;
+		text-decoration: none;
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
+	}
+
+	.quote__phone:hover {
+		color: var(--teal);
+	}
+
+	.quote__tap {
+		margin-top: 1.25rem;
+	}
+
+	.form {
+		padding: clamp(1.5rem, 3vw, 2.5rem);
+		border-radius: var(--radius);
+		background: var(--panel);
+		color: var(--ink);
+	}
+
+	.form__title {
+		font-size: clamp(1.75rem, 2.6vw, 2.375rem);
+		font-weight: 500;
+		letter-spacing: -0.03em;
+		line-height: 1.1;
+	}
+
+	.form__services {
+		margin: 1.5rem 0 0;
+		padding: 0;
+		border: 0;
+	}
+
+	.field {
+		margin-top: 1.25rem;
+	}
+
+	.field label {
+		display: block;
+		margin-bottom: 0.45rem;
+		font-weight: 500;
+	}
+
+	.field input {
+		width: 100%;
+		min-height: 3.25rem;
+		padding: 0 1rem;
+		border: 1px solid var(--hair);
+		border-radius: var(--radius);
+		background: var(--panel);
+		font-size: 1.0625rem;
+		transition: border-color 0.2s var(--ease);
+	}
+
+	.field input::placeholder {
+		color: var(--muted);
+	}
+
+	.field input:hover {
+		border-color: color-mix(in srgb, var(--hair), var(--ink) 25%);
+	}
+
+	.field input:focus-visible {
+		outline: none;
+		border-color: var(--teal);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--teal) 30%, transparent);
+	}
+
+	.field input[aria-invalid='true'] {
+		border-color: #c2412d;
+	}
+
+	.form__trap {
+		position: absolute;
+		left: -9999px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	}
+
+	.form__submit {
+		width: 100%;
+		margin-top: 1.75rem;
+	}
+
+	.form__submit[disabled] {
+		opacity: 0.7;
+		cursor: progress;
+	}
+
+	.form__note {
+		margin-top: 0.9rem;
+		text-align: center;
+		font-size: 0.9375rem;
+		color: var(--muted);
+	}
+
+	.form__note.is-error {
+		color: #c2412d;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.field input[aria-invalid='true'] {
+			border-color: #f08a76;
+		}
+
+		.form__note.is-error {
+			color: #f08a76;
+		}
+	}
+
+	.form__done {
+		padding-block: 2rem;
+		text-align: center;
+		outline: none;
+	}
+
+	.form__done :global(.form__done-icon) {
+		justify-content: center;
+		width: 3.5rem;
+		height: 3.5rem;
+		margin: 0 auto 1.25rem;
+		align-items: center;
+		border-radius: 50%;
+		background: var(--teal);
+		color: var(--on-teal);
+		font-size: 1.5rem;
+	}
+
+	.form__done p {
+		margin-top: 0.75rem;
+		color: var(--muted);
+	}
+
+	@media (max-width: 1023px) {
+		.quote__grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.form__services .chips {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.form__services .chip span {
+		width: 100%;
+	}
+</style>

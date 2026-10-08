@@ -1,0 +1,4 @@
+# Copy to .dev.vars for `wrangler pages dev`; set the same values in Cloudflare Pages.
+RESEND_API_KEY=
+QUOTE_TO=
+QUOTE_FROM=

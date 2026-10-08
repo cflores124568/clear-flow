@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import { phone } from '../data/site';
+---
+
+<Base title="Page not found | Clear Flow" description="That page doesn't exist." noindex>
+	<main id="main" class="note container">
+		<a class="note__logo" href="/" aria-label="Clear Flow home"><Logo /></a>
+		<h1 class="display note__title">Nothing here.</h1>
+		<p class="lede">That page doesn't exist. Head back to the site or call <a href={phone.href}>{phone.display}</a>.</p>
+		<a class="btn note__back" href="/">Back to the site</a>
+	</main>
+</Base>
