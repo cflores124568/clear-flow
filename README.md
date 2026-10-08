@@ -31,6 +31,6 @@ npm run build     # static site in dist/
 
 ## Design notes
 
-- Palette and type follow the design lock: navy `#12263A`, glass white `#F5F8F9`, mist `#E6EFF1`, turquoise `#3FB6C6` for actions only (with `#187885` where turquoise is used as text on light backgrounds, for contrast). One typeface, Instrument Sans.
+- Palette and type follow the design lock: navy `#12263A`, glass white `#F5F8F9`, mist `#E6EFF1`, turquoise `#3FB6C6` for actions only (with `#187885` where turquoise is used as text on light backgrounds, for contrast). Type is Barlow Semi Condensed for headlines, service names and the phone number, with Barlow for everything else.
 - Dark mode follows the visitor's system setting.
 - All motion respects `prefers-reduced-motion`. The hero's scroll-linked wipe uses CSS scroll timelines where supported; elsewhere it plays once on load.

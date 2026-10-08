@@ -17,7 +17,8 @@
 	--on-teal: #12263a;
 	--teal-ink: #187885;
 
-	--font: 'Instrument Sans Variable', 'Helvetica Neue', Arial, sans-serif;
+	--font: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+	--font-display: 'Barlow Semi Condensed', 'Barlow', 'Arial Narrow', sans-serif;
 	--ease: cubic-bezier(0.22, 1, 0.36, 1);
 	--ease-wipe: cubic-bezier(0.65, 0, 0.15, 1);
 
@@ -131,14 +132,15 @@ p {
 }
 
 .display {
-	font-weight: 500;
-	letter-spacing: -0.035em;
-	line-height: 1.02;
+	font-family: var(--font-display);
+	font-weight: 600;
+	letter-spacing: -0.015em;
+	line-height: 0.98;
 	text-wrap: balance;
 }
 
 .h2 {
-	font-size: clamp(2.25rem, 4.4vw, 4.25rem);
+	font-size: clamp(2.5rem, 4.9vw, 4.75rem);
 }
 
 .lede {
