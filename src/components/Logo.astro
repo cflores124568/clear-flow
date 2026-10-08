@@ -1,0 +1,25 @@
+---
+// Wordmark rebuilt from the business card: Outfit SemiBold outlines with the
+// two-tone drop. Letters use currentColor so the same file works on photo,
+// navy and light surfaces.
+import wordmark from '../assets/brand/wordmark.svg?raw';
+
+interface Props {
+	class?: string;
+}
+
+const svg = wordmark.replace('<svg ', '<svg focusable="false" ');
+---
+
+<span class:list={['logo', Astro.props.class]} set:html={svg} />
+
+<style>
+	.logo {
+		display: inline-flex;
+	}
+
+	.logo :global(svg) {
+		height: 100%;
+		width: auto;
+	}
+</style>
