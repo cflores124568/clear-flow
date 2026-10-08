@@ -63,8 +63,13 @@ import { phone, serviceHref, services } from '../data/site';
 
 	.footer__logo {
 		display: inline-flex;
-		height: clamp(2.25rem, 3.6vw, 3.25rem);
+		align-items: center;
+		min-height: 44px;
 		color: var(--ink);
+	}
+
+	.footer__logo :global(.logo) {
+		height: clamp(2.25rem, 3.6vw, 3.25rem);
 	}
 
 	.footer__grid > div {
@@ -107,6 +112,22 @@ import { phone, serviceHref, services } from '../data/site';
 		border-top: 1px solid var(--hair);
 		font-size: 0.9375rem;
 		color: var(--muted);
+	}
+
+	@media (pointer: coarse), (max-width: 1023px) {
+		li + li {
+			margin-top: 0;
+		}
+
+		li a {
+			display: inline-flex;
+			align-items: center;
+			min-height: 44px;
+		}
+
+		ul {
+			margin-top: 0.4rem;
+		}
 	}
 
 	@media (max-width: 1023px) {

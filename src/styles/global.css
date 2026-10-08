@@ -282,3 +282,45 @@ p {
 		white-space: nowrap;
 	}
 }
+
+/* Touch screens: every tappable text link gets a full 44px target without
+   changing how it looks. */
+@media (pointer: coarse), (max-width: 1023px) {
+	.link {
+		min-height: 44px;
+	}
+}
+
+/* Short standalone pages: the thank-you page and 404. */
+.note {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-height: 100svh;
+	padding-block: 4rem;
+}
+
+.note__logo {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	margin-bottom: auto;
+}
+
+.note__logo .logo {
+	height: 2rem;
+}
+
+.note__title {
+	font-size: clamp(3rem, 8vw, 6rem);
+}
+
+.note .lede {
+	margin-top: 1.25rem;
+}
+
+.note__back {
+	align-self: flex-start;
+	margin-top: 2rem;
+	margin-bottom: auto;
+}
