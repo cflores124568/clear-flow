@@ -1,0 +1,83 @@
+---
+// Describes what this site actually does with visitor data. Have the owner
+// review it before launch; it is not legal advice.
+import Page from '../layouts/Page.astro';
+import PageHero from '../components/PageHero.astro';
+import { phone } from '../data/site';
+
+const updated = 'October 8, 2026';
+---
+
+<Page
+	title="Privacy | Clear Flow"
+	description="What Clear Flow collects through this website and how it is used."
+	quoteHref="/contact/"
+>
+	<PageHero label="Privacy" title="Privacy policy" lede={`Last updated ${updated}.`} />
+
+	<article class="container prose">
+		<h2>What we collect</h2>
+		<p>
+			When you request a quote, we receive the name and phone number you enter and the services you select. If you call us, your
+			phone number is visible to us as it would be on any call.
+		</p>
+
+		<h2>How we use it</h2>
+		<p>
+			Only to answer your request: to contact you about your quote, schedule work and keep a record of the job. We do not sell
+			your information or use it for advertising.
+		</p>
+
+		<h2>Who else handles it</h2>
+		<p>
+			Quote requests are delivered to us by email through Resend, an email delivery service. The site is hosted on Cloudflare,
+			which processes standard technical data such as IP addresses to serve and protect the site. Neither uses your information for
+			its own marketing.
+		</p>
+
+		<h2>Cookies and tracking</h2>
+		<p>This site does not use advertising cookies, tracking pixels or third-party analytics.</p>
+
+		<h2>How long we keep it</h2>
+		<p>As long as we need it to respond to you and keep ordinary business records, and no longer.</p>
+
+		<h2>Your choices</h2>
+		<p>
+			To ask what we have about you, or to have it corrected or deleted, call <a href={phone.href}>{phone.display}</a>.
+		</p>
+
+		<h2>Changes</h2>
+		<p>If this policy changes, the date at the top of this page changes with it.</p>
+	</article>
+</Page>
+
+<style>
+	.prose {
+		padding-block: clamp(3rem, 6vw, 5rem) var(--section);
+	}
+
+	.prose > * {
+		max-width: 46rem;
+	}
+
+	.prose h2 {
+		margin-top: 2.5rem;
+		font-family: var(--font-display);
+		font-size: clamp(1.5rem, 2.4vw, 2rem);
+		font-weight: 600;
+		letter-spacing: -0.01em;
+	}
+
+	.prose h2:first-child {
+		margin-top: 0;
+	}
+
+	.prose p {
+		margin-top: 0.75rem;
+		color: var(--muted);
+	}
+
+	.prose a {
+		color: var(--ink);
+	}
+</style>

@@ -17,12 +17,28 @@ npm run build     # static site in dist/
    - "Furniture, yard debris and garage clutter, hauled away." (junk scope)
    - "Four jobs, one crew you call." (implies a single crew)
    - FAQ answers in `src/data/site.ts`, especially "Do I need to be home?"
+   - Each service page's "What's included" list (`includes` in `src/data/site.ts`). These are scope promises.
+   - The About page has no owner story yet. Add the owner's name, a short background and a real photo when they're available.
+   - The privacy policy (`src/pages/privacy.astro`) describes what the site actually does; the owner should still review it.
 3. **Domain.** Set `site` in `astro.config.mjs`. Canonical, `og:url` and `og:image` tags are only emitted once it is set.
 4. **Form delivery.** In the Cloudflare Pages project, set `RESEND_API_KEY`, `QUOTE_TO` and `QUOTE_FROM` (see `.dev.vars.example`). The sending domain must be verified in Resend. Until these are set, the form shows its fallback message asking visitors to call.
 
+## Pages
+
+| Path | Source |
+| --- | --- |
+| `/` | `src/pages/index.astro` |
+| `/services/` | `src/pages/services/index.astro` |
+| `/services/<slug>/` (four) | `src/pages/services/[slug].astro`, one per entry in `services` in `src/data/site.ts` |
+| `/about/`, `/faq/`, `/contact/`, `/privacy/` | `src/pages/*.astro` |
+| `/thanks/`, 404 | landing spot for no-JavaScript form posts, and the not-found page |
+
+Every page except `/thanks/` and 404 uses `src/layouts/Page.astro` (header, footer, mobile call bar, page script). Inner pages open with `PageHero`; anything marked `data-hero` keeps the header transparent until it scrolls away.
+
 ## Where things live
 
-- `src/data/site.ts`: phone number, services and FAQ copy.
+- `src/data/site.ts`: phone number, services (including service page copy), FAQ and the nav.
+- `src/data/photos.ts`: which photo belongs to which service.
 - `src/components/`: one component per page section, in page order in `src/pages/index.astro`.
 - `src/scripts/site.ts`: header state, the shared service selection (hero chips, "Add to quote", form), the services photo, scroll reveals, the process line, the mobile call bar, and form submission.
 - `functions/api/quote.ts`: receives the form and emails it via Resend. Plain form posts (no JavaScript) redirect to `/thanks/`.

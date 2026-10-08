@@ -1,0 +1,23 @@
+---
+import Page from '../../layouts/Page.astro';
+import PageHero from '../../components/PageHero.astro';
+import Services from '../../components/Services.astro';
+import Property from '../../components/Property.astro';
+import Process from '../../components/Process.astro';
+import Quote from '../../components/Quote.astro';
+---
+
+<Page
+	title="Services | Clear Flow"
+	description="Solar panel cleaning, window cleaning, pressure washing and junk removal. Book one or bundle them on a single quote. Call 760-422-3069."
+>
+	<PageHero
+		label="Services"
+		title="Four services, one quote."
+		lede="Book one job or bundle the whole property. Every service is quoted together and done by the same crew."
+	/>
+	<Services showHeading={false} />
+	<Property />
+	<Process />
+	<Quote />
+</Page>

@@ -1,0 +1,234 @@
+---
+import { Image } from 'astro:assets';
+import Page from '../../layouts/Page.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import Quote from '../../components/Quote.astro';
+import { phone, serviceHref, services, type Service } from '../../data/site';
+import { servicePhotos } from '../../data/photos';
+
+export function getStaticPaths() {
+	return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+
+interface Props {
+	service: Service;
+}
+
+const { service } = Astro.props;
+const photo = servicePhotos[service.id];
+const others = services.filter((s) => s.id !== service.id);
+---
+
+<Page title={`${service.name} | Clear Flow`} description={`${service.lede} Licensed & Insured. Call ${phone.display}.`}>
+	<PageHero label="Services" title={service.name} lede={service.lede} image={photo} imageAlt={service.caption}>
+		<div class="svc-hero__actions">
+			<a class="btn" href="#quote">
+				Get a quote
+				<Icon name="arrowRight" />
+			</a>
+			<a class="link svc-hero__call" href={phone.href}>
+				<Icon name="phone" />
+				{phone.display}
+			</a>
+		</div>
+	</PageHero>
+
+	<section class="included" aria-labelledby="included-title">
+		<div class="container included__grid">
+			<div>
+				<p class="label" data-reveal>Every job</p>
+				<h2 id="included-title" class="display h2 included__title" data-reveal>What's included.</h2>
+				<ul class="included__list">
+					{
+						service.includes.map((item, i) => (
+							<li data-reveal style={`--delay:${i * 0.08}s`}>
+								<h3>{item.title}</h3>
+								<p>{item.body}</p>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+			<figure class="included__figure" data-reveal>
+				<div class="included__frame">
+					<Image src={photo} widths={[480, 760, 1100]} sizes="(min-width: 1024px) 40vw, 100vw" alt="" />
+				</div>
+				<figcaption>{service.caption}</figcaption>
+			</figure>
+		</div>
+	</section>
+
+	<section class="others" aria-labelledby="others-title">
+		<div class="container">
+			<h2 id="others-title" class="display h2" data-reveal>Bundle it with</h2>
+			<ul class="others__list">
+				{
+					others.map((s, i) => (
+						<li data-reveal style={`--delay:${i * 0.08}s`}>
+							<a href={serviceHref(s)}>
+								<span class="others__name">{s.name}</span>
+								<span class="others__line">{s.line}</span>
+								<Icon name="arrowRight" class="others__arrow" />
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<Quote preselect={[service.id]} />
+</Page>
+
+<style>
+	.svc-hero__actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 1.5rem 2rem;
+		margin-top: 2rem;
+	}
+
+	.svc-hero__call {
+		font-size: 1.125rem;
+	}
+
+	.included {
+		padding-block: var(--section);
+	}
+
+	.included__grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+		gap: clamp(2.5rem, 6vw, 6rem);
+		align-items: start;
+	}
+
+	.included__title {
+		margin-top: 1rem;
+	}
+
+	.included__list {
+		list-style: none;
+		margin: clamp(2rem, 4vw, 3.25rem) 0 0;
+		padding: 0;
+		max-width: 38rem;
+	}
+
+	.included__list li {
+		padding-block: 1.4rem;
+		border-bottom: 1px solid var(--hair);
+	}
+
+	.included__list li:first-child {
+		padding-top: 0;
+	}
+
+	.included__list li:last-child {
+		border-bottom: 0;
+	}
+
+	.included__list h3 {
+		font-size: clamp(1.25rem, 1.8vw, 1.625rem);
+		font-weight: 500;
+		letter-spacing: -0.02em;
+	}
+
+	.included__list p {
+		margin-top: 0.3rem;
+		color: var(--muted);
+	}
+
+	.included__figure {
+		margin: 0;
+	}
+
+	.included__frame {
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+	}
+
+	.included__frame :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	figcaption {
+		margin-top: 0.75rem;
+		font-size: 0.875rem;
+		color: var(--muted);
+	}
+
+	.others {
+		padding-block: 0 var(--section);
+	}
+
+	.others__list {
+		list-style: none;
+		margin: clamp(2rem, 4vw, 3rem) 0 0;
+		padding: 0;
+		border-top: 1px solid var(--hair);
+	}
+
+	.others__list a {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 1rem 2rem;
+		padding-block: clamp(1.25rem, 2.4vw, 1.75rem);
+		border-bottom: 1px solid var(--hair);
+		text-decoration: none;
+	}
+
+	.others__name {
+		font-family: var(--font-display);
+		font-size: clamp(1.75rem, 3vw, 2.75rem);
+		font-weight: 500;
+		line-height: 1.05;
+	}
+
+	.others__line {
+		color: var(--muted);
+	}
+
+	.others__list :global(.others__arrow) {
+		font-size: 1.5rem;
+		transition: transform 0.45s var(--ease);
+	}
+
+	.others__list a:hover :global(.others__arrow) {
+		transform: translateX(6px);
+	}
+
+	.others__list a:hover .others__name {
+		color: var(--teal-ink);
+	}
+
+	@media (max-width: 1023px) {
+		.included__grid {
+			grid-template-columns: 1fr;
+		}
+
+		.included__figure {
+			order: -1;
+		}
+	}
+
+	@media (max-width: 767px) {
+		.others__list a {
+			grid-template-columns: minmax(0, 1fr) auto;
+		}
+
+		.others__line {
+			grid-column: 1;
+			grid-row: 2;
+		}
+
+		.others__list :global(.others__arrow) {
+			grid-row: 1 / span 2;
+			grid-column: 2;
+		}
+	}
+</style>
