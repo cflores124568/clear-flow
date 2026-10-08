@@ -1,6 +1,12 @@
 ---
 import Icon from './Icon.astro';
 import { phone } from '../data/site';
+
+interface Props {
+	quoteHref?: string;
+}
+
+const { quoteHref = '#quote' } = Astro.props;
 ---
 
 <nav class="mbar" aria-label="Quick actions" data-mbar>
@@ -11,7 +17,7 @@ import { phone } from '../data/site';
 			{phone.display}
 		</span>
 	</a>
-	<a class="mbar__quote" href="#quote">
+	<a class="mbar__quote" href={quoteHref}>
 		Get a quote
 		<Icon name="arrowRight" />
 	</a>

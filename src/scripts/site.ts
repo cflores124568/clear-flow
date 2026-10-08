@@ -3,9 +3,11 @@
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Header turns solid once the hero's top edge has scrolled away.
+// Header turns solid once the page hero's top edge has scrolled away. Pages
+// without a dark hero get the solid header from the start.
 const header = document.querySelector<HTMLElement>('[data-header]');
-const hero = document.querySelector<HTMLElement>('.hero');
+const hero = document.querySelector<HTMLElement>('[data-hero]');
+if (header && !hero) header.classList.add('is-solid');
 if (header && hero) {
 	const sentinel = document.createElement('div');
 	sentinel.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:64px;pointer-events:none';
@@ -24,7 +26,9 @@ document.querySelectorAll('[data-close-menu]').forEach((link) => {
 // One selection of services, mirrored everywhere it can be changed: the hero
 // starter, each service's "Add to quote", and the quote form itself. The form's
 // checkboxes are what actually get submitted.
-const selected = new Set<string>();
+const selected = new Set<string>(
+	[...document.querySelectorAll<HTMLInputElement>('input[data-service]:checked')].map((input) => input.dataset.service!),
+);
 
 function renderSelection() {
 	document.querySelectorAll<HTMLInputElement>('input[data-service]').forEach((input) => {
@@ -43,6 +47,8 @@ function setService(id: string, on: boolean) {
 	else selected.delete(id);
 	renderSelection();
 }
+
+renderSelection();
 
 document.addEventListener('change', (event) => {
 	const input = event.target as HTMLInputElement;

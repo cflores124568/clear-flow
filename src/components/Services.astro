@@ -1,19 +1,31 @@
 ---
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
-import { services } from '../data/site';
-import solar from '../assets/photos/svc-solar.jpg';
-import windows from '../assets/photos/svc-windows.jpg';
-import pressure from '../assets/photos/svc-pressure.jpg';
-import junk from '../assets/photos/svc-junk.jpg';
+import { serviceHref, services } from '../data/site';
+import { servicePhotos as photos } from '../data/photos';
 
-const photos = { solar, windows, pressure, junk };
+interface Props {
+	// The services page already has an h1 saying this, so it hides the heading.
+	showHeading?: boolean;
+}
+
+const { showHeading = true } = Astro.props;
 ---
 
-<section class="services" id="services" aria-labelledby="services-title">
+<section class="services" id="services" aria-labelledby={showHeading ? 'services-title' : undefined} aria-label={showHeading ? undefined : 'Services'}>
 	<div class="container">
-		<p class="label" data-reveal>Services</p>
-		<h2 id="services-title" class="display h2 services__title" data-reveal>Four jobs, one crew you call.</h2>
+		{
+			showHeading && (
+				<>
+					<p class="label" data-reveal>
+						Services
+					</p>
+					<h2 id="services-title" class="display h2 services__title" data-reveal>
+						Four jobs, one crew you call.
+					</h2>
+				</>
+			)
+		}
 
 		<div class="services__body" data-services>
 			<ol class="svc-list">
@@ -22,7 +34,9 @@ const photos = { solar, windows, pressure, junk };
 						<li class:list={['svc', { 'is-active': i === 0 }]} data-svc={i} data-reveal style={`--delay:${i * 0.08}s`}>
 							<span class="svc__num">{String(i + 1).padStart(2, '0')}</span>
 							<div class="svc__text">
-								<h3 class="svc__name">{s.name}</h3>
+								<h3 class="svc__name">
+									<a href={serviceHref(s)}>{s.name}</a>
+								</h3>
 								<p class="svc__line">{s.line}</p>
 							</div>
 							<button class="svc__add" type="button" data-add={s.id} aria-pressed="false">
@@ -71,6 +85,10 @@ const photos = { solar, windows, pressure, junk };
 		margin-top: 1rem;
 	}
 
+	.services__body:first-child {
+		margin-top: 0;
+	}
+
 	.services__body {
 		position: relative;
 		display: grid;
@@ -116,6 +134,16 @@ const photos = { solar, windows, pressure, junk };
 		font-weight: 500;
 		letter-spacing: -0.01em;
 		line-height: 1.02;
+	}
+
+	.svc__name a {
+		text-decoration: none;
+	}
+
+	.svc__name a:hover {
+		text-decoration: underline;
+		text-decoration-thickness: 2px;
+		text-underline-offset: 0.12em;
 	}
 
 	.svc__line {

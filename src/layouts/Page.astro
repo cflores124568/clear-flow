@@ -1,0 +1,32 @@
+---
+// Every page: base document, header, footer, the mobile call bar and the page
+// script. Pages supply their sections through the default slot.
+import Base from './Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileBar from '../components/MobileBar.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	noindex?: boolean;
+	// Where "Get a quote" points. Pages with a quote section use the in-page
+	// anchor; the rest send people to the contact page.
+	quoteHref?: string;
+}
+
+const { quoteHref = '#quote', ...base } = Astro.props;
+---
+
+<Base {...base}>
+	<Header quoteHref={quoteHref} />
+	<main id="main">
+		<slot />
+	</main>
+	<Footer />
+	<MobileBar quoteHref={quoteHref} />
+</Base>
+
+<script>
+	import '../scripts/site';
+</script>

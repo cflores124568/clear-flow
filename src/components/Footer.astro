@@ -1,12 +1,12 @@
 ---
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
-import { phone, services } from '../data/site';
+import { phone, serviceHref, services } from '../data/site';
 ---
 
 <footer class="footer">
 	<div class="container footer__grid">
-		<a class="footer__logo" href="#top" aria-label="Clear Flow, back to top">
+		<a class="footer__logo" href="/" aria-label="Clear Flow home">
 			<Logo />
 		</a>
 
@@ -16,7 +16,7 @@ import { phone, services } from '../data/site';
 				{
 					services.map((s) => (
 						<li>
-							<a href="#services">{s.name}</a>
+							<a href={serviceHref(s)}>{s.name}</a>
 						</li>
 					))
 				}
@@ -26,9 +26,10 @@ import { phone, services } from '../data/site';
 		<div>
 			<p class="label">Visit</p>
 			<ul>
-				<li><a href="#how-it-works">How it works</a></li>
-				<li><a href="#faq">FAQ</a></li>
-				<li><a href="#quote">Request a quote</a></li>
+				<li><a href="/about/">About</a></li>
+				<li><a href="/faq/">FAQ</a></li>
+				<li><a href="/contact/">Request a quote</a></li>
+				<li><a href="/privacy/">Privacy</a></li>
 			</ul>
 		</div>
 

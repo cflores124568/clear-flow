@@ -1,13 +1,24 @@
 ---
 import Icon from './Icon.astro';
-import { phone, services } from '../data/site';
+import { phone, services, type ServiceId } from '../data/site';
+
+interface Props {
+	// Services ticked when the page loads, e.g. the one a service page is about.
+	preselect?: ServiceId[];
+	// On the contact page the section is the page itself: it gets the h1 and
+	// room for the header above it.
+	standalone?: boolean;
+}
+
+const { preselect = [], standalone = false } = Astro.props;
+const Heading = standalone ? 'h1' : 'h2';
 ---
 
-<section class="quote" id="quote" aria-labelledby="quote-title">
+<section class:list={['quote', { 'quote--standalone': standalone }]} id="quote" aria-labelledby="quote-title" data-hero={standalone ? '' : undefined}>
 	<div class="container quote__grid">
 		<div class="quote__lead">
 			<p class="label quote__label">Get a quote</p>
-			<h2 id="quote-title" class="display quote__title">Let's clear it up.</h2>
+			<Heading id="quote-title" class="display quote__title">Let's clear it up.</Heading>
 			<a class="quote__phone" href={phone.href}>{phone.display}</a>
 			<a class="link quote__tap" href={phone.href}>
 				<Icon name="phone" />
@@ -25,7 +36,7 @@ import { phone, services } from '../data/site';
 						{
 							services.map((s) => (
 								<label class="chip">
-									<input type="checkbox" name="services" value={s.id} data-service={s.id} />
+									<input type="checkbox" name="services" value={s.id} data-service={s.id} checked={preselect.includes(s.id)} />
 									<span>{s.chip}</span>
 								</label>
 							))
@@ -85,6 +96,13 @@ import { phone, services } from '../data/site';
 		.quote {
 			background: var(--navy-deep);
 		}
+	}
+
+	.quote--standalone {
+		min-height: 100svh;
+		padding-top: clamp(8rem, 14vw, 10rem);
+		display: flex;
+		align-items: center;
 	}
 
 	.quote__grid {

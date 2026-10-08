@@ -1,23 +1,30 @@
 ---
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
-import { phone } from '../data/site';
+import { nav as links, phone } from '../data/site';
 
-const links = [
-	{ href: '#services', label: 'Services' },
-	{ href: '#how-it-works', label: 'How it works' },
-	{ href: '#faq', label: 'FAQ' },
-];
+interface Props {
+	quoteHref?: string;
+}
+
+const { quoteHref = '#quote' } = Astro.props;
+const here = Astro.url.pathname;
 ---
 
 <header class="header" data-header>
 	<div class="container header__bar">
-		<a class="header__logo" href="#top" aria-label="Clear Flow, back to top">
+		<a class="header__logo" href="/" aria-label="Clear Flow home">
 			<Logo />
 		</a>
 
 		<nav class="header__nav" aria-label="Main">
-			{links.map((l) => <a href={l.href}>{l.label}</a>)}
+			{
+				links.map((l) => (
+					<a href={l.href} aria-current={here.startsWith(l.href) ? 'page' : undefined}>
+						{l.label}
+					</a>
+				))
+			}
 		</nav>
 
 		<div class="header__actions">
@@ -25,7 +32,7 @@ const links = [
 				<Icon name="phone" />
 				{phone.display}
 			</a>
-			<a class="btn header__cta" href="#quote">
+			<a class="btn header__cta" href={quoteHref}>
 				Get a quote
 				<Icon name="arrowRight" />
 			</a>
@@ -53,7 +60,7 @@ const links = [
 				))
 			}
 			<li>
-				<a href="#quote" data-close-menu>Get a quote</a>
+				<a href={quoteHref} data-close-menu>Get a quote</a>
 			</li>
 		</ul>
 		<a class="menu__phone" href={phone.href}>
@@ -116,6 +123,7 @@ const links = [
 		opacity: 0.92;
 	}
 
+	.header__nav a[aria-current='page'],
 	.header__nav a:hover {
 		opacity: 1;
 		text-decoration: underline;
