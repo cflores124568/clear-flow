@@ -1,0 +1,233 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { phone } from '../data/site';
+
+const links = [
+	{ href: '#services', label: 'Services' },
+	{ href: '#how-it-works', label: 'How it works' },
+	{ href: '#faq', label: 'FAQ' },
+];
+---
+
+<header class="header" data-header>
+	<div class="container header__bar">
+		<a class="header__logo" href="#top" aria-label="Clear Flow, back to top">
+			<Logo />
+		</a>
+
+		<nav class="header__nav" aria-label="Main">
+			{links.map((l) => <a href={l.href}>{l.label}</a>)}
+		</nav>
+
+		<div class="header__actions">
+			<a class="header__phone link" href={phone.href}>
+				<Icon name="phone" />
+				{phone.display}
+			</a>
+			<a class="btn header__cta" href="#quote">
+				Get a quote
+				<Icon name="arrowRight" />
+			</a>
+			<button class="header__menu" type="button" popovertarget="menu" aria-label="Open menu">
+				<Icon name="list" />
+			</button>
+		</div>
+	</div>
+
+	<nav id="menu" class="menu" popover aria-label="Menu">
+		<div class="menu__top">
+			<Logo class="menu__logo" />
+			<button class="header__menu" type="button" popovertarget="menu" popovertargetaction="hide" aria-label="Close menu">
+				<Icon name="x" />
+			</button>
+		</div>
+		<ul>
+			{
+				links.map((l) => (
+					<li>
+						<a href={l.href} data-close-menu>
+							{l.label}
+						</a>
+					</li>
+				))
+			}
+			<li>
+				<a href="#quote" data-close-menu>Get a quote</a>
+			</li>
+		</ul>
+		<a class="menu__phone" href={phone.href}>
+			<Icon name="phone" />
+			{phone.display}
+		</a>
+	</nav>
+</header>
+
+<style>
+	.header {
+		position: fixed;
+		inset: 0 0 auto;
+		z-index: 40;
+		color: #fff;
+		transition:
+			background-color 0.4s var(--ease),
+			color 0.4s var(--ease),
+			box-shadow 0.4s var(--ease);
+	}
+
+	.header.is-solid {
+		color: var(--ink);
+		background: color-mix(in srgb, var(--surface) 86%, transparent);
+		backdrop-filter: blur(14px) saturate(1.4);
+		-webkit-backdrop-filter: blur(14px) saturate(1.4);
+		box-shadow: 0 1px 0 var(--hair);
+	}
+
+	.header__bar {
+		display: flex;
+		align-items: center;
+		gap: 2.5rem;
+		height: 5.25rem;
+		transition: height 0.4s var(--ease);
+	}
+
+	.is-solid .header__bar {
+		height: 4.25rem;
+	}
+
+	.header__logo {
+		height: 2.1rem;
+		display: inline-flex;
+		transition: height 0.4s var(--ease);
+	}
+
+	.is-solid .header__logo {
+		height: 1.75rem;
+	}
+
+	.header__nav {
+		display: flex;
+		gap: 2.25rem;
+		font-weight: 500;
+	}
+
+	.header__nav a {
+		text-decoration: none;
+		opacity: 0.92;
+	}
+
+	.header__nav a:hover {
+		opacity: 1;
+		text-decoration: underline;
+		text-underline-offset: 0.35em;
+		text-decoration-thickness: 1px;
+	}
+
+	.header__actions {
+		display: flex;
+		align-items: center;
+		gap: 2rem;
+		margin-left: auto;
+	}
+
+	.header__cta {
+		min-height: 2.9rem;
+		padding-inline: 1.25rem;
+	}
+
+	.header__menu {
+		display: none;
+		align-items: center;
+		justify-content: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		padding: 0;
+		border: 0;
+		background: none;
+		cursor: pointer;
+		font-size: 1.5rem;
+	}
+
+	.menu {
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		max-width: none;
+		max-height: none;
+		margin: 0;
+		padding: 1.25rem var(--gutter) 2rem;
+		border: 0;
+		background: var(--surface);
+		color: var(--ink);
+		flex-direction: column;
+	}
+
+	.menu:popover-open {
+		display: flex;
+	}
+
+	.menu__top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.menu :global(.menu__logo) {
+		height: 1.75rem;
+	}
+
+	.menu .header__menu {
+		display: inline-flex;
+	}
+
+	.menu ul {
+		list-style: none;
+		margin: 3rem 0 0;
+		padding: 0;
+	}
+
+	.menu li a {
+		display: block;
+		padding: 0.9rem 0;
+		border-bottom: 1px solid var(--hair);
+		font-size: 2rem;
+		font-weight: 500;
+		letter-spacing: -0.03em;
+		text-decoration: none;
+	}
+
+	.menu__phone {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		margin-top: auto;
+		font-size: 1.5rem;
+		font-weight: 500;
+		text-decoration: none;
+	}
+
+	@media (max-width: 1024px) {
+		.header__nav {
+			display: none;
+		}
+	}
+
+	@media (max-width: 767px) {
+		.header__bar {
+			height: 4.25rem;
+		}
+
+		.header__logo {
+			height: 1.6rem;
+		}
+
+		.header__phone,
+		.header__cta {
+			display: none;
+		}
+
+		.header__menu {
+			display: inline-flex;
+		}
+	}
+</style>

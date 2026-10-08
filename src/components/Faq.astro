@@ -1,0 +1,152 @@
+---
+import Icon from './Icon.astro';
+import { faqs, phone } from '../data/site';
+---
+
+<section class="faq" id="faq" aria-labelledby="faq-title">
+	<a class="faq__rail" href={phone.href}>Prefer to talk? <strong>{phone.display}</strong></a>
+
+	<div class="container faq__grid">
+		<h2 id="faq-title" class="display h2" data-reveal>Questions<br /> before you book.</h2>
+
+		<div class="faq__list" data-reveal>
+			{
+				faqs.map((f, i) => (
+					<details name="faq" open={i === 0}>
+						<summary>
+							<span>{f.q}</span>
+							<Icon name="plus" class="faq__plus" />
+							<Icon name="minus" class="faq__minus" />
+						</summary>
+						<p>{f.a}</p>
+					</details>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.faq {
+		position: relative;
+		padding-block: var(--section);
+		background: var(--panel);
+	}
+
+	.faq__rail {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: clamp(3rem, 4vw, 4.5rem);
+		border-right: 1px solid var(--hair);
+		writing-mode: vertical-rl;
+		transform: rotate(180deg);
+		font-size: 0.95rem;
+		color: var(--muted);
+		text-decoration: none;
+		letter-spacing: 0.02em;
+	}
+
+	.faq__rail strong {
+		margin-top: 0.6rem;
+		font-weight: 600;
+		color: var(--ink);
+	}
+
+	.faq__rail:hover strong {
+		color: var(--teal-ink);
+	}
+
+	.faq__grid {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		gap: clamp(2rem, 5vw, 5rem);
+		align-items: center;
+		padding-left: calc(var(--gutter) + clamp(3rem, 4vw, 4.5rem));
+	}
+
+	.faq__list {
+		border-top: 1px solid var(--hair);
+	}
+
+	details {
+		border-bottom: 1px solid var(--hair);
+	}
+
+	summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		padding-block: 1.6rem;
+		font-size: clamp(1.1875rem, 1.8vw, 1.625rem);
+		font-weight: 500;
+		letter-spacing: -0.015em;
+		line-height: 1.25;
+		cursor: pointer;
+		list-style: none;
+	}
+
+	summary::-webkit-details-marker {
+		display: none;
+	}
+
+	summary :global(.icon) {
+		font-size: 1.5rem;
+		color: var(--muted);
+	}
+
+	summary :global(.faq__minus),
+	details[open] summary :global(.faq__plus) {
+		display: none;
+	}
+
+	details[open] summary :global(.faq__minus) {
+		display: inline-flex;
+	}
+
+	details p {
+		max-width: 52ch;
+		padding-bottom: 1.75rem;
+		color: var(--muted);
+		font-size: 1.0625rem;
+	}
+
+	@supports (interpolate-size: allow-keywords) {
+		details {
+			interpolate-size: allow-keywords;
+		}
+
+		details::details-content {
+			height: 0;
+			overflow: clip;
+			transition:
+				height 0.5s var(--ease),
+				content-visibility 0.5s allow-discrete;
+		}
+
+		details[open]::details-content {
+			height: auto;
+		}
+	}
+
+	@media (max-width: 1023px) {
+		.faq__grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 767px) {
+		.faq__rail {
+			display: none;
+		}
+
+		.faq__grid {
+			padding-left: var(--gutter);
+		}
+	}
+</style>

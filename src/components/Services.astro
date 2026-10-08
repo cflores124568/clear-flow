@@ -1,0 +1,229 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { services } from '../data/site';
+import solar from '../assets/photos/svc-solar.jpg';
+import windows from '../assets/photos/svc-windows.jpg';
+import pressure from '../assets/photos/svc-pressure.jpg';
+import junk from '../assets/photos/svc-junk.jpg';
+
+const photos = { solar, windows, pressure, junk };
+---
+
+<section class="services" id="services" aria-labelledby="services-title">
+	<div class="container">
+		<p class="label" data-reveal>Services</p>
+		<h2 id="services-title" class="display h2 services__title" data-reveal>Four jobs, one crew you call.</h2>
+
+		<div class="services__body" data-services>
+			<ol class="svc-list">
+				{
+					services.map((s, i) => (
+						<li class:list={['svc', { 'is-active': i === 0 }]} data-svc={i} data-reveal style={`--delay:${i * 0.08}s`}>
+							<span class="svc__num">{String(i + 1).padStart(2, '0')}</span>
+							<div class="svc__text">
+								<h3 class="svc__name">{s.name}</h3>
+								<p class="svc__line">{s.line}</p>
+							</div>
+							<button class="svc__add" type="button" data-add={s.id} aria-pressed="false">
+								<span class="svc__add-label" data-label-off>
+									Add to quote
+								</span>
+								<span class="svc__add-label" data-label-on hidden>
+									Added
+								</span>
+								<Icon name="plus" class="svc__add-plus" />
+								<Icon name="check" class="svc__add-check" />
+							</button>
+						</li>
+					))
+				}
+			</ol>
+
+			<div class="svc-media" aria-hidden="true" data-svc-media>
+				<div class="svc-media__frame">
+					{
+						services.map((s, i) => (
+							<Image
+								class:list={['svc-media__img', { 'is-active': i === 0 }]}
+								src={photos[s.id]}
+								widths={[480, 720, 1080]}
+								sizes="(min-width: 1024px) 34vw, 1px"
+								alt=""
+								data-svc-img={i}
+							/>
+						))
+					}
+				</div>
+				<p class="svc-media__caption" data-svc-caption>{services[0].caption}</p>
+				<template data-captions set:html={JSON.stringify(services.map((s) => s.caption))} />
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.services {
+		padding-block: var(--section);
+	}
+
+	.services__title {
+		margin-top: 1rem;
+	}
+
+	.services__body {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+		gap: clamp(2rem, 4vw, 4rem);
+		margin-top: clamp(2.5rem, 5vw, 4.5rem);
+	}
+
+	.svc-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--hair);
+	}
+
+	.svc {
+		display: grid;
+		grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+		align-items: start;
+		gap: 0 1rem;
+		padding-block: clamp(1.5rem, 2.6vw, 2.25rem);
+		border-bottom: 1px solid var(--hair);
+		cursor: default;
+	}
+
+	.svc__num {
+		padding-top: 0.6em;
+		color: var(--muted);
+		font-size: 1.125rem;
+	}
+
+	.svc__text {
+		transition: transform 0.6s var(--ease);
+	}
+
+	.svc.is-active .svc__text {
+		transform: translateX(0.75rem);
+	}
+
+	.svc__name {
+		font-size: clamp(2rem, 4.2vw, 3.75rem);
+		font-weight: 450;
+		letter-spacing: -0.035em;
+		line-height: 1.05;
+	}
+
+	.svc__line {
+		margin-top: 0.5rem;
+		color: var(--muted);
+	}
+
+	.svc__add {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		min-height: 2.75rem;
+		margin-top: 0.5rem;
+		padding: 0;
+		border: 0;
+		background: none;
+		font-weight: 500;
+		cursor: pointer;
+		white-space: nowrap;
+	}
+
+	.svc__add-label {
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.3em;
+	}
+
+	.svc__add :global(.icon) {
+		font-size: 1.3rem;
+	}
+
+	.svc__add :global(.svc__add-check),
+	.svc__add[aria-pressed='true'] :global(.svc__add-plus) {
+		display: none;
+	}
+
+	.svc__add[aria-pressed='true'] :global(.svc__add-check) {
+		display: inline-flex;
+	}
+
+	.svc.is-active .svc__add,
+	.svc__add[aria-pressed='true'] {
+		color: var(--teal-ink);
+	}
+
+	.svc-media {
+		position: relative;
+	}
+
+	.svc-media__frame {
+		position: relative;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+		background: var(--surface-alt);
+		transform: translateY(var(--media-y, 0px));
+		transition: transform 0.8s var(--ease);
+	}
+
+	.svc-media__img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		opacity: 0;
+		transform: scale(1.06);
+		transition:
+			opacity 0.6s var(--ease),
+			transform 1.2s var(--ease);
+	}
+
+	.svc-media__img.is-active {
+		opacity: 1;
+		transform: none;
+	}
+
+	.svc-media__caption {
+		margin-top: 0.75rem;
+		font-size: 0.875rem;
+		color: var(--muted);
+		transform: translateY(var(--media-y, 0px));
+		transition: transform 0.8s var(--ease);
+	}
+
+	@media (max-width: 1023px) {
+		.services__body {
+			grid-template-columns: 1fr;
+		}
+
+		.svc-media {
+			display: none;
+		}
+
+		.svc {
+			grid-template-columns: 2.5rem minmax(0, 1fr);
+		}
+
+		.svc__add {
+			grid-column: 2;
+			margin-top: 0.75rem;
+			justify-self: start;
+		}
+
+		.svc.is-active .svc__text {
+			transform: none;
+		}
+
+		.svc.is-active .svc__add:not([aria-pressed='true']) {
+			color: inherit;
+		}
+	}
+</style>
