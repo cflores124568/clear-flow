@@ -5,6 +5,7 @@ import Services from '../../components/Services.astro';
 import Property from '../../components/Property.astro';
 import Process from '../../components/Process.astro';
 import Quote from '../../components/Quote.astro';
+import aerial from '../../assets/photos/aerial.jpg';
 ---
 
 <Page
@@ -15,6 +16,8 @@ import Quote from '../../components/Quote.astro';
 		label="Services"
 		title="Five services, one quote."
 		lede="Book one job or bundle the whole property. Every service is quoted together and done by the same crew."
+		image={aerial}
+		imageAlt="Property illustration: a solar-equipped desert home with windows, a driveway and a haul-away trailer"
 	/>
 	<Services showHeading={false} />
 	<Property />

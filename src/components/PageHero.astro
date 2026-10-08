@@ -22,7 +22,7 @@ const { title, label, lede, image, imageAlt = '' } = Astro.props;
 				<Picture
 					src={image}
 					widths={[768, 1280, 1920]}
-					sizes="100vw"
+					sizes="(max-width: 767px) 1000px, 100vw"
 					formats={['avif', 'webp']}
 					alt={imageAlt}
 					loading="eager"

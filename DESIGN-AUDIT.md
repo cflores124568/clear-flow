@@ -80,6 +80,10 @@ Following review, the display direction moved from repeated serif italics to upr
 
 Restored the original two-tone drop and favicon after the first pass muted them too far into sage. The site now uses the supplied aqua and blue throughout the hero, quote actions and selections, water-light detail, property diagram and closing CTA. Secondary tints derive from these same two CSS tokens. Warm sand remains the main neutral surface; upright typography and the existing quote interactions remain in place.
 
+## Photo-led follow-up
+
+The owner asked to bring the existing generated imagery back into view. The initial preference for real-only photography is superseded by that direction. The files were preserved throughout the redesign; eight originals now appear again. The pool/glass hero leads, followed by service imagery before the quote builder. Mobile has a photo for each service rather than a single image after all four rows. The aerial replaces the SVG property drawing as a wide, explicitly illustrative view and retains interactive quote pins. The pure-water section and all service-detail heroes also regain their action imagery. The generated dusty/clean wipe remains unused, and no generated image is presented as customer evidence.
+
 ## Water typography and control-shape follow-up
 
 Audit: the primary CTAs repeated fully rounded silhouettes; inset circular arrows made them look like generic nested buttons; hero service selectors repeated the same pill treatment. Decorative action icons and property pins also reinforced the rounding. The existing water detail lived behind a later section, leaving the hero text with a flat fill.

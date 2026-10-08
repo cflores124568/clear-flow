@@ -1,8 +1,8 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import Icon from './Icon.astro';
 import { serviceHref, services, coreServices } from '../data/site';
-import { servicePhotos as photos } from '../data/photos';
+import { servicePhotos as photos, servicePhotoAlts } from '../data/photos';
 
 interface Props {
 	// The services page already has an h1 saying this, so it hides the heading.
@@ -33,7 +33,10 @@ const displayedServices = showHeading ? coreServices : services;
 			<ol class="svc-list">
 				{
 					displayedServices.map((s, i) => (
-						<li class:list={['svc', { 'is-active': i === 0 }]} data-svc={i} data-reveal style={`--delay:${i * 0.08}s`}>
+						<li class:list={['svc', { 'is-active': i === 0 }]} data-svc={i} data-caption={s.caption} data-reveal style={`--delay:${i * 0.08}s`}>
+							<a class="svc__photo" href={serviceHref(s)} aria-label={`Explore ${s.name.toLowerCase()}`}>
+								<Picture src={photos[s.id]} widths={[400, 640, 960]} sizes="(max-width: 767px) 92vw, 1px" formats={['avif', 'webp']} alt={servicePhotoAlts[s.id]} loading="lazy" />
+							</a>
 							<span class="svc__num">{String(i + 1).padStart(2, '0')}</span>
 							<div class="svc__text">
 								<h3 class="svc__name">
@@ -60,19 +63,20 @@ const displayedServices = showHeading ? coreServices : services;
 				<div class="svc-media__frame">
 					{
 						displayedServices.map((s, i) => (
-							<Image
+							<Picture
 								class:list={['svc-media__img', { 'is-active': i === 0 }]}
 								src={photos[s.id]}
 								widths={[480, 720, 1080]}
-								sizes="(min-width: 768px) 34vw, 100vw"
+								sizes="(min-width: 768px) 46vw, 1px"
+								formats={['avif', 'webp']}
 								alt=""
+								loading="lazy"
 								data-svc-img={i}
 							/>
 						))
 					}
 				</div>
 				<p class="svc-media__caption" data-svc-caption>{displayedServices[0].caption}</p>
-				<template data-captions set:html={JSON.stringify(displayedServices.map((s) => s.caption))} />
 			</div>
 		</div>
 	</div>
@@ -96,12 +100,14 @@ const displayedServices = showHeading ? coreServices : services;
 	.services__body {
 		position: relative;
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+		grid-template-columns: minmax(0, .95fr) minmax(0, 1fr);
 		gap: clamp(2rem, 4vw, 4rem);
 		margin-top: clamp(2.5rem, 5vw, 4.5rem);
 	}
 
 	.svc-list {
+		grid-column: 2;
+		grid-row: 1;
 		list-style: none;
 		margin: 0;
 		padding: 0;
@@ -110,10 +116,10 @@ const displayedServices = showHeading ? coreServices : services;
 
 	.svc {
 		display: grid;
-		grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+		grid-template-columns: 2rem minmax(0, 1fr);
 		align-items: start;
 		gap: 0 1rem;
-		padding-block: clamp(1.5rem, 2.8vw, 2.6rem);
+		padding-block: clamp(1.25rem, 2vw, 1.8rem);
 		border-bottom: 1px solid var(--hair);
 		cursor: default;
 	}
@@ -125,15 +131,16 @@ const displayedServices = showHeading ? coreServices : services;
 	}
 
 	.svc__text {
-		transition: transform 0.6s var(--ease);
+		transition: transform 250ms var(--spring);
 	}
+	.svc__photo { display: none; }
 
 	.svc.is-active .svc__text {
 		transform: translateX(0.3rem);
 	}
 
 	.svc__name {
-		font-size: clamp(1.35rem, 2.4vw, 2.3rem);
+		font-size: clamp(1.3rem, 2.15vw, 2rem);
 		font-family: var(--font-display);
 		font-weight: 500;
 		letter-spacing: -0.01em;
@@ -159,6 +166,8 @@ const displayedServices = showHeading ? coreServices : services;
 	}
 
 	.svc__add {
+		grid-column: 2;
+		justify-self: start;
 		display: inline-flex;
 		align-items: center;
 		gap: 0.6rem;
@@ -198,17 +207,19 @@ const displayedServices = showHeading ? coreServices : services;
 	}
 
 	.svc-media {
-		position: relative;
+		position: sticky;
+		top: 7.5rem;
+		align-self: start;
+		grid-column: 1;
+		grid-row: 1;
 	}
 
 	.svc-media__frame {
 		position: relative;
-		aspect-ratio: 4 / 5;
-		border-radius: 8px;
+		aspect-ratio: 4 / 3;
+		border-radius: 3px;
 		overflow: hidden;
 		background: var(--surface-alt);
-		transform: translateY(var(--media-y, 0px));
-		transition: transform 0.8s var(--ease);
 	}
 
 	.svc-media__img {
@@ -218,10 +229,10 @@ const displayedServices = showHeading ? coreServices : services;
 		height: 100%;
 		object-fit: cover;
 		opacity: 0;
-		transform: scale(1.06);
+		transform: scale(1.015);
 		transition:
-			opacity 0.6s var(--ease),
-			transform 1.2s var(--ease);
+			opacity 250ms var(--ease),
+			transform 300ms var(--ease);
 	}
 
 	.svc-media__img.is-active {
@@ -233,8 +244,6 @@ const displayedServices = showHeading ? coreServices : services;
 		margin-top: 0.75rem;
 		font-size: .62rem;
 		color: var(--muted);
-		transform: translateY(var(--media-y, 0px));
-		transition: transform 0.8s var(--ease);
 	}
 
 	@media (max-width: 767px) {
@@ -243,13 +252,16 @@ const displayedServices = showHeading ? coreServices : services;
 		}
 
 		.svc-media {
-			display: block;
+			display: none;
 		}
-		.svc-media__frame { aspect-ratio: 16 / 10; transform: none; }
-		.svc-media__caption { transform: none; }
+		.svc-list { grid-column: 1; border-top: 0; }
+		.svc:first-child { padding-top: 0; }
+		.svc__photo { display: block; grid-column: 1 / -1; aspect-ratio: 4 / 3; overflow: hidden; margin-bottom: 1.4rem; background: var(--surface-alt); border-radius: 3px; }
+		.svc__photo :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 		.svc {
 			grid-template-columns: 2.5rem minmax(0, 1fr);
+			padding-block: 2rem;
 		}
 
 		.svc__add {

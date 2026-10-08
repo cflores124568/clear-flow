@@ -1,5 +1,7 @@
 ---
+import { Picture } from 'astro:assets';
 import Icon from './Icon.astro';
+import aerial from '../assets/photos/aerial.jpg';
 const areas = [
   { id: 'solar', name: 'Up on the roof', detail: 'Soft-brush solar care' },
   { id: 'windows', name: 'Through every window', detail: 'Glass, frames & tracks' },
@@ -9,48 +11,37 @@ const areas = [
 ---
 <section class="property" aria-labelledby="property-title">
   <div class="container property__grid">
-    <div class="property__copy" data-reveal><p class="label">One visit, considered together</p><h2 id="property-title" class="display h2">The whole property.<br /><em>Off your list.</em></h2><p class="lede">No coordinating four companies. No repeating the same conversation. Just one crew, with the right tools for every part of your home.</p><a class="link" href="#quote">Put your visit together<Icon name="arrowRight" /></a><p class="property__note">Combine services. Ask us about bundle savings.</p></div>
+    <div class="property__copy" data-reveal><div><p class="label">One visit, considered together</p><h2 id="property-title" class="display h2">The whole property.<br /><em>Off your list.</em></h2></div><div class="property__details"><p class="lede">No coordinating four companies. No repeating the same conversation. Just one crew, with the right tools for every part of your home.</p><a class="link" href="#quote">Put your visit together<Icon name="arrowRight" /></a><p class="property__note">Combine services. Ask us about bundle savings.</p></div></div>
     <figure class="property__figure" data-reveal>
       <div class="property__drawing">
-        <svg viewBox="0 0 720 470" role="img" aria-labelledby="property-drawing-title"><title id="property-drawing-title">Illustrated desert home showing solar panels, windows, a driveway and haul-away area</title>
-          <g fill="none" stroke="var(--hair)" stroke-width="1"><path d="M20 378 318 454 690 345M70 341 345 420 685 307M98 139 355 215 656 133" stroke-dasharray="3 6"/><path d="M42 203v145M60 248 33 240M65 279 35 270"/><path d="M642 192v88M620 223 655 213M630 246 663 237"/></g>
-          <path d="m118 193 217-95 248 76-217 105Z" fill="var(--surface-alt)" stroke="var(--drawing-line)"/>
-          <path d="m118 193 248 86v130l-248-86Z" fill="var(--panel)" stroke="var(--drawing-line)"/><path d="m366 279 217-105v130L366 409Z" fill="var(--drawing-shade)" stroke="var(--drawing-line)"/>
-          <path d="m108 185 227-102 260 81-227 111Z" fill="var(--panel)" stroke="var(--drawing-line)"/><path d="m108 185 260 90v10l-260-90Zm260 90 227-111v10L368 285Z" fill="var(--drawing-shade)" stroke="var(--drawing-line)"/>
-          <g fill="var(--brand-blue)" stroke="var(--aqua-light)" stroke-width="1.5"><path d="m265 142 50-23 98 30-50 24Zm57 18 50-23 98 30-50 24Zm57 18 50-23 98 30-50 24Z"/><path d="m284 148 50-23m-4 32 50-23m-11 38 50-23m-4 32 50-23m-11 38 50-23m-4 32 50-23"/></g>
-          <g fill="var(--water-edge)" stroke="var(--brand-blue)"><path d="m146 225 72 24v93l-72-25Zm89 31 73 25v93l-73-25Z"/><path d="m464 266 78-37v65l-78 38Z"/></g>
-          <g stroke="var(--panel)" stroke-width="4"><path d="m182 237 0 91m-36-61 72 24m53-22v94m-36-56 73 24m195-86v65m-39-16 78-37"/></g>
-          <path d="m385 385 125-60 148 44-131 66Z" fill="var(--surface-alt)" stroke="var(--hair)"/><path d="m398 387 127 39m-90-57 127 39m-90-56 127 38" stroke="var(--hair)"/>
-          <g fill="var(--surface-alt)" stroke="var(--drawing-line)"><path d="m573 278 31-14 33 10-31 15v28l-33-10Z"/><path d="m606 289 31-15v28l-31 15Z" fill="var(--drawing-shade)"/></g>
-          <g stroke="var(--drawing-line)" fill="none"><path d="M91 287v59m0-36-19-17m19 29 19-17M650 311v35m0-17-15-12m15 20 12-10"/><path d="M83 351q-19-27-29-20m29 20q12-25 24-25"/></g>
-        </svg>
+        <Picture src={aerial} widths={[640, 1024, 1600, 2400]} sizes="92vw" formats={['avif', 'webp']} alt="Property illustration: a desert home with solar panels on the roof, broad front windows, a driveway and a haul-away trailer" loading="lazy" />
         {areas.map((area, i) => <button class:list={['property-pin', `property-pin--${area.id}`]} type="button" data-add={area.id} aria-pressed="false" aria-label={`Add ${area.detail.toLowerCase()} to quote`}><span data-label-off>{String(i + 1).padStart(2,'0')}</span><span data-label-on hidden>✓</span></button>)}
       </div>
-      <figcaption><span>One home. One thoughtfully planned visit.</span><span>Select a point to add a service.</span></figcaption>
+      <figcaption><span>One home. One thoughtfully planned visit. · Property illustration</span><span>Select a point to add a service.</span></figcaption>
     </figure>
   </div>
   <ol class="container property__legend">{areas.map((area, i) => <li><span>{String(i + 1).padStart(2,'0')}</span><div><strong>{area.name}</strong><p>{area.detail}</p></div></li>)}</ol>
 </section>
 <style>
 .property { padding-block: var(--section); background: var(--surface-alt); }
-.property__grid { display: grid; grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr); gap: 3rem; align-items: center; }
+.property__copy { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,.75fr); gap: 3rem; align-items: end; }
 .property__copy h2 { margin-top: 1.5rem; }
 .property__copy h2 em { color: var(--teal); }
-.property__copy .lede { margin-top: 1.5rem; font-size: .86rem; max-width: 37ch; }
+.property__copy .lede { margin-top: 1.5rem; font-size: .86rem; max-width: 46ch; }
 .property__copy .link { margin-top: 1.5rem; font-size: .77rem; }
 .property__note { margin-top: .3rem; font-size: .64rem; color: var(--muted); }
-.property__figure { margin: 0; min-width: 0; }
-.property__drawing { --drawing-line: color-mix(in srgb, var(--ink) 45%, var(--surface-alt)); --drawing-shade: color-mix(in srgb, var(--ink) 10%, var(--surface-alt)); position: relative; }
-.property__drawing svg { display: block; width: 100%; height: auto; }
-.property-pin { position: absolute; display: grid; place-items: center; width: 2.8rem; height: 2.8rem; padding: 0; border: 0; border-radius: 3px; background: var(--panel); color: var(--teal); font-size: .7rem; box-shadow: 0 5px 20px -5px rgb(29 95 150 / .2), inset 0 0 0 4px rgb(63 182 198 / .18); cursor: pointer; transition: transform 250ms var(--spring), background-color 250ms var(--ease); }
+.property__figure { margin: 3rem 0 0; min-width: 0; }
+.property__drawing { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 3px; background: var(--water-edge); }
+.property__drawing :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+.property-pin { position: absolute; display: grid; place-items: center; width: 2.8rem; height: 2.8rem; padding: 0; border: 0; border-radius: 3px; background: var(--panel); color: var(--teal); font-size: .7rem; box-shadow: 0 5px 20px -5px rgb(29 95 150 / .2), inset 0 0 0 4px rgb(63 182 198 / .18); cursor: pointer; translate: -50% -50%; transition: transform 250ms var(--spring), background-color 250ms var(--ease); }
 .property-pin:hover { transform: translateY(-3px); }
 .property-pin[aria-pressed='true'] { background: var(--teal); color: var(--panel); }
-.property-pin--solar { left: 48%; top: 28%; } .property-pin--windows { left: 28%; top: 59%; } .property-pin--pressure { left: 67%; top: 80%; } .property-pin--junk { left: 85%; top: 59%; }
-figcaption { display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: .59rem; padding-inline: 1rem; }
+.property-pin--solar { left: 56%; top: 28%; } .property-pin--windows { left: 49%; top: 57%; } .property-pin--pressure { left: 76%; top: 82%; } .property-pin--junk { left: 19%; top: 74%; }
+figcaption { display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: .59rem; padding-top: .9rem; }
 .property__legend { display: grid; grid-template-columns: 1.05fr 1.15fr 1.05fr 1fr; gap: 1.5rem; margin-top: 3rem; list-style: none; }
 .property__legend li { display: flex; gap: 1rem; padding-top: 1.3rem; border-top: 1px solid var(--hair); }
 .property__legend li > span { color: var(--teal-ink); font-size: .65rem; }
 .property__legend strong { font-weight: 500; font-size: .76rem; }
 .property__legend p { font-size: .67rem; color: var(--muted); margin-top: .3rem; }
-@media (max-width: 767px) { .property__grid { grid-template-columns: 1fr; gap: 2rem; } .property__figure { margin-inline: -.9rem; } .property__legend { grid-template-columns: 1fr 1fr; gap: 1.5rem 1rem; margin-top: 2rem; } figcaption { flex-direction: column; gap: .2rem; } .property-pin { width: 2.75rem; height: 2.75rem; } }
+@media (max-width: 767px) { .property__copy { grid-template-columns: 1fr; gap: .75rem; } .property__figure { margin-top: 2rem; } .property__legend { grid-template-columns: 1fr 1fr; gap: 1.5rem 1rem; margin-top: 2rem; } figcaption { flex-direction: column; gap: .2rem; } .property-pin { width: 2.75rem; height: 2.75rem; } }
 </style>

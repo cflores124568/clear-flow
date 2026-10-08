@@ -1,15 +1,28 @@
 # Clear Flow photography and visuals
 
-The site now renders real Palm Springs architecture photographs by Carol M. Highsmith. These establish regional context; they are not presented as Clear Flow customers or completed work. The original property diagram is an SVG illustration, not a photograph.
+The site leads with the owner's existing generated property and service images. Eight original assets are restored to the layouts, with responsive Astro optimization. They illustrate the setting, services and equipment; they are not presented as verified customer jobs. A quiet footer note and descriptive image alternatives identify the imagery as illustrative.
 
-| Asset | Source | Image | Rights advisory | Use |
-| --- | --- | --- | --- | --- |
-| `src/assets/photos/desert-house.jpg` | [Library of Congress, 2010630225](https://www.loc.gov/item/2010630225/) | Palm Springs mid-century home, 2 May 2009, LC-DIG-highsm-04230 | No known restrictions on publication | Hero, service context, about page, social image |
-| `src/assets/photos/desert-modern.jpg` | [Library of Congress, 2013631255](https://www.loc.gov/item/2013631255/) | Kaufmann House, Palm Springs, 2013, LC-DIG-highsm-24077 | No known restrictions on publication | Material detail and service context |
+| Original asset | Image | Current use |
+| --- | --- | --- |
+| `src/assets/photos/hero-clean.jpg` | Glass doors, desert pool, palms and mountains | Homepage hero and social image |
+| `src/assets/photos/aerial.jpg` | Solar-equipped home, windows, driveway and haul-away trailer | Interactive full-property section; about and services page heroes |
+| `src/assets/photos/svc-solar.jpg` | Soft-brush solar cleaning | Service selector, mobile service image and solar page |
+| `src/assets/photos/svc-windows.jpg` | Squeegee and wet glass | Service selector, mobile service image and windows page |
+| `src/assets/photos/svc-pressure.jpg` | Driveway rinsing | Service selector, mobile service image and pressure-washing page |
+| `src/assets/photos/svc-junk.jpg` | Sofa haul-away | Service selector, mobile service image and junk-removal page |
+| `src/assets/photos/svc-birds.jpg` | Solar-array mesh installation | Services selector, mobile service image and bird-proofing page |
+| `src/assets/photos/method-window.jpg` | Water-fed brush and filtration cart | Pure-water process section |
 
-Credit: Carol M. Highsmith’s America, Library of Congress, Prints and Photographs Division. The Kaufmann House photo is from the Jon B. Lovelace Collection of California Photographs. The footer links the two catalog records. Astro generates responsive AVIF/WebP/JPEG derivatives; the hero has eager loading and high fetch priority. Fonts are served locally.
+The service section follows the hero and precedes the quote builder. Desktop service hover/focus changes a large, sticky image and its caption; mobile shows a separate image before each service's copy and quote control. The aerial retains all four interactive quote pins. Astro generates responsive AVIF/WebP/JPEG derivatives; hero images load eagerly with high fetch priority and section images load lazily. Fonts are served locally.
 
-Legacy concept photos remain in the source tree for provenance, but no page imports or renders them. The old dusty layer is not used. Do not reintroduce concept imagery as proof of work.
+The old `hero-dusty.jpg` layer remains in the source tree but is not rendered as a before/after transformation. No original generated image was deleted or replaced on disk.
+
+Regional alternatives from the first redesign pass are also retained, but are no longer rendered:
+
+| Asset | Source | Rights advisory |
+| --- | --- | --- |
+| `src/assets/photos/desert-house.jpg` | [Library of Congress, 2010630225](https://www.loc.gov/item/2010630225/), Carol M. Highsmith, Palm Springs mid-century home, 2 May 2009 | No known restrictions on publication |
+| `src/assets/photos/desert-modern.jpg` | [Library of Congress, 2013631255](https://www.loc.gov/item/2013631255/), Carol M. Highsmith, Kaufmann House, Palm Springs, 2013 | No known restrictions on publication |
 
 ## Brand colors
 
@@ -29,4 +42,4 @@ Real reviews and before/after footage were unavailable during this redesign. No 
 
 For before/after pairs, use the same camera position, framing and lighting; retain the originals. Keep customer faces, house numbers, license plates and private interiors out of the frame. Pair each published review with its authentic source link and publish only the wording that source supports.
 
-Useful job coverage: rooftop panels; window glass plus frames/tracks; driveway or patio; garage or haul-away; real crew and equipment. One wide and one detail photograph per service are enough to replace regional context with authentic work.
+Useful job coverage: rooftop panels; window glass plus frames/tracks; driveway or patio; garage or haul-away; real crew and equipment. Verified photographs can replace the concept images through the same shared asset map without changing the quote interactions.

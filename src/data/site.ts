@@ -38,7 +38,7 @@ export const services: Service[] = [
 		name: 'Solar panel cleaning',
 		chip: 'Solar panels',
 		line: 'Soft brushes and pure water lift dust and droppings.',
-		caption: 'Palm Springs architecture · Carol M. Highsmith / Library of Congress',
+		caption: 'Soft brushes. Pure water. Nothing harsh on your panels.',
 		lede: 'Desert dust, pollen and bird droppings build up on panels fast. We wash them with soft brushes and pure water, never a pressure washer.',
 		includes: [
 			{ title: 'Soft-brush wash', body: 'Every panel, edge to edge, with a brush made for solar glass.' },
@@ -52,7 +52,7 @@ export const services: Service[] = [
 		name: 'Bird proofing',
 		chip: 'Bird proofing',
 		line: 'Critter guard that keeps pigeons out from under your panels.',
-		caption: 'Palm Springs architecture · Carol M. Highsmith / Library of Congress',
+		caption: 'A considered fit around the edge of the array.',
 		lede: "Pigeons and other critters nest in the gap under rooftop panels. We clear out what's there and fit critter guard around the array so they can't get back in.",
 		includes: [
 			{ title: 'Nest and debris cleanout', body: 'Nesting material and droppings cleared from under the panels.' },
@@ -66,7 +66,7 @@ export const services: Service[] = [
 		name: 'Window cleaning',
 		chip: 'Windows',
 		line: 'Inside and out, frames and tracks included.',
-		caption: 'Palm Springs architecture · Carol M. Highsmith / Library of Congress',
+		caption: 'Clear glass, with the details taken care of.',
 		lede: 'Clear glass changes how a whole room feels. We clean inside and out, and we do the frames and tracks while we are there.',
 		includes: [
 			{ title: 'Outside and inside glass', body: 'Ground floor by hand, high windows with a water-fed pole.' },
@@ -80,7 +80,7 @@ export const services: Service[] = [
 		name: 'Pressure washing',
 		chip: 'Pressure washing',
 		line: 'Driveways, patios, walkways and walls.',
-		caption: 'Palm Springs architecture · Carol M. Highsmith / Library of Congress',
+		caption: 'The right approach for every surface.',
 		lede: 'Driveways, walkways and patios lose their color to tire marks, oil and grime. We bring the concrete back, and use a gentler soft wash on walls and stucco.',
 		includes: [
 			{ title: 'Driveways and walkways', body: 'Tire marks, drips and built-up grime lifted off the concrete.' },
@@ -94,7 +94,7 @@ export const services: Service[] = [
 		name: 'Junk removal',
 		chip: 'Junk removal',
 		line: 'Furniture, yard debris and garage clutter, hauled away.',
-		caption: 'Palm Springs architecture · Carol M. Highsmith / Library of Congress',
+		caption: 'Point it out. We’ll take it from there.',
 		lede: "Point at what needs to go. We load it, haul it away and sweep up after, from a single sofa to a full garage.",
 		includes: [
 			{ title: 'Furniture and mattresses', body: 'Sofas, dressers, beds and the rest, carried out for you.' },

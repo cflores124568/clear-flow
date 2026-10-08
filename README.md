@@ -38,7 +38,9 @@ Build command: `npm run build`. Output: `dist/`. Deploy the repository with the 
 
 ## Design and content
 
-[DESIGN-AUDIT.md](DESIGN-AUDIT.md) lists the 42 initial issues and priority order. [ASSETS.md](ASSETS.md) records real regional photography sources and the evidence still needed for customer proof.
+[DESIGN-AUDIT.md](DESIGN-AUDIT.md) lists the 42 initial issues and priority order. [ASSETS.md](ASSETS.md) records the original generated images restored at the owner's request, retained regional alternatives and the evidence still needed for customer proof.
+
+The homepage leads with the original pool-and-glass image, followed by photo-led services before the quote builder. Desktop service rows update a large sticky photo and caption; mobile shows an image for every service. The original aerial is a full-width property view with shared quote pins. Service pages and the pure-water section use their original action images. These images illustrate services rather than document completed customer work.
 
 The palette uses the original logo’s aqua and blue with charcoal/navy and warm limestone. Upright Plus Jakarta Sans headlines pair with Manrope body text. Compact rectangular controls replace the pill buttons and circular arrow containers. The quote builder retains subtle glass-edge highlights.
 

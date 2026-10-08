@@ -6,7 +6,7 @@ import { email, phone, textHref, serviceHref, services } from '../data/site';
   <div class="footer__top"><div><a class="footer__logo" href="/" aria-label="Clear Flow home"><Logo /></a><p>Exterior care, considered.<br />Coachella Valley, California.</p></div><div class="footer__contact"><a href={phone.href}>{phone.display}</a><a href={textHref}>Call or text</a><a class="footer__email" href={email.href}>{email.display}</a></div></div>
   <nav class="footer__services" aria-label="Explore our services">{services.map(service => <a href={serviceHref(service)}>{service.name}</a>)}</nav>
   <div class="footer__base"><span>© {new Date().getFullYear()} Clear Flow · Licensed &amp; Insured</span><nav aria-label="More information"><a href="/about/">About</a><a href="/faq/">FAQ</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a></nav></div>
-  <p class="footer__credit">Regional architecture photography: <a href="https://www.loc.gov/item/2010630225/">Carol M. Highsmith</a> / <a href="https://www.loc.gov/item/2013631255/">Library of Congress</a>. Shown for regional context.</p>
+  <p class="footer__credit">Property and service imagery is illustrative.</p>
 </div></footer>
 <style>
 .footer { padding-block: 4.5rem 2rem; }

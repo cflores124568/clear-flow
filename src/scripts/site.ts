@@ -240,7 +240,12 @@ const servicesBody = document.querySelector<HTMLElement>('[data-services]');
 if (servicesBody) {
   const rows = [...servicesBody.querySelectorAll<HTMLElement>('[data-svc]')];
   const images = [...servicesBody.querySelectorAll<HTMLElement>('[data-svc-img]')];
-  const activate = (index: number) => { rows.forEach((row, i) => row.classList.toggle('is-active', i === index)); images.forEach((image, i) => image.classList.toggle('is-active', i === index)); };
+  const caption = servicesBody.querySelector<HTMLElement>('[data-svc-caption]');
+  const activate = (index: number) => {
+    rows.forEach((row, i) => row.classList.toggle('is-active', i === index));
+    images.forEach((image, i) => image.classList.toggle('is-active', i === index));
+    if (caption) caption.textContent = rows[index]?.dataset.caption ?? '';
+  };
   rows.forEach((row, i) => { row.addEventListener('pointerenter', () => activate(i)); row.addEventListener('focusin', () => activate(i)); });
 }
 

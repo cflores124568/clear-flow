@@ -5,7 +5,7 @@ import PageHero from '../../components/PageHero.astro';
 import Icon from '../../components/Icon.astro';
 import Quote from '../../components/Quote.astro';
 import { phone, serviceHref, services, type Service } from '../../data/site';
-import { servicePhotos } from '../../data/photos';
+import { servicePhotos, servicePhotoAlts } from '../../data/photos';
 
 export function getStaticPaths() {
 	return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
@@ -21,7 +21,7 @@ const others = services.filter((s) => s.id !== service.id);
 ---
 
 <Page title={`${service.name} | Clear Flow`} description={`${service.lede} Licensed, Bonded & Insured. Call ${phone.display}.`}>
-	<PageHero label="Services" title={service.name} lede={service.lede} image={photo} imageAlt={service.caption}>
+	<PageHero label="Services" title={service.name} lede={service.lede} image={photo} imageAlt={servicePhotoAlts[service.id]}>
 		<div class="svc-hero__actions">
 			<a class="btn" href="#quote">
 				Get a quote

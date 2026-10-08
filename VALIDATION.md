@@ -20,7 +20,7 @@ The existing Astro pages, service routes, shared quote selection and Cloudflare 
 
 Reduced-motion support and no-JavaScript markup are implemented. Server-side redirects were tested; browser JavaScript disabling and OS reduced-motion emulation were not exercised. The provider was mocked, so production Resend delivery still needs a smoke test in the configured Cloudflare environment.
 
-Authentic reviews and before/after job media have not been supplied. The page deliberately uses confirmed care standards, local coverage, credited regional photographs and an explicitly illustrative solar model. It contains no invented ratings, customer quotes, project results or dollar savings. The requested under-24-hour quote promise should match operating capacity before publication.
+Authentic reviews and before/after job media have not been supplied. The current page uses confirmed care standards, local coverage, the owner's explicitly illustrative property/service images and an educational solar model. It contains no invented ratings, customer quotes, project results or dollar savings. The requested under-24-hour quote promise should match operating capacity before publication.
 
 ## Upright typography and water-light follow-up
 
@@ -47,3 +47,12 @@ Authentic reviews and before/after job media have not been supplied. The page de
 - Verified service selection synchronization and the services-to-property transition after the button changes. Restored the preview’s initial empty selection; no real quote was sent.
 - Used an isolated, temporary browser fixture to exercise WebGL unavailability, actual WebGL context loss/restoration, and reduced-motion preference change signals. Normal HTML text returned on loss/unavailability; water returned after restoration; reduced motion held a still frame and resumed when the preference changed. The temporary fixture was closed and removed before the final build. This verifies renderer behavior; OS-level motion/high-contrast settings were not changed.
 - Production build, TypeScript (including the renderer) and whitespace checks pass. The actual homepage preview contains no warning/error console entries. The endpoint implementation is unchanged.
+
+## Original photography and photo-led layouts
+
+- Restored eight existing generated assets across the homepage, service index, all five service pages and about page. The original source image files remain unchanged. The generated dusty/clean wipe remains unused.
+- The homepage leads with the original pool/glass photo and shows the photo-led service section before the quote builder. Desktop rows switch a larger sticky image and its matching caption. Mobile shows a 4:3 image before each service's copy and quote control.
+- Restored the aerial as a full-width interactive property view and the water-fed window image in the care section. Repositioned the property pins for the aerial composition.
+- Checked actual 390px and 320px layouts: all four homepage service photos are visible, with no horizontal overflow. All property targets remain 44px and do not overlap at 320px. Corrected hero source sizing for its tall mobile crop so the image is not upscaled from a small width-based source.
+- Verified service image/caption switching, shared selection between service rows, hero selectors, aerial pins and the quote, and the mobile services → property → optional photos → contact/review journey. No real quote was submitted, and test selections were cleared afterward.
+- Built HTML imports the correct distinct service asset on every service route. Responsive AVIF/WebP/JPEG variants compile for all 13 routes. The quote endpoint and water renderer are unchanged.
