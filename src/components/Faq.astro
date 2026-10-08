@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { faqs, phone } from '../data/site';
+import { faqs } from '../data/site';
 
 interface Props {
 	// The FAQ page puts its title in the page hero, so the list runs full width.
@@ -11,14 +11,13 @@ const { showHeading = true } = Astro.props;
 ---
 
 <section class:list={['faq', { 'faq--bare': !showHeading }]} id="faq" aria-labelledby={showHeading ? 'faq-title' : undefined} aria-label={showHeading ? undefined : 'Frequently asked questions'}>
-	<a class="faq__rail" href={phone.href}>Prefer to talk? <strong>{phone.display}</strong></a>
+
 
 	<div class="container faq__grid">
 		{
 			showHeading && (
 				<h2 id="faq-title" class="display h2" data-reveal>
-					Questions
-					<br /> before you book.
+					A few things<br /><em>you might wonder.</em>
 				</h2>
 			)
 		}
@@ -80,7 +79,7 @@ const { showHeading = true } = Astro.props;
 		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
 		gap: clamp(2rem, 5vw, 5rem);
 		align-items: center;
-		padding-left: calc(var(--gutter) + clamp(3rem, 4vw, 4.5rem));
+		padding-left: var(--gutter);
 	}
 
 	.faq__list {
@@ -97,7 +96,7 @@ const { showHeading = true } = Astro.props;
 		justify-content: space-between;
 		gap: 1.5rem;
 		padding-block: 1.6rem;
-		font-size: clamp(1.1875rem, 1.8vw, 1.625rem);
+		font-size: .91rem;
 		font-weight: 500;
 		letter-spacing: -0.015em;
 		line-height: 1.25;
@@ -127,26 +126,9 @@ const { showHeading = true } = Astro.props;
 		max-width: 52ch;
 		padding-bottom: 1.75rem;
 		color: var(--muted);
-		font-size: 1.0625rem;
+		font-size: .79rem;
 	}
 
-	@supports (interpolate-size: allow-keywords) {
-		details {
-			interpolate-size: allow-keywords;
-		}
-
-		details::details-content {
-			height: 0;
-			overflow: clip;
-			transition:
-				height 0.5s var(--ease),
-				content-visibility 0.5s allow-discrete;
-		}
-
-		details[open]::details-content {
-			height: auto;
-		}
-	}
 
 	.faq--bare .faq__grid {
 		grid-template-columns: minmax(0, 1fr);

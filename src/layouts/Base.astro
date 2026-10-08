@@ -1,13 +1,12 @@
 ---
-import '@fontsource/barlow/400.css';
-import '@fontsource/barlow/500.css';
-import '@fontsource/barlow/600.css';
-import '@fontsource/barlow-semi-condensed/500.css';
-import '@fontsource/barlow-semi-condensed/600.css';
+import '@fontsource/manrope/400.css';
+import '@fontsource/manrope/500.css';
+import '@fontsource/manrope/600.css';
+import '@fontsource-variable/plus-jakarta-sans';
 import '../styles/global.css';
 import { getImage } from 'astro:assets';
-import heroClean from '../assets/photos/hero-clean.jpg';
-import { services } from '../data/site';
+import heroClean from '../assets/photos/desert-house.jpg';
+import { services, cities } from '../data/site';
 
 interface Props {
 	title: string;
@@ -20,14 +19,14 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
 const ogImage = await getImage({ src: heroClean, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
 const ogImageUrl = Astro.site ? new URL(ogImage.src, Astro.site).href : undefined;
 
-// No address, hours or service area yet: none of it is confirmed, and wrong
-// structured data does more harm than missing structured data.
+// The service region is confirmed. Do not invent an address, hours or ratings.
 const jsonLd = {
 	'@context': 'https://schema.org',
 	'@type': 'HomeAndConstructionBusiness',
 	name: 'Clear Flow',
 	telephone: '+1-760-422-3069',
 	description,
+	areaServed: cities.map((name) => ({ '@type': 'City', name })),
 	...(Astro.site ? { url: Astro.site.href } : {}),
 	makesOffer: services.map((s) => ({
 		'@type': 'Offer',
@@ -46,7 +45,7 @@ const jsonLd = {
 		{noindex && <meta name="robots" content="noindex" />}
 		{canonical && <link rel="canonical" href={canonical} />}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="theme-color" content="#12263A" />
+		<meta name="theme-color" content="#203440" />
 		<meta name="format-detection" content="telephone=no" />
 
 		<meta property="og:type" content="website" />
@@ -57,9 +56,6 @@ const jsonLd = {
 		<meta name="twitter:card" content="summary_large_image" />
 
 		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-		<script is:inline>
-			document.documentElement.classList.add('js');
-		</script>
 	</head>
 	<body>
 		<a class="skip" href="#main">Skip to content</a>
@@ -72,7 +68,7 @@ const jsonLd = {
 		position: fixed;
 		top: 0.75rem;
 		left: 0.75rem;
-		z-index: 100;
+		z-index: var(--z-focus);
 		padding: 0.75rem 1rem;
 		background: var(--panel);
 		color: var(--ink);

@@ -1,178 +1,30 @@
 ---
 import Logo from './Logo.astro';
-import Icon from './Icon.astro';
-import { email, phone, serviceHref, services } from '../data/site';
-
-// Narrow columns wrap the address at the @, not mid-word.
-const [emailUser, emailDomain] = email.display.split('@');
+import { email, phone, textHref, serviceHref, services } from '../data/site';
 ---
-
-<footer class="footer">
-	<div class="container footer__grid">
-		<a class="footer__logo" href="/" aria-label="Clear Flow home">
-			<Logo />
-		</a>
-
-		<div>
-			<p class="label">Services</p>
-			<ul>
-				{
-					services.map((s) => (
-						<li>
-							<a href={serviceHref(s)}>{s.name}</a>
-						</li>
-					))
-				}
-			</ul>
-		</div>
-
-		<div>
-			<p class="label">Visit</p>
-			<ul>
-				<li><a href="/about/">About</a></li>
-				<li><a href="/faq/">FAQ</a></li>
-				<li><a href="/contact/">Request a quote</a></li>
-				<li><a href="/privacy/">Privacy</a></li>
-			</ul>
-		</div>
-
-		<div>
-			<p class="label">Licensed, Bonded &amp; Insured</p>
-			<a class="footer__phone link" href={phone.href}>
-				<Icon name="phone" />
-				{phone.display}
-			</a>
-			<a class="footer__email" href={email.href}>{emailUser}<wbr />@{emailDomain}</a>
-		</div>
-	</div>
-
-	<div class="container footer__base">
-		<span>Clear Flow</span>
-		<span>Concept imagery</span>
-	</div>
-</footer>
-
+<footer class="footer"><div class="container">
+  <div class="footer__top"><div><a class="footer__logo" href="/" aria-label="Clear Flow home"><Logo /></a><p>Exterior care, considered.<br />Coachella Valley, California.</p></div><div class="footer__contact"><a href={phone.href}>{phone.display}</a><a href={textHref}>Call or text</a><a class="footer__email" href={email.href}>{email.display}</a></div></div>
+  <nav class="footer__services" aria-label="Explore our services">{services.map(service => <a href={serviceHref(service)}>{service.name}</a>)}</nav>
+  <div class="footer__base"><span>© {new Date().getFullYear()} Clear Flow · Licensed &amp; Insured</span><nav aria-label="More information"><a href="/about/">About</a><a href="/faq/">FAQ</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a></nav></div>
+  <p class="footer__credit">Regional architecture photography: <a href="https://www.loc.gov/item/2010630225/">Carol M. Highsmith</a> / <a href="https://www.loc.gov/item/2013631255/">Library of Congress</a>. Shown for regional context.</p>
+</div></footer>
 <style>
-	.footer {
-		padding-top: clamp(3.5rem, 6vw, 5rem);
-		background: var(--surface);
-	}
-
-	.footer__grid {
-		display: grid;
-		grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
-		gap: 2rem;
-		align-items: start;
-	}
-
-	.footer__logo {
-		display: inline-flex;
-		align-items: center;
-		min-height: 44px;
-		color: var(--ink);
-	}
-
-	.footer__logo :global(.logo) {
-		height: clamp(2.25rem, 3.6vw, 3.25rem);
-	}
-
-	.footer__grid > div {
-		padding-left: 1.5rem;
-		border-left: 1px solid var(--hair);
-	}
-
-	ul {
-		list-style: none;
-		margin: 0.9rem 0 0;
-		padding: 0;
-	}
-
-	li + li {
-		margin-top: 0.35rem;
-	}
-
-	li a {
-		color: var(--muted);
-		text-decoration: none;
-	}
-
-	li a:hover {
-		color: var(--ink);
-		text-decoration: underline;
-		text-underline-offset: 0.3em;
-	}
-
-	.footer__phone {
-		margin-top: 0.9rem;
-		font-size: clamp(1.25rem, 1.9vw, 1.75rem);
-	}
-
-	.footer__email {
-		display: inline-flex;
-		align-items: center;
-		min-height: 44px;
-		color: var(--muted);
-		text-decoration: none;
-	}
-
-	.footer__email:hover {
-		color: var(--ink);
-		text-decoration: underline;
-		text-underline-offset: 0.3em;
-	}
-
-	.footer__base {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
-		margin-top: clamp(3rem, 5vw, 4.5rem);
-		padding-block: 1.5rem;
-		border-top: 1px solid var(--hair);
-		font-size: 0.9375rem;
-		color: var(--muted);
-	}
-
-	@media (pointer: coarse), (max-width: 1023px) {
-		li + li {
-			margin-top: 0;
-		}
-
-		li a {
-			display: inline-flex;
-			align-items: center;
-			min-height: 44px;
-		}
-
-		ul {
-			margin-top: 0.4rem;
-		}
-	}
-
-	@media (max-width: 1023px) {
-		.footer__grid {
-			grid-template-columns: 1fr 1fr;
-			row-gap: 2.5rem;
-		}
-
-		.footer__logo {
-			grid-column: 1 / -1;
-		}
-	}
-
-	@media (max-width: 767px) {
-		.footer {
-			padding-bottom: 4.5rem;
-		}
-
-		.footer__grid {
-			grid-template-columns: 1fr;
-		}
-
-		.footer__grid > div {
-			padding-left: 0;
-			padding-top: 1.5rem;
-			border-left: 0;
-			border-top: 1px solid var(--hair);
-		}
-	}
+.footer { padding-block: 4.5rem 2rem; }
+.footer__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; }
+.footer__logo { display: inline-flex; align-items: center; min-height: 44px; }
+.footer__logo :global(.logo) { height: 2rem; }
+.footer__top p { margin-top: .8rem; font-size: .73rem; color: var(--muted); }
+.footer__contact { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+.footer__contact > a:first-child { font-family: var(--font-display); font-size: clamp(1.6rem,3vw,2.4rem); letter-spacing: -.045em; line-height: 1.2; text-decoration: none; white-space: nowrap; }
+.footer__contact > a:nth-child(2) { font-size: .64rem; min-height: 36px; display: inline-flex; align-items: center; text-underline-offset: .3em; color: var(--muted); }
+.footer__email { font-size: .71rem; text-decoration: none; color: var(--muted); overflow-wrap: anywhere; }
+.footer__services { display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin-top: 2.7rem; padding-bottom: 1.7rem; border-bottom: 1px solid var(--hair); }
+.footer__services a { font-size: .7rem; text-decoration: none; color: var(--muted); }
+.footer a:hover { color: var(--teal-ink); }
+.footer__base { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; padding-top: 1.5rem; font-size: .63rem; color: var(--muted); }
+.footer__base nav { display: flex; gap: 1.5rem; }
+.footer__base a { text-decoration: none; }
+.footer__credit { margin-top: 1rem; font-size: .55rem; color: var(--muted); }
+.footer__credit a { text-underline-offset: .2em; }
+@media(max-width:767px) { .footer { padding-block: 3.5rem 6.5rem; } .footer__top { flex-direction: column; } .footer__contact { align-items: flex-start; text-align: left; } .footer__services { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem; margin-top: 1.6rem; } .footer__services a, .footer__base nav a { display: flex; align-items: center; min-height: 44px; } .footer__base { flex-direction: column; align-items: flex-start; gap: .5rem; } }
 </style>

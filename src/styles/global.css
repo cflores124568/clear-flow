@@ -1,326 +1,93 @@
-/* Clear Flow design tokens. Palette and type follow the "Clear Pass" design lock:
-   cool glass whites, deep navy ink, one turquoise reserved for actions. */
-
 :root {
-	--navy: #12263a;
-	--navy-deep: #0c1c2b;
-	--teal: #3fb6c6;
-	--teal-press: #35a3b2;
-
-	--surface: #f5f8f9;
-	--surface-alt: #e6eff1;
-	--panel: #ffffff;
-	--ink: #12263a;
-	--muted: #5a6672;
-	--hair: #d5dee2;
-	--chip: #eef3f5;
-	--on-teal: #12263a;
-	--teal-ink: #187885;
-
-	--font: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
-	--font-display: 'Barlow Semi Condensed', 'Barlow', 'Arial Narrow', sans-serif;
-	--ease: cubic-bezier(0.22, 1, 0.36, 1);
-	--ease-wipe: cubic-bezier(0.65, 0, 0.15, 1);
-
-	--gutter: clamp(1.25rem, 4vw, 4rem);
-	--max: 1360px;
-	--section: clamp(5rem, 10vw, 9rem);
-	--radius: 4px;
-
-	color-scheme: light;
+  /* The two original drop colors anchor every interactive and water surface. */
+  --brand-aqua: #3fb6c6;
+  --brand-blue: #1d5f96;
+  --navy: #203440;
+  --navy-deep: #1a2c38;
+  --teal: var(--brand-blue);
+  --teal-press: color-mix(in srgb, var(--brand-blue) 80%, var(--navy));
+  --surface: #f6f3ec;
+  --surface-alt: #ebe7dd;
+  --panel: #fcfaf5;
+  --ink: #293d48;
+  --muted: #607078;
+  --aqua-light: color-mix(in srgb, var(--brand-aqua) 65%, var(--panel));
+  --water: color-mix(in srgb, var(--brand-aqua) 10%, var(--panel));
+  --water-wash: color-mix(in srgb, var(--brand-aqua) 18%, var(--panel));
+  --water-edge: color-mix(in srgb, var(--brand-aqua) 36%, var(--panel));
+  --blue-wash: color-mix(in srgb, var(--brand-blue) 10%, var(--panel));
+  --hair: color-mix(in srgb, var(--brand-blue) 18%, var(--surface));
+  --chip: var(--blue-wash);
+  --on-teal: var(--panel);
+  --on-dark: color-mix(in srgb, var(--panel) 88%, var(--brand-aqua));
+  --teal-ink: var(--brand-blue);
+  --font: 'Manrope', sans-serif;
+  --font-display: 'Plus Jakarta Sans Variable', sans-serif;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  --spring: cubic-bezier(.34, 1.48, .64, 1);
+  --gutter: clamp(1.25rem, 4.6vw, 5rem);
+  --max: 1320px;
+  --section: clamp(5rem, 9.2vw, 9rem);
+  --radius: 3px;
+  --shadow: 0 24px 70px -30px rgb(29 95 150 / .18);
+  --z-sticky: 30;
+  --z-header: 40;
+  --z-focus: 60;
+  color-scheme: light;
 }
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--surface: #0c1824;
-		--surface-alt: #102131;
-		--panel: #15293c;
-		--ink: #e8f0f3;
-		--muted: #9fb0bc;
-		--hair: #243a4e;
-		--chip: #1c3247;
-		--navy-deep: #08131d;
-		--teal-ink: #5fc8d6;
-		color-scheme: dark;
-	}
-}
-
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-}
-
-html {
-	-webkit-text-size-adjust: 100%;
-	scroll-padding-top: 5.5rem;
-}
-
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 7rem; }
+body { margin: 0; background: var(--surface); color: var(--ink); font-family: var(--font); font-size: .95rem; line-height: 1.7; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; font-variant-numeric: tabular-nums; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button, a, input, summary, select { -webkit-tap-highlight-color: transparent; }
+h1, h2, h3, p { margin: 0; }
+p { text-wrap: pretty; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 5px; }
+::selection { background: var(--water-edge); color: var(--navy); }
+.container { width: 100%; max-width: calc(var(--max) + var(--gutter) * 2); margin-inline: auto; padding-inline: var(--gutter); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.label { display: flex; align-items: center; gap: .75rem; font-size: .66rem; font-weight: 600; letter-spacing: .17em; text-transform: uppercase; color: var(--teal-ink); }
+.label::before { content: ''; display: inline-block; width: 1.5rem; height: 1px; background: currentColor; }
+.display { font-family: var(--font-display); font-weight: 500; letter-spacing: -.045em; word-spacing: .045em; line-height: 1.08; text-wrap: balance; }
+.display em { font-weight: inherit; font-style: normal; }
+.h2 { font-size: clamp(2.25rem, 4vw, 4.1rem); }
+.lede { color: var(--muted); font-size: clamp(1rem, 1.2vw, 1.125rem); max-width: 48ch; }
+.icon { display: inline-flex; flex: none; }
+.icon svg { width: 1.15em; height: 1.15em; }
+.btn { display: inline-flex; align-items: center; justify-content: space-between; gap: 1.75rem; min-height: 3.25rem; padding: .85rem 1.15rem; border: 0; border-radius: 3px; background: var(--teal); color: var(--on-teal); font-weight: 600; font-size: .8rem; text-decoration: none; white-space: nowrap; cursor: pointer; transition: background-color 250ms var(--ease), transform 250ms var(--spring), box-shadow 250ms var(--ease); }
+.btn .icon { display: grid; place-items: center; width: 1.1rem; height: 1.1rem; transition: transform 250ms var(--spring); }
+.btn:hover { background: var(--teal-press); box-shadow: 0 7px 20px -10px rgb(29 95 150 / .3); }
+.btn:hover .icon { transform: translateX(2px); }
+.btn:active, button:active { transform: scale(.98); }
+.btn[disabled] { cursor: progress; opacity: .65; }
+.link { display: inline-flex; align-items: center; gap: .75rem; min-height: 44px; font-weight: 500; font-size: .84rem; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .4em; transition: color 250ms var(--ease); }
+.link:hover { color: var(--teal-ink); }
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0; padding: 0; border: 0; }
+.chip { position: relative; cursor: pointer; min-width: 0; }
+.chip input { position: absolute; inset: 0; opacity: 0; margin: 0; width: 100%; height: 100%; cursor: pointer; }
+.chip span { display: inline-flex; align-items: center; justify-content: space-between; gap: .7rem; min-height: 3rem; padding: .65rem 1rem; border-radius: 3px; background: var(--chip); color: var(--ink); font-weight: 500; font-size: .78rem; transition: background-color 250ms var(--ease), color 250ms var(--ease), transform 250ms var(--spring), box-shadow 250ms var(--ease); }
+.chip span::after { content: '+'; font-size: 1.1rem; font-weight: 400; opacity: .7; }
+.chip:hover span { background: var(--water-wash); transform: translateY(-1px); }
+.chip input:checked + span { background: var(--teal); color: var(--on-teal); box-shadow: inset 0 1px 0 rgb(255 255 255 / .12); }
+.chip input:checked + span::after { content: '✓'; font-size: .8rem; opacity: 1; }
+.chip input:focus-visible + span { outline: 2px solid var(--teal); outline-offset: 3px; }
+.note { display: flex; flex-direction: column; justify-content: center; min-height: 100dvh; padding-block: 4rem; }
+.note__logo { display: inline-flex; align-items: center; min-height: 44px; margin-bottom: auto; }
+.note__logo .logo { height: 2rem; }
+.note__title { font-size: clamp(3rem, 8vw, 6rem); }
+.note .lede { margin-top: 1.25rem; }
+.note__back { align-self: flex-start; margin-top: 2rem; margin-bottom: auto; }
 @media (prefers-reduced-motion: no-preference) {
-	html {
-		scroll-behavior: smooth;
-	}
+  html { scroll-behavior: smooth; }
+  .js [data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity 300ms var(--ease), transform 300ms var(--ease); transition-delay: var(--delay, 0s); }
+  .js [data-reveal].is-visible { opacity: 1; transform: none; }
 }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+@media (max-width: 767px) { body { font-size: .9rem; } .h2 { font-size: clamp(1.9rem, 8.2vw, 3.1rem); } }
 
-body {
-	margin: 0;
-	background: var(--surface);
-	color: var(--ink);
-	font-family: var(--font);
-	font-size: 1.0625rem;
-	line-height: 1.55;
-	-webkit-font-smoothing: antialiased;
-	text-rendering: optimizeLegibility;
-	font-variant-numeric: tabular-nums;
-}
+.header-sentinel { position: absolute; top: 0; left: 0; width: 1px; height: 70px; pointer-events: none; }
 
-img {
-	display: block;
-	max-width: 100%;
-	height: auto;
-}
-
-a {
-	color: inherit;
-}
-
-button,
-input,
-select,
-textarea {
-	font: inherit;
-	color: inherit;
-}
-
-h1,
-h2,
-h3,
-p {
-	margin: 0;
-}
-
-:focus-visible {
-	outline: 2px solid var(--teal);
-	outline-offset: 3px;
-}
-
-.container {
-	width: 100%;
-	max-width: calc(var(--max) + var(--gutter) * 2);
-	margin-inline: auto;
-	padding-inline: var(--gutter);
-}
-
-.sr-only {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	padding: 0;
-	margin: -1px;
-	overflow: hidden;
-	clip: rect(0 0 0 0);
-	white-space: nowrap;
-	border: 0;
-}
-
-.label {
-	font-size: 0.75rem;
-	font-weight: 600;
-	letter-spacing: 0.16em;
-	text-transform: uppercase;
-	color: var(--muted);
-}
-
-.display {
-	font-family: var(--font-display);
-	font-weight: 600;
-	letter-spacing: -0.015em;
-	line-height: 0.98;
-	text-wrap: balance;
-}
-
-.h2 {
-	font-size: clamp(2.5rem, 4.9vw, 4.75rem);
-}
-
-.lede {
-	color: var(--muted);
-	font-size: clamp(1.0625rem, 1.3vw, 1.1875rem);
-	max-width: 46ch;
-}
-
-.icon {
-	display: inline-flex;
-	flex: none;
-}
-
-.icon svg {
-	width: 1.15em;
-	height: 1.15em;
-}
-
-/* Buttons: one flat turquoise action, one underlined text link. No pills. */
-.btn {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	gap: 0.65rem;
-	min-height: 3.25rem;
-	padding: 0 1.5rem;
-	border: 0;
-	border-radius: var(--radius);
-	background: var(--teal);
-	color: var(--on-teal);
-	font-weight: 600;
-	font-size: 1.0625rem;
-	text-decoration: none;
-	white-space: nowrap;
-	cursor: pointer;
-	transition: background-color 0.25s var(--ease);
-}
-
-.btn .icon {
-	transition: transform 0.45s var(--ease);
-}
-
-.btn:hover {
-	background: var(--teal-press);
-}
-
-.btn:hover .icon {
-	transform: translateX(4px);
-}
-
-.link {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	font-weight: 500;
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-underline-offset: 0.3em;
-}
-
-.link:hover {
-	text-decoration-thickness: 2px;
-}
-
-/* Service toggles share one look wherever they appear (hero, quote form). */
-.chips {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5rem;
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
-
-.chip {
-	position: relative;
-	cursor: pointer;
-}
-
-.chip input {
-	position: absolute;
-	inset: 0;
-	opacity: 0;
-	margin: 0;
-	cursor: pointer;
-}
-
-.chip span {
-	display: inline-flex;
-	align-items: center;
-	min-height: 2.75rem;
-	padding: 0 1.05rem;
-	border-radius: var(--radius);
-	background: var(--chip);
-	color: var(--ink);
-	font-weight: 500;
-	font-size: 0.97rem;
-	transition:
-		background-color 0.25s var(--ease),
-		color 0.25s var(--ease);
-}
-
-.chip:hover span {
-	background: color-mix(in srgb, var(--chip), var(--teal) 18%);
-}
-
-.chip input:checked + span {
-	background: var(--teal);
-	color: var(--on-teal);
-}
-
-.chip input:focus-visible + span {
-	outline: 2px solid var(--teal);
-	outline-offset: 2px;
-}
-
-/* Scroll reveal. Content is visible by default; the script opts sections in,
-   so nothing stays hidden if JavaScript fails. */
-@media (prefers-reduced-motion: no-preference) {
-	.js [data-reveal] {
-		opacity: 0;
-		transform: translateY(2.5rem);
-		transition:
-			opacity 0.9s var(--ease),
-			transform 1.1s var(--ease);
-		transition-delay: var(--delay, 0s);
-	}
-
-	.js [data-reveal].is-visible {
-		opacity: 1;
-		transform: none;
-	}
-}
-
-@media (max-width: 420px) {
-	.chip span {
-		padding-inline: 0.7rem;
-		font-size: 0.9375rem;
-		white-space: nowrap;
-	}
-}
-
-/* Touch screens: every tappable text link gets a full 44px target without
-   changing how it looks. */
-@media (pointer: coarse), (max-width: 1023px) {
-	.link {
-		min-height: 44px;
-	}
-}
-
-/* Short standalone pages: the thank-you page and 404. */
-.note {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	min-height: 100svh;
-	padding-block: 4rem;
-}
-
-.note__logo {
-	display: inline-flex;
-	align-items: center;
-	min-height: 44px;
-	margin-bottom: auto;
-}
-
-.note__logo .logo {
-	height: 2rem;
-}
-
-.note__title {
-	font-size: clamp(3rem, 8vw, 6rem);
-}
-
-.note .lede {
-	margin-top: 1.25rem;
-}
-
-.note__back {
-	align-self: flex-start;
-	margin-top: 2rem;
-	margin-bottom: auto;
-}
+.svc__add { transition: transform 250ms var(--spring), color 250ms var(--ease); }

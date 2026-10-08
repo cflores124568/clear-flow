@@ -1,0 +1,33 @@
+---
+import { cities, phone } from '../data/site';
+import Icon from './Icon.astro';
+---
+<section class="local-care" aria-labelledby="local-title"><div class="container">
+  <div class="local-care__top"><div data-reveal><p class="label">Close to home</p><h2 class="display h2" id="local-title">For the place<br /><em>we call home.</em></h2></div><div class="local-care__copy" data-reveal><p class="lede">From mountain-side glass to sun-soaked patios, we care for homes across the Coachella Valley.</p><p>One local point of contact. A quote built around your property. Care that carries through to the curb.</p><a class="link" href={phone.href}>Talk to Clear Flow<Icon name="arrowRight" /></a></div></div>
+  <ul class="city-list" aria-label="Cities we serve" data-reveal>{cities.map(city => <li>{city}</li>)}</ul>
+  <div class="local-care__standards" data-reveal><p>What you can count on.</p><span>Licensed &amp; Insured</span><span>Soft-brush, pure-water solar</span><span>Free, property-specific estimates</span></div>
+</div></section>
+<section class="recurring" aria-labelledby="recurring-title"><div class="container recurring__grid"><div data-reveal><p class="label">A little care, on a rhythm</p><h2 class="display h2" id="recurring-title">Keep the clear.<br /><em>Skip the remembering.</em></h2></div><div class="recurring__copy" data-reveal><p class="lede">Ask us to include a recurring care option with your quote. We’ll help find a schedule that suits your home and the season.</p><dl><div><dt>Solar panels</dt><dd>A quarterly starting point</dd></div><div><dt>Windows &amp; exterior surfaces</dt><dd>A twice-yearly starting point</dd></div></dl><p class="recurring__note">We’ll adjust for dust exposure, surface condition and your preferences.</p><a class="link" href="#quote" data-recurring-interest>Include recurring care in my quote<Icon name="arrowRight" /></a></div></div></section>
+<style>
+.local-care { padding-block: var(--section); }
+.local-care__top, .recurring__grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(3rem,8vw,8rem); align-items: center; }
+.local-care h2, .recurring h2 { margin-top: 1.4rem; }
+h2 em { color: var(--teal); }
+.local-care__copy .lede, .recurring .lede { font-size: 1rem; }
+.local-care__copy > p + p { margin-top: 1.3rem; font-size: .875rem; color: var(--muted); max-width: 45ch; }
+.local-care__copy .link { margin-top: 1.5rem; font-size: .875rem; }
+.city-list { display: flex; flex-wrap: wrap; gap: .9rem 2rem; list-style: none; margin: 3rem 0 0; padding: 1.8rem 0; border-block: 1px solid var(--hair); font-family: var(--font-display); font-size: 1.3rem; letter-spacing: -.025em; }
+.city-list li::after { content: '·'; margin-left: 2rem; color: var(--brand-aqua); }
+.city-list li:last-child::after { display: none; }
+.local-care__standards { display: flex; flex-wrap: wrap; gap: .7rem 2rem; margin-top: 1.6rem; font-size: .8rem; }
+.local-care__standards p { color: var(--muted); margin-right: auto; }
+.local-care__standards span::before { content: '✓'; color: var(--teal); margin-right: .55rem; }
+.recurring { padding-block: var(--section); background: var(--surface-alt); }
+.recurring dl { margin: 2rem 0 0; }
+.recurring dl > div { display: flex; justify-content: space-between; gap: 1rem; padding-block: 1rem; border-top: 1px solid var(--hair); font-size: .875rem; }
+.recurring dt { font-weight: 600; }
+.recurring dd { margin: 0; color: var(--muted); text-align: right; }
+.recurring__note { font-size: .8rem; color: var(--muted); margin-top: .7rem; }
+.recurring .link { font-size: .875rem; margin-top: 1.5rem; }
+@media(max-width:767px) { .local-care__top, .recurring__grid { grid-template-columns: 1fr; gap: 1.7rem; } .city-list { font-size: 1.15rem; gap: .6rem 1rem; margin-top: 2rem; } .city-list li::after { margin-left: 1rem; } .local-care__standards { flex-direction: column; } .recurring dl > div { flex-direction: column; gap: .35rem; } .recurring dd { text-align: left; } }
+</style>

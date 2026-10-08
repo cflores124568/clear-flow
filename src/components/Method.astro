@@ -1,128 +1,38 @@
 ---
-import { Image } from 'astro:assets';
-import methodPhoto from '../assets/photos/method-window.jpg';
-
-// Proposed method lines. Each one is a promise about how the work is done, so
-// the owner confirms them before launch.
+import { Picture } from 'astro:assets';
+import WaterLight from './WaterLight.astro';
+import detailPhoto from '../assets/photos/desert-modern.jpg';
 const points = [
-	{ title: 'Pure water on solar', body: 'No pressure washers on panels, ever.' },
-	{ title: 'Right tool, every surface', body: 'Soft wash where needed, pressure only on concrete.' },
-	{ title: 'Licensed, Bonded & Insured', body: 'Covered on every job.' },
-	{ title: 'Left cleaner than we found it', body: 'Hauled, swept and rinsed before we go.' },
+  { n: '01', title: 'A soft touch on solar.', body: 'Purpose-made soft brushes lift windblown dust and droppings. No pressure washers on panels. Ever.' },
+  { n: '02', title: 'Pure water. A clear finish.', body: 'Filtered water rinses away what the brush lifts, without detergent residue on your panels.' },
+  { n: '03', title: 'Every surface gets its own approach.', body: 'Glass, frames, stucco and concrete need different tools. We match the method to the material, with desert heat and delicate finishes in mind.' },
 ];
 ---
-
-<section class="method" aria-labelledby="method-title">
-	<div class="container method__grid">
-		<div class="method__copy">
-			<p class="label" data-reveal>How we work</p>
-			<h2 id="method-title" class="display h2 method__title" data-reveal>Careful is the<br /> whole point.</h2>
-			<ul class="method__list">
-				{
-					points.map((p, i) => (
-						<li data-reveal style={`--delay:${i * 0.08}s`}>
-							<h3>{p.title}</h3>
-							<p>{p.body}</p>
-						</li>
-					))
-				}
-			</ul>
-		</div>
-
-		<figure class="method__figure" data-reveal>
-			<div class="method__frame">
-				<Image
-					src={methodPhoto}
-					widths={[480, 760, 1100]}
-					sizes="(min-width: 1024px) 40vw, 100vw"
-					alt="A worker on the ground cleaning a second-story window with a water-fed pole, a pure-water filter cart beside them"
-				/>
-			</div>
-			<figcaption>Pure-water rinse, no detergent residue.</figcaption>
-		</figure>
-	</div>
-</section>
-
+<section class="method" id="our-method" aria-labelledby="method-title"><WaterLight id="method-caustics" /><div class="container method__grid">
+  <figure class="method__figure" data-reveal><div class="method__frame"><Picture src={detailPhoto} widths={[480,800,1200]} sizes="(min-width: 768px) 40vw, 100vw" formats={['avif','webp']} alt="Stone, glass and desert landscaping at the Kaufmann House in Palm Springs" /></div><figcaption>Desert architecture deserves a considered touch.</figcaption><div class="method__seal"><span>Soft brushes.</span><em>Pure water.</em><small>Nothing harsh on your panels.</small></div></figure>
+  <div class="method__copy"><p class="label" data-reveal">The Clear Flow approach</p><h2 id="method-title" class="display h2" data-reveal>Careful is<br /><em>the whole point.</em></h2><p class="lede method__intro" data-reveal>Desert dust is persistent. Our approach is precise.</p><ol class="method__list">{points.map(p => <li data-reveal><span>{p.n}</span><div><h3>{p.title}</h3><p>{p.body}</p></div></li>)}</ol><p class="method__trust" data-reveal>Licensed &amp; Insured <span>From the first brush to the final rinse.</span></p></div>
+</div></section>
 <style>
-	.method {
-		padding-block: var(--section);
-		background: var(--surface-alt);
-	}
-
-	.method__grid {
-		display: grid;
-		grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-		gap: clamp(2.5rem, 6vw, 6rem);
-		align-items: start;
-	}
-
-	.method__title {
-		margin-top: 1rem;
-	}
-
-	.method__list {
-		list-style: none;
-		margin: clamp(2rem, 4vw, 3.25rem) 0 0;
-		padding: 0;
-		max-width: 38rem;
-	}
-
-	.method__list li {
-		padding-block: 1.4rem;
-		border-bottom: 1px solid var(--hair);
-	}
-
-	.method__list li:first-child {
-		padding-top: 0;
-	}
-
-	.method__list li:last-child {
-		border-bottom: 0;
-	}
-
-	.method__list h3 {
-		font-size: clamp(1.25rem, 1.8vw, 1.625rem);
-		font-weight: 500;
-		letter-spacing: -0.02em;
-	}
-
-	.method__list p {
-		margin-top: 0.3rem;
-		color: var(--muted);
-	}
-
-	.method__figure {
-		margin: 0;
-	}
-
-	.method__frame {
-		aspect-ratio: 9 / 10;
-		overflow: hidden;
-	}
-
-	.method__frame :global(img) {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-
-	figcaption {
-		margin-top: 0.75rem;
-		font-size: 0.875rem;
-		color: var(--muted);
-	}
-
-	@media (max-width: 1023px) {
-		.method__grid {
-			grid-template-columns: 1fr;
-		}
-
-		.method__figure {
-			order: -1;
-		}
-
-		.method__frame {
-			aspect-ratio: 4 / 3;
-		}
-	}
+.method { position: relative; isolation: isolate; padding-block: var(--section); background: var(--water-wash); }
+.method :global(.water-light) { mask-image: linear-gradient(90deg, transparent 18%, #000 75%); }
+.method__grid { position: relative; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: clamp(3rem,8vw,8rem); align-items: start; }
+.method__figure { position: relative; margin: 1rem 0 0; }
+.method__frame { border-radius: 8px; overflow: hidden; aspect-ratio: 4/5; background: var(--surface-alt); }
+.method__frame :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 69% center; }
+figcaption { margin-top: 1rem; font-size: .75rem; color: var(--muted); }
+.method__seal { position: absolute; right: -1.2rem; bottom: 3rem; padding: 1.7rem 2rem; background: var(--brand-blue); color: var(--panel); box-shadow: var(--shadow), inset 0 1px 0 rgb(255 255 255 / .16); border-radius: 8px; }
+.method__seal span, .method__seal em { display: block; font-family: var(--font-display); font-size: 1.45rem; font-weight: 500; line-height: 1.3; letter-spacing: -.035em; word-spacing: .035em; }
+.method__seal em { color: var(--aqua-light); font-style: normal; }
+.method__seal small { display: block; font-size: .75rem; margin-top: .75rem; color: var(--on-dark); }
+.method__copy h2 { margin-top: 1.4rem; }
+.method__copy h2 em { color: var(--teal); }
+.method__intro { margin-top: 1.2rem; font-size: 1rem; }
+.method__list { list-style: none; margin: 2rem 0 0; padding: 0; }
+.method__list li { display: flex; gap: 1.3rem; padding-block: 1.2rem; border-top: 1px solid var(--hair); }
+.method__list li > span { font-size: .75rem; padding-top: .3rem; color: var(--teal); }
+.method__list h3 { font-size: 1rem; font-weight: 600; }
+.method__list p { color: var(--muted); margin-top: .45rem; font-size: .875rem; max-width: 47ch; }
+.method__trust { margin-top: 1.5rem; font-size: .8rem; font-weight: 600; color: var(--teal-ink); }
+.method__trust span { display: block; margin-top: .2rem; font-size: .8rem; font-weight: 400; color: var(--muted); }
+@media (max-width:767px) { .method :global(.water-light) { mask-image: linear-gradient(180deg, #000, transparent 65%); opacity: .4; } .method__grid { grid-template-columns: 1fr; gap: 3rem; } .method__figure { order: 2; margin: 0; } .method__frame { aspect-ratio: 5/4; } .method__seal { right: .7rem; bottom: 2.7rem; padding: 1.2rem 1.4rem; } }
 </style>

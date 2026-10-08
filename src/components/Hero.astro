@@ -1,264 +1,83 @@
 ---
 import { Picture } from 'astro:assets';
 import Icon from './Icon.astro';
-import heroClean from '../assets/photos/hero-clean.jpg';
-import heroDusty from '../assets/photos/hero-dusty.jpg';
-import { services } from '../data/site';
-
-const widths = [768, 1280, 1800];
-const sizes = '100vw';
+import WaterText from './WaterText.astro';
+import heroPhoto from '../assets/photos/desert-house.jpg';
+import { coreServices } from '../data/site';
 ---
-
 <section class="hero" id="top" aria-labelledby="hero-title" data-hero>
-	<div class="hero__media" aria-hidden="true">
-		<Picture
-			class="hero__img"
-			src={heroClean}
-			widths={widths}
-			sizes={sizes}
-			formats={['avif', 'webp']}
-			alt=""
-			loading="eager"
-			fetchpriority="high"
-		/>
-		<div class="hero__dusty">
-			<Picture class="hero__img" src={heroDusty} widths={widths} sizes={sizes} formats={['avif', 'webp']} alt="" loading="eager" />
-		</div>
-		<div class="hero__edge"></div>
-		<div class="hero__scrim"></div>
-	</div>
-
-	<div class="container hero__content">
-		<h1 id="hero-title" class="display hero__title">Clear, from<br /> roof to curb.</h1>
-		<p class="hero__sub">Solar panels, windows, concrete and clutter. One call, one quote.</p>
-
-		<form class="starter" action="#quote" method="get" data-starter>
-			<fieldset class="starter__set">
-				<legend class="label starter__legend">What needs clearing?</legend>
-				<div class="chips">
-					{
-						services.map((s) => (
-							<label class="chip">
-								<input type="checkbox" name="service" value={s.id} data-service={s.id} />
-								<span>{s.chip}</span>
-							</label>
-						))
-					}
-				</div>
-			</fieldset>
-			<button class="btn starter__go" type="submit">
-				Get my quote
-				<Icon name="arrowRight" />
-			</button>
-		</form>
-
-		<p class="hero__note">Licensed, Bonded &amp; Insured</p>
-	</div>
+  <div class="hero__media" aria-hidden="true">
+    <Picture class="hero__img" src={heroPhoto} widths={[640, 1024, 1536]} sizes="100vw" formats={['avif', 'webp']} alt="" loading="eager" fetchpriority="high" />
+    <div class="hero__scrim"></div>
+  </div>
+  <div class="container hero__content">
+    <p class="label hero__eyebrow">Exterior care · Coachella Valley</p>
+    <h1 id="hero-title" class="display hero__title">Clear, from<br /><WaterText text="roof to curb." /></h1>
+    <p class="hero__sub">A home that looks its best. A day that stays yours.<br class="hero__break" /> Solar, windows, surfaces &amp; haul-away.<br /> One call. One crew. One visit.</p>
+    <form class="starter" action="/#quote" method="get" data-starter>
+      <fieldset class="starter__set">
+        <legend class="starter__legend">What would you like taken care of?</legend>
+        <div class="chips">
+          {coreServices.map((s) => <label class="chip"><input type="checkbox" name="service" value={s.id} data-service={s.id} aria-label={s.chip} /><span>{s.chip}</span></label>)}
+        </div>
+      </fieldset>
+      <div class="starter__actions">
+        <button class="btn starter__go" type="submit">Get my quote<Icon name="arrowRight" /></button>
+        <span class="starter__note">Free estimate. Thoughtfully bundled.</span>
+      </div>
+    </form>
+    <a class="hero__scroll" href="#quote" aria-label="Explore your quote">A little care. A big difference.<span aria-hidden="true">↓</span></a>
+  </div>
+  <p class="hero__place">Palm Springs, California<span>Desert living, beautifully kept.</span></p>
 </section>
-
+<div class="proof-strip" aria-label="Our standards"><span>Licensed &amp; Insured</span><span>Pure-water solar</span><span>One crew, one visit</span><span class="proof-strip__local">Locally focused. Property specific.</span></div>
 <style>
-	/* The wipe: the dusty layer is clipped to everything left of a diagonal edge.
-	   On load the edge sweeps in from the right (one squeegee pass); as the page
-	   scrolls it keeps going until the glass is clear. */
-	@property --wipe-in {
-		syntax: '<percentage>';
-		inherits: true;
-		initial-value: 62%;
-	}
+.hero { position: relative; display: flex; align-items: center; min-height: min(850px, max(690px, 94svh)); padding-block: 9.5rem 4rem; color: var(--panel); overflow: clip; background: var(--navy); }
+.hero__media, .hero__media :global(picture), .hero__scrim { position: absolute; inset: 0; }
+.hero__media :global(.hero__img) { width: 100%; height: 100%; object-fit: cover; object-position: 62% 56%; }
+.hero__scrim { background: linear-gradient(90deg, rgb(26 44 56 / .89), rgb(26 44 56 / .69) 34%, rgb(26 44 56 / .12) 76%), linear-gradient(180deg, rgb(26 44 56 / .32), transparent 25%, rgb(26 44 56 / .22)); }
+.hero__content { position: relative; }
+.hero__eyebrow { color: var(--aqua-light); margin-bottom: 1.6rem; font-size: .62rem; }
+.hero__title { font-size: clamp(3.8rem, 7.8vw, 7.5rem); line-height: 1.02; letter-spacing: -.055em; max-width: 13ch; }
+.hero__sub { margin-top: 1.65rem; max-width: 44ch; font-size: 1rem; line-height: 1.8; color: var(--on-dark); }
+.starter { margin-top: 2rem; max-width: 42rem; }
+.starter__set { margin: 0; padding: 0; border: 0; min-width: 0; }
+.starter__legend { padding: 0; margin-bottom: .65rem; font-size: .68rem; color: var(--on-dark); }
+.starter :global(.chip span) { background: color-mix(in srgb, var(--brand-aqua) 8%, transparent); color: var(--panel); box-shadow: inset 0 0 0 1px rgb(246 243 236 / .26); font-size: .72rem; min-height: 2.75rem; border-radius: 3px; }
+.starter :global(.chip:hover span) { background: color-mix(in srgb, var(--brand-aqua) 20%, transparent); }
+.starter :global(.chip input:checked + span) { background: var(--brand-blue); color: var(--panel); box-shadow: inset 0 0 0 1px var(--brand-aqua); }
+.starter :global(.chip input:focus-visible + span) { outline-color: var(--brand-aqua); }
+.starter__actions { display: flex; align-items: center; gap: 1.2rem; margin-top: 1.25rem; }
+.starter__go { background: var(--brand-aqua); color: var(--navy); min-width: 12.3rem; }
+.starter__go:hover { background: var(--aqua-light); }
 
-	@property --wipe-scroll {
-		syntax: '<percentage>';
-		inherits: true;
-		initial-value: 62%;
-	}
-
-	.hero {
-		--wipe: min(var(--wipe-in), var(--wipe-scroll));
-		--slant: 9%;
-		position: relative;
-		display: flex;
-		align-items: flex-end;
-		min-height: max(40rem, min(100svh, 62rem));
-		padding-block: 8rem clamp(3rem, 7vh, 5.5rem);
-		color: #fff;
-		overflow: clip;
-		background: var(--navy);
-	}
-
-	@media (prefers-reduced-motion: no-preference) {
-		.hero {
-			animation: wipe-in 1.9s var(--ease-wipe) 0.25s both;
-		}
-
-		@supports (animation-timeline: scroll()) {
-			.hero {
-				animation:
-					wipe-in 1.9s var(--ease-wipe) 0.25s both,
-					wipe-scroll linear both;
-				animation-timeline: auto, scroll(root);
-				animation-range:
-					normal,
-					0 90svh;
-			}
-		}
-	}
-
-	@keyframes wipe-in {
-		from {
-			--wipe-in: 112%;
-		}
-		to {
-			--wipe-in: 62%;
-		}
-	}
-
-	@keyframes wipe-scroll {
-		from {
-			--wipe-scroll: 62%;
-		}
-		to {
-			--wipe-scroll: -12%;
-		}
-	}
-
-	.hero__media {
-		position: absolute;
-		inset: 0;
-	}
-
-	.hero__media :global(picture),
-	.hero__dusty {
-		position: absolute;
-		inset: 0;
-	}
-
-	.hero__media :global(.hero__img) {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: 70% 40%;
-	}
-
-	.hero__dusty {
-		clip-path: polygon(
-			0 0,
-			calc(var(--wipe) + var(--slant)) 0,
-			calc(var(--wipe) - var(--slant)) 100%,
-			0 100%
-		);
-	}
-
-	/* The wet line a squeegee blade leaves at the edge of the pass. */
-	.hero__edge {
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(90deg, rgb(255 255 255 / 0), rgb(255 255 255 / 0.6) 50%, rgb(255 255 255 / 0));
-		clip-path: polygon(
-			calc(var(--wipe) + var(--slant) - 0.25%) 0,
-			calc(var(--wipe) + var(--slant) + 0.35%) 0,
-			calc(var(--wipe) - var(--slant) + 0.35%) 100%,
-			calc(var(--wipe) - var(--slant) - 0.25%) 100%
-		);
-		mix-blend-mode: screen;
-	}
-
-	.hero__scrim {
-		position: absolute;
-		inset: 0;
-		background:
-			linear-gradient(180deg, rgb(12 28 43 / 0.55) 0%, rgb(12 28 43 / 0) 22%),
-			linear-gradient(30deg, rgb(12 28 43 / 0.82) 0%, rgb(12 28 43 / 0.5) 38%, rgb(12 28 43 / 0) 66%);
-	}
-
-	.hero__content {
-		position: relative;
-	}
-
-	.hero__title {
-		font-size: clamp(3.25rem, 7.6vw, 7rem);
-		max-width: 11ch;
-	}
-
-	.hero__sub {
-		margin-top: 1.5rem;
-		max-width: 46ch;
-		text-wrap: pretty;
-		font-size: clamp(1.125rem, 1.6vw, 1.375rem);
-		line-height: 1.45;
-		color: rgb(255 255 255 / 0.92);
-	}
-
-	.starter {
-		display: flex;
-		align-items: center;
-		gap: 1.5rem;
-		width: fit-content;
-		max-width: 100%;
-		margin-top: 2.25rem;
-		padding: 1.25rem 1.25rem 1.25rem 1.5rem;
-		border-radius: var(--radius);
-		background: var(--panel);
-		color: var(--ink);
-	}
-
-	.starter__set {
-		margin: 0;
-		padding: 0;
-		border: 0;
-		min-width: 0;
-	}
-
-	.starter__legend {
-		padding: 0;
-		margin-bottom: 0.75rem;
-		color: var(--ink);
-	}
-
-	.starter__go {
-		align-self: stretch;
-		padding-inline: 1.75rem;
-		border-left: 1px solid transparent;
-	}
-
-	.hero__note {
-		margin-top: 1.25rem;
-		font-weight: 500;
-		color: rgb(255 255 255 / 0.9);
-	}
-
-	@media (max-width: 1023px) {
-		.starter {
-			flex-direction: column;
-			align-items: stretch;
-			width: 100%;
-			max-width: 34rem;
-		}
-	}
-
-	@media (max-width: 767px) {
-		.hero {
-			--slant: 14%;
-			min-height: auto;
-			padding-block: 9rem 2.5rem;
-		}
-
-		.hero__scrim {
-			background:
-				linear-gradient(180deg, rgb(12 28 43 / 0.5) 0%, rgb(12 28 43 / 0) 20%),
-				linear-gradient(0deg, rgb(12 28 43 / 0.9) 0%, rgb(12 28 43 / 0.45) 55%, rgb(12 28 43 / 0.1) 100%);
-		}
-
-		.starter {
-			padding: 1rem;
-		}
-
-		.starter .chips {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-		}
-
-		.starter .chip span {
-			width: 100%;
-		}
-	}
+.starter__note { color: var(--on-dark); font-size: .64rem; }
+.hero__scroll { display: flex; align-items: center; gap: 1.25rem; width: fit-content; margin-top: 3rem; color: var(--on-dark); text-decoration: none; font-size: .65rem; }
+.hero__scroll span { font-size: 1rem; }
+.hero__place { position: absolute; right: var(--gutter); bottom: 3.3rem; font-size: .6rem; text-align: right; color: #f5f1e5; }
+.hero__place span { display: block; margin-top: .15rem; opacity: .8; }
+.proof-strip { display: flex; align-items: center; gap: 3rem; padding: 1.35rem var(--gutter); background: var(--surface-alt); font-size: .68rem; color: var(--ink); }
+.proof-strip span { display: inline-flex; align-items: center; gap: .75rem; }
+.proof-strip span::before { content: '✓'; color: var(--teal); }
+.proof-strip__local { margin-left: auto; }
+.proof-strip__local::before { display: none; }
+@media (max-width: 1023px) { .hero__place, .proof-strip .proof-strip__local { display: none; } .proof-strip { justify-content: space-between; gap: 1rem; } }
+@media (max-width: 767px) {
+  .hero { min-height: 790px; padding-block: 8.8rem 3rem; align-items: flex-end; }
+  .hero__title { font-size: clamp(2.5rem, 13.3vw, 4.2rem); }
+  .hero__media :global(.hero__img) { object-position: 54% 50%; }
+  .hero__scrim { background: linear-gradient(0deg, rgb(26 44 56 / .96), rgb(26 44 56 / .70) 56%, rgb(26 44 56 / .3)), linear-gradient(90deg, rgb(26 44 56 / .2), transparent); }
+  .hero__eyebrow { margin-bottom: 1.5rem; }
+  .hero__sub { font-size: .93rem; max-width: 36ch; }
+  .hero__break { display: none; }
+  .starter { margin-top: 1.6rem; }
+  .starter .chips { display: grid; grid-template-columns: 1fr 1fr; }
+  .starter :global(.chip span) { width: 100%; height: 100%; font-size: .74rem; padding-inline: .85rem; }
+  .starter__actions { align-items: flex-start; flex-direction: column; gap: .7rem; }
+  .starter__go { width: 100%; }
+  .starter__note { align-self: center; }
+  .hero__scroll { display: none; }
+  .proof-strip { flex-wrap: wrap; gap: .7rem 1.3rem; padding-block: 1rem; font-size: .61rem; justify-content: center; }
+}
+@media (max-width: 359px) { .starter :global(.chip span) { padding-inline: .55rem; gap: .35rem; } }
 </style>

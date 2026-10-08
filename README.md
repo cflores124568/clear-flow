@@ -1,53 +1,55 @@
 # Clear Flow
 
-One-page site for Clear Flow (solar panel cleaning, bird proofing, window cleaning, pressure washing, junk removal). Astro, static output, deployed to Cloudflare Pages with one Pages Function for the quote form. Built from the approved "Clear Pass" design frames.
+Existing Astro site for a Coachella Valley exterior cleaning business, upgraded in place with a warm, precise design and a progressive quote builder. Static pages deploy to Cloudflare Pages; `functions/api/quote.ts` delivers requests through Resend.
+
+## Development
 
 ```sh
 npm install
-npm run dev       # local dev server
-npm run build     # static site in dist/
+npx astro dev --background
+npx astro dev status
+npx astro dev logs
+npx astro dev stop
+npm run build
+npm test
 ```
 
-## Before launch
+The dev server serves Astro pages; Cloudflare Pages Functions run in the Cloudflare environment, not the plain Astro dev server. Do not assume a successful static build confirms live email delivery. Node 22.12 or later is required.
 
-1. **Photos.** The current photos are interim crops. See [ASSETS.md](ASSETS.md) for the replacement list and Codex prompts.
-2. **Copy sign-off.** Only the five service names, `760-422-3069`, `clearflowofthedesert@gmail.com`, "Licensed, Bonded & Insured" and "free estimates" come from the business card and flyers. The owner needs to confirm the rest, especially these promises:
-   - "No pressure washers on panels, ever." / "Pure-water rinse, no detergent residue."
-   - "Inside and out, frames and tracks included." (window scope)
-   - "Furniture, yard debris and garage clutter, hauled away." (junk scope)
-   - "Five jobs, one crew you call." (implies a single crew)
-   - The Bird Proofing page: nest cleanout and critter guard mesh around the array.
-   - FAQ answers in `src/data/site.ts`, especially "Do I need to be home?"
-   - Each service page's "What's included" list (`includes` in `src/data/site.ts`). These are scope promises.
-   - The About page has no owner story yet. Add the owner's name, a short background and a real photo when they're available.
-   - The privacy policy (`src/pages/privacy.astro`) describes what the site actually does; the owner should still review it.
-3. **Domain.** Set `site` in `astro.config.mjs`. Canonical, `og:url` and `og:image` tags are only emitted once it is set.
-4. **Form delivery.** In the Cloudflare Pages project, set `RESEND_API_KEY`, `QUOTE_TO` and `QUOTE_FROM` (see `.dev.vars.example`). The sending domain must be verified in Resend. Until these are set, the form shows its fallback message asking visitors to call.
+## Quote flow
 
-## Pages
+Services → property details → optional photos → contact and review. Hero chips, service rows, property pins, the quote form, and service-page preselections share the same service selection. Selected service IDs persist in session storage across page navigation; personal details and photos do not.
 
-| Path | Source |
-| --- | --- |
-| `/` | `src/pages/index.astro` |
-| `/services/` | `src/pages/services/index.astro` |
-| `/services/<slug>/` (four) | `src/pages/services/[slug].astro`, one per entry in `services` in `src/data/site.ts` |
-| `/about/`, `/faq/`, `/contact/`, `/privacy/` | `src/pages/*.astro` |
-| `/thanks/`, 404 | landing spot for no-JavaScript form posts, and the not-found page |
+Four primary services appear on the homepage. Existing bird-proofing routes and quote selection are retained as an additional option. Back/edit navigation keeps entered details and photos. The recurring-care CTA checks an optional interest field. Estimates promise an exact quote in under 24 hours; confirm the business can honor this response time before publishing. Bundle copy invites a savings review without inventing prices or percentage discounts.
 
-Every page except `/thanks/` and 404 uses `src/layouts/Page.astro` (header, footer, mobile call bar, page script). Inner pages open with `PageHero`; anything marked `data-hero` keeps the header transparent until it scrolls away.
+The form collects city, approximate property size, story count, relevant service counts/scope, notes, optional photos, name, US phone number, contact preference and recurring-care interest. It validates both client-side and server-side. With JavaScript disabled, all fields remain visible and multipart posts redirect to `/thanks/` or a contact-page failure URL.
 
-## Where things live
+Photos: up to 3 JPG/PNG/WebP files, 4 MB each. Preview/removal happens locally. The Pages Function enforces a 16 MB request limit, checks MIME type against signature bytes, sanitizes attachment names, and attaches photos to the email. It retains the honeypot and escapes email HTML. Provider/network failures preserve the visitor’s entered form with a retry and call/text alternative.
 
-- `src/data/site.ts`: phone number, email, services (including service page copy), FAQ and the nav.
-- `src/data/photos.ts`: which photo belongs to which service.
-- `src/components/`: one component per page section, in page order in `src/pages/index.astro`.
-- `src/scripts/site.ts`: header state, the shared service selection (hero chips, "Add to quote", form), the services photo, scroll reveals, the process line, the mobile call bar, and form submission.
-- `functions/api/quote.ts`: receives the form and emails it via Resend. Plain form posts (no JavaScript) redirect to `/thanks/`.
-- `src/assets/brand/wordmark.svg`: the logo, rebuilt from the card (Outfit SemiBold outlines plus the two-tone drop). Letters use `currentColor`.
-- `scripts/make-dusty.sh`: rebuilds the hero's dusty layer from `hero-clean.jpg`.
+## Deployment prerequisites
 
-## Design notes
+Set these Cloudflare Pages environment variables:
 
-- Palette and type follow the design lock: navy `#12263A`, glass white `#F5F8F9`, mist `#E6EFF1`, turquoise `#3FB6C6` for actions only (with `#187885` where turquoise is used as text on light backgrounds, for contrast). Type is Barlow Semi Condensed for headlines, service names and the phone number, with Barlow for everything else.
-- Dark mode follows the visitor's system setting.
-- All motion respects `prefers-reduced-motion`. The hero's scroll-linked wipe uses CSS scroll timelines where supported; elsewhere it plays once on load.
+- `RESEND_API_KEY`: authorized email API key.
+- `QUOTE_TO`: recipient inboxes, comma separated.
+- `QUOTE_FROM`: a sender on a verified Resend domain.
+
+Build command: `npm run build`. Output: `dist/`. Deploy the repository with the `functions/` directory so `/api/quote/` is included. `astro.config.mjs` sets `site` to `https://clear-flow.pages.dev`; update it if the canonical domain changes. A missing delivery configuration produces a visible call/text fallback. No live email was sent during redesign verification.
+
+## Design and content
+
+[DESIGN-AUDIT.md](DESIGN-AUDIT.md) lists the 42 initial issues and priority order. [ASSETS.md](ASSETS.md) records real regional photography sources and the evidence still needed for customer proof.
+
+The palette uses the original logo’s aqua and blue with charcoal/navy and warm limestone. Upright Plus Jakarta Sans headlines pair with Manrope body text. Compact rectangular controls replace the pill buttons and circular arrow containers. The quote builder retains subtle glass-edge highlights.
+
+`WaterText.astro` and `src/scripts/water-text.ts` render slow, refracted water light inside the hero’s “roof to curb.” lettering. A native WebGL shader uses a small alpha mask made from the actual loaded font, keeps the letterforms steady, caps resolution at 1.5× and rendering at 30 fps, and pauses offscreen or in a hidden document. Reduced motion renders a still frame. No WebGL, initialization failure or lost context shows the normal HTML text; restored contexts rebuild the surface. The renderer is a separate, homepage-only enhancement with no extra library. High-contrast mode displays the regular text.
+
+The original SVG water-light field remains in the pure-water section. Its 24-second transform animation pauses offscreen and when the document is hidden, and remains static with reduced motion or without JavaScript.
+
+Native controls, restrained spring curves, transform/opacity reveals, reduced-motion support and a mobile action bar keep the interaction lightweight. Existing pages and service routes are preserved. Local business metadata includes confirmed service cities, without fabricated ratings, addresses or hours.
+
+The solar soiling section is an adjustable educational scenario: expected annual kWh × assumed loss. Its assumptions are visible and editable; it makes no guaranteed recovery or ROI claim. Quarterly solar and twice-yearly window/exterior care are proposed starting points to discuss with the business, not automatic subscriptions.
+
+## Validation
+
+`npm test` exercises the quote delivery function with a mocked provider: property payload, actual attachment bytes, HTML escaping, duplicate/unknown services, required fields, counts, photo signatures/limits, streamed request limits, honeypot, provider/network failures and no-JavaScript redirects. The browser quote journey was also tested locally with a mocked email provider; production credentials and real inbox receipt still require a deployment smoke test.

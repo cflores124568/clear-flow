@@ -1,0 +1,43 @@
+---
+import Icon from './Icon.astro';
+---
+<section class="soiling" aria-labelledby="soiling-title"><div class="container soiling__grid">
+  <div data-reveal><p class="label">The part you don’t always see</p><h2 class="display h2" id="soiling-title">What is desert dust<br /><em>costing you?</em></h2><p class="lede">Dust on solar glass can block the light your panels need. The loss varies with your system, weather and how long dust has been building up.</p><a class="link" href="#quote" data-select-solar>Include solar in my quote<Icon name="arrowRight" /></a><a class="soiling__source" href="https://research-hub.nlr.gov/en/publications/pv-soiling-losses-measurements-modeling-and-mitigation-strategies/" target="_blank" rel="noopener noreferrer">Read the research on solar soiling ↗</a></div>
+  <div class="soiling__shell" data-reveal><div class="soiling-model" data-soiling>
+    <p class="soiling-model__label">A small loss, across a whole year.</p>
+    <div class="soiling-model__number"><output data-loss-output>600</output><span>kWh of potential<br />annual production</span></div>
+    <div class="energy-bars" aria-hidden="true"><div class="energy-bars__clean"><span>Without soiling</span><span data-clean-energy>12,000 kWh</span></div><div class="energy-bars__dust"><span>At your example loss</span><span data-dust-energy>11,400 kWh</span></div></div>
+    <div class="soiling-model__inputs"><label for="annual-energy">Expected annual production<input id="annual-energy" type="number" min="100" max="200000" step="100" value="12000" inputmode="numeric" data-annual-energy /><span>kWh / year · from your monitoring app</span></label></div>
+    <label class="loss-control" for="soiling-loss"><span>Assumed soiling loss<output for="soiling-loss" data-percent-output>5%</output></span><input id="soiling-loss" type="range" min="0" max="20" step="1" value="5" data-soiling-loss /><small><span>0%</span><span>20%</span></small></label>
+    <p class="soiling-model__note">Illustrative scenario, not a measurement or promised recovery. Annual production × assumed loss. Actual results and worthwhile cleaning frequency vary by property.</p>
+  </div></div>
+</div></section>
+<style>
+.soiling { padding-block: var(--section); background: var(--water); }
+.soiling__grid { display: grid; grid-template-columns: 1fr .9fr; gap: clamp(3rem,8vw,8rem); align-items: center; }
+.soiling h2 { margin-top: 1.5rem; }
+.soiling h2 em { color: var(--teal); }
+.soiling .lede { margin-top: 1.7rem; max-width: 40ch; font-size: 1rem; }
+.soiling .link { margin-top: 1.5rem; font-size: .84rem; }
+.soiling__source { display: block; width: fit-content; font-size: .75rem; color: var(--muted); margin-top: 1rem; text-underline-offset: .3em; }
+.soiling__shell { padding: .4rem; background: var(--water-edge); border-radius: 13px; box-shadow: var(--shadow); }
+.soiling-model { background: var(--panel); border-radius: 9px; padding: clamp(1.4rem,3vw,2.6rem); }
+.soiling-model__label { font-size: .8rem; color: var(--muted); }
+.soiling-model__number { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: .8rem; }
+.soiling-model__number output { font-family: var(--font-display); font-size: clamp(2.8rem,5vw,4.5rem); line-height: 1; letter-spacing: -.06em; }
+.soiling-model__number span { font-size: .8rem; line-height: 1.7; color: var(--muted); }
+.energy-bars { margin-block: 1.5rem; }
+.energy-bars > div { display: flex; justify-content: space-between; gap: .5rem; padding: .55rem .7rem; font-size: .75rem; min-height: 2rem; white-space: nowrap; }
+.energy-bars__clean { background: var(--teal); color: var(--panel); border-radius: 3px; }
+.energy-bars__dust { width: 95%; margin-top: .45rem; background: var(--water-wash); border-radius: 3px; color: var(--brand-blue); }
+.soiling-model__inputs label { display: block; font-size: .8rem; }
+.soiling-model__inputs input { width: 100%; border: 0; background: var(--blue-wash); border-radius: 5px; font-size: 1rem; margin-top: .4rem; padding: .65rem .8rem; }
+.soiling-model__inputs label > span { display: block; color: var(--muted); font-size: .75rem; margin-top: .3rem; }
+.loss-control { display: block; margin-top: 1.1rem; }
+.loss-control > span { display: flex; justify-content: space-between; font-size: .8rem; }
+.loss-control output { color: var(--teal-ink); font-weight: 600; }
+.loss-control input { display: block; width: 100%; margin: .7rem 0 .35rem; accent-color: var(--teal); min-height: 24px; cursor: pointer; }
+.loss-control small { display: flex; justify-content: space-between; color: var(--muted); font-size: .75rem; }
+.soiling-model__note { margin-top: 1.2rem; font-size: .8rem; color: var(--muted); }
+@media(max-width:767px) { .soiling__grid { grid-template-columns: 1fr; gap: 2.5rem; } .soiling-model__number { flex-direction: column; align-items: flex-start; gap: .65rem; } .soiling-model__number output { font-size: 3.5rem; } }
+</style>

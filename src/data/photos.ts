@@ -1,9 +1,7 @@
 import type { ImageMetadata } from 'astro';
 import type { ServiceId } from './site';
-import solar from '../assets/photos/svc-solar.jpg';
-import birds from '../assets/photos/svc-birds.jpg';
-import windows from '../assets/photos/svc-windows.jpg';
-import pressure from '../assets/photos/svc-pressure.jpg';
-import junk from '../assets/photos/svc-junk.jpg';
+import home from '../assets/photos/desert-house.jpg';
+import modern from '../assets/photos/desert-modern.jpg';
 
-export const servicePhotos: Record<ServiceId, ImageMetadata> = { solar, birds, windows, pressure, junk };
+// Real regional architecture, used for context rather than as Clear Flow job proof.
+export const servicePhotos: Record<ServiceId, ImageMetadata> = { solar: home, birds: home, windows: modern, pressure: home, junk: modern };

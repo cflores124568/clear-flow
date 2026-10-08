@@ -13,6 +13,9 @@ export const email = {
 	href: 'mailto:clearflowofthedesert@gmail.com',
 };
 
+export const textHref = 'sms:+17604223069';
+export const cities = ['Cathedral City', 'Palm Springs', 'Rancho Mirage', 'Palm Desert', 'La Quinta', 'Indio', 'Indian Wells', 'Desert Hot Springs'];
+
 export type ServiceId = 'solar' | 'birds' | 'windows' | 'pressure' | 'junk';
 
 export type Service = {
@@ -32,10 +35,10 @@ export const services: Service[] = [
 	{
 		id: 'solar',
 		slug: 'solar-panel-cleaning',
-		name: 'Solar Panel Cleaning',
+		name: 'Solar panel cleaning',
 		chip: 'Solar panels',
 		line: 'Soft brushes and pure water lift dust and droppings.',
-		caption: 'Soft-brush solar cleaning',
+		caption: 'Palm Springs architecture · Carol M. Highsmith / Library of Congress',
 		lede: 'Desert dust, pollen and bird droppings build up on panels fast. We wash them with soft brushes and pure water, never a pressure washer.',
 		includes: [
 			{ title: 'Soft-brush wash', body: 'Every panel, edge to edge, with a brush made for solar glass.' },
@@ -46,10 +49,10 @@ export const services: Service[] = [
 	{
 		id: 'birds',
 		slug: 'bird-proofing',
-		name: 'Bird Proofing',
+		name: 'Bird proofing',
 		chip: 'Bird proofing',
 		line: 'Critter guard that keeps pigeons out from under your panels.',
-		caption: 'Fitting critter guard around a rooftop array',
+		caption: 'Palm Springs architecture · Carol M. Highsmith / Library of Congress',
 		lede: "Pigeons and other critters nest in the gap under rooftop panels. We clear out what's there and fit critter guard around the array so they can't get back in.",
 		includes: [
 			{ title: 'Nest and debris cleanout', body: 'Nesting material and droppings cleared from under the panels.' },
@@ -60,10 +63,10 @@ export const services: Service[] = [
 	{
 		id: 'windows',
 		slug: 'window-cleaning',
-		name: 'Window Cleaning',
+		name: 'Window cleaning',
 		chip: 'Windows',
 		line: 'Inside and out, frames and tracks included.',
-		caption: 'Squeegee on exterior glass',
+		caption: 'Palm Springs architecture · Carol M. Highsmith / Library of Congress',
 		lede: 'Clear glass changes how a whole room feels. We clean inside and out, and we do the frames and tracks while we are there.',
 		includes: [
 			{ title: 'Outside and inside glass', body: 'Ground floor by hand, high windows with a water-fed pole.' },
@@ -74,10 +77,10 @@ export const services: Service[] = [
 	{
 		id: 'pressure',
 		slug: 'pressure-washing',
-		name: 'Pressure Washing',
+		name: 'Pressure washing',
 		chip: 'Pressure washing',
 		line: 'Driveways, patios, walkways and walls.',
-		caption: 'Pressure washing a concrete driveway',
+		caption: 'Palm Springs architecture · Carol M. Highsmith / Library of Congress',
 		lede: 'Driveways, walkways and patios lose their color to tire marks, oil and grime. We bring the concrete back, and use a gentler soft wash on walls and stucco.',
 		includes: [
 			{ title: 'Driveways and walkways', body: 'Tire marks, drips and built-up grime lifted off the concrete.' },
@@ -88,10 +91,10 @@ export const services: Service[] = [
 	{
 		id: 'junk',
 		slug: 'junk-removal',
-		name: 'Junk Removal',
+		name: 'Junk removal',
 		chip: 'Junk removal',
 		line: 'Furniture, yard debris and garage clutter, hauled away.',
-		caption: 'Loading furniture for haul-away',
+		caption: 'Palm Springs architecture · Carol M. Highsmith / Library of Congress',
 		lede: "Point at what needs to go. We load it, haul it away and sweep up after, from a single sofa to a full garage.",
 		includes: [
 			{ title: 'Furniture and mattresses', body: 'Sofas, dressers, beds and the rest, carried out for you.' },
@@ -121,6 +124,8 @@ export const faqs = [
 ];
 
 export const serviceHref = (s: Service) => `/services/${s.slug}/`;
+
+export const coreServices = services.filter((service) => service.id !== 'birds');
 
 export const nav = [
 	{ href: '/services/', label: 'Services' },

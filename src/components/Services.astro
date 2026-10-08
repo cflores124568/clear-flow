@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
-import { serviceHref, services } from '../data/site';
+import { serviceHref, services, coreServices } from '../data/site';
 import { servicePhotos as photos } from '../data/photos';
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
 }
 
 const { showHeading = true } = Astro.props;
+const displayedServices = showHeading ? coreServices : services;
 ---
 
 <section class="services" id="services" aria-labelledby={showHeading ? 'services-title' : undefined} aria-label={showHeading ? undefined : 'Services'}>
@@ -21,16 +22,17 @@ const { showHeading = true } = Astro.props;
 						Services
 					</p>
 					<h2 id="services-title" class="display h2 services__title" data-reveal>
-						Five jobs, one crew you call.
+						Four services. <em>One standard of care.</em>
 					</h2>
 				</>
 			)
 		}
 
+		<p class="services__intro" data-reveal>Pick the care your home needs. We’ll take it from there.</p>
 		<div class="services__body" data-services>
 			<ol class="svc-list">
 				{
-					services.map((s, i) => (
+					displayedServices.map((s, i) => (
 						<li class:list={['svc', { 'is-active': i === 0 }]} data-svc={i} data-reveal style={`--delay:${i * 0.08}s`}>
 							<span class="svc__num">{String(i + 1).padStart(2, '0')}</span>
 							<div class="svc__text">
@@ -57,20 +59,20 @@ const { showHeading = true } = Astro.props;
 			<div class="svc-media" aria-hidden="true" data-svc-media>
 				<div class="svc-media__frame">
 					{
-						services.map((s, i) => (
+						displayedServices.map((s, i) => (
 							<Image
 								class:list={['svc-media__img', { 'is-active': i === 0 }]}
 								src={photos[s.id]}
 								widths={[480, 720, 1080]}
-								sizes="(min-width: 1024px) 34vw, 1px"
+								sizes="(min-width: 768px) 34vw, 100vw"
 								alt=""
 								data-svc-img={i}
 							/>
 						))
 					}
 				</div>
-				<p class="svc-media__caption" data-svc-caption>{services[0].caption}</p>
-				<template data-captions set:html={JSON.stringify(services.map((s) => s.caption))} />
+				<p class="svc-media__caption" data-svc-caption>{displayedServices[0].caption}</p>
+				<template data-captions set:html={JSON.stringify(displayedServices.map((s) => s.caption))} />
 			</div>
 		</div>
 	</div>
@@ -81,6 +83,8 @@ const { showHeading = true } = Astro.props;
 		padding-block: var(--section);
 	}
 
+	.services__intro { margin-top: 1.1rem; font-size: .82rem; color: var(--muted); }
+	.services__title em { color: var(--teal); }
 	.services__title {
 		margin-top: 1rem;
 	}
@@ -109,7 +113,7 @@ const { showHeading = true } = Astro.props;
 		grid-template-columns: 3.5rem minmax(0, 1fr) auto;
 		align-items: start;
 		gap: 0 1rem;
-		padding-block: clamp(1.5rem, 2.6vw, 2.25rem);
+		padding-block: clamp(1.5rem, 2.8vw, 2.6rem);
 		border-bottom: 1px solid var(--hair);
 		cursor: default;
 	}
@@ -117,7 +121,7 @@ const { showHeading = true } = Astro.props;
 	.svc__num {
 		padding-top: 0.6em;
 		color: var(--muted);
-		font-size: 1.125rem;
+		font-size: .65rem;
 	}
 
 	.svc__text {
@@ -125,11 +129,11 @@ const { showHeading = true } = Astro.props;
 	}
 
 	.svc.is-active .svc__text {
-		transform: translateX(0.75rem);
+		transform: translateX(0.3rem);
 	}
 
 	.svc__name {
-		font-size: clamp(2.25rem, 4.6vw, 4.25rem);
+		font-size: clamp(1.35rem, 2.4vw, 2.3rem);
 		font-family: var(--font-display);
 		font-weight: 500;
 		letter-spacing: -0.01em;
@@ -149,8 +153,9 @@ const { showHeading = true } = Astro.props;
 	}
 
 	.svc__line {
-		margin-top: 0.5rem;
+		margin-top: 0.6rem;
 		color: var(--muted);
+		font-size: .77rem;
 	}
 
 	.svc__add {
@@ -163,6 +168,7 @@ const { showHeading = true } = Astro.props;
 		border: 0;
 		background: none;
 		font-weight: 500;
+		font-size: .7rem;
 		cursor: pointer;
 		white-space: nowrap;
 	}
@@ -197,7 +203,8 @@ const { showHeading = true } = Astro.props;
 
 	.svc-media__frame {
 		position: relative;
-		aspect-ratio: 4 / 3;
+		aspect-ratio: 4 / 5;
+		border-radius: 8px;
 		overflow: hidden;
 		background: var(--surface-alt);
 		transform: translateY(var(--media-y, 0px));
@@ -224,20 +231,22 @@ const { showHeading = true } = Astro.props;
 
 	.svc-media__caption {
 		margin-top: 0.75rem;
-		font-size: 0.875rem;
+		font-size: .62rem;
 		color: var(--muted);
 		transform: translateY(var(--media-y, 0px));
 		transition: transform 0.8s var(--ease);
 	}
 
-	@media (max-width: 1023px) {
+	@media (max-width: 767px) {
 		.services__body {
 			grid-template-columns: 1fr;
 		}
 
 		.svc-media {
-			display: none;
+			display: block;
 		}
+		.svc-media__frame { aspect-ratio: 16 / 10; transform: none; }
+		.svc-media__caption { transform: none; }
 
 		.svc {
 			grid-template-columns: 2.5rem minmax(0, 1fr);

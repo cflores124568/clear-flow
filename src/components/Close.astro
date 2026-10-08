@@ -1,0 +1,21 @@
+---
+import { phone, textHref } from '../data/site';
+import Icon from './Icon.astro';
+---
+<section class="close" aria-labelledby="close-title"><div class="container close__grid"><div data-reveal><p class="label">One call. A lighter list.</p><h2 class="display" id="close-title">Let’s clear<br /><em>it all up.</em></h2></div><div class="close__actions" data-reveal><p>Your home, at its best.<br />Your day, still yours.</p><a class="btn" href="#quote">Build my quote<Icon name="arrowRight" /></a><a class="close__phone" href={phone.href}>{phone.display}<Icon name="phone" /></a><a class="close__text" href={textHref}>Prefer to text? Start here ↗</a></div></div></section>
+<style>
+.close { background: var(--navy); color: var(--panel); padding-block: var(--section); }
+.close__grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 3rem; align-items: center; }
+.close .label { color: var(--aqua-light); }
+.close h2 { margin-top: 1.4rem; font-size: clamp(3.3rem,7.6vw,7.2rem); line-height: 1.02; }
+.close h2 em { color: var(--aqua-light); }
+.close__actions { max-width: 24rem; }
+.close__actions > p { font-size: .9rem; color: var(--on-dark); }
+.close .btn { margin-top: 2rem; min-width: 13.8rem; background: var(--brand-aqua); color: var(--navy); }
+.close .btn:hover { background: var(--aqua-light); }
+
+.close__phone { display: flex; align-items: center; gap: 1rem; margin-top: 1.7rem; font-family: var(--font-display); font-size: clamp(1.6rem,3vw,2.4rem); line-height: 1.2; letter-spacing: -.045em; text-decoration: none; white-space: nowrap; }
+.close__phone :global(.icon) { font-size: 1rem; }
+.close__text { display: inline-flex; align-items: center; min-height: 44px; margin-top: .6rem; font-size: .68rem; color: var(--on-dark); text-underline-offset: .3em; }
+@media(max-width:767px) { .close__grid { grid-template-columns: 1fr; gap: 2.5rem; } .close h2 { font-size: clamp(3rem,13.3vw,5rem); } .close__actions { max-width: none; } .close .btn { width: 100%; } }
+</style>

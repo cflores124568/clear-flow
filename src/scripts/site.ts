@@ -1,228 +1,303 @@
-// Page behaviour for the landing page. Everything here is an enhancement: the
-// page reads, links and submits without it.
+export {};
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const scrollBehavior: ScrollBehavior = reducedMotion ? 'auto' : 'smooth';
+const serviceNames: Record<string, string> = { solar: 'Solar panels', windows: 'Windows', pressure: 'Pressure washing', junk: 'Junk removal', birds: 'Bird proofing' };
+const form = document.querySelector<HTMLFormElement>('[data-quote-form]');
+const quote = document.getElementById('quote');
+const formStatus = form?.querySelector<HTMLElement>('[data-form-status]');
+const panels = [...(form?.querySelectorAll<HTMLElement>('[data-step]') ?? [])];
+let stage = 0;
+let highestStage = 0;
+let photos: File[] = [];
+let previewUrls: string[] = [];
 
-// Header turns solid once the page hero's top edge has scrolled away. Pages
-// without a dark hero get the solid header from the start.
+const setStatus = (message: string, error = false) => {
+  if (!formStatus) return;
+  formStatus.textContent = message;
+  formStatus.classList.toggle('is-error', error);
+};
+const defaultStatus = formStatus?.textContent?.trim() ?? '';
+const initial = [...document.querySelectorAll<HTMLInputElement>('input[data-service]:checked')].map(input => input.dataset.service!);
+try {
+  initial.push(...JSON.parse(sessionStorage.getItem('clear-flow-services') ?? '[]').filter((id: string) => Object.hasOwn(serviceNames, id)));
+} catch { /* Storage may be unavailable in a private browsing context. */ }
+new URLSearchParams(window.location.search).getAll('service').forEach(id => { if (Object.hasOwn(serviceNames, id)) initial.push(id); });
+const selected = new Set<string>(initial);
+
+function renderSummary() {
+  const summary = form?.querySelector<HTMLElement>('[data-quote-summary]');
+  if (summary) summary.textContent = [...selected].map(id => serviceNames[id]).join(' · ') || 'Choose at least one service.';
+  const property = form?.querySelector<HTMLElement>('[data-property-summary]');
+  if (property && form) {
+    const data = new FormData(form);
+    property.textContent = [data.get('city'), data.get('propertySize'), data.get('stories'), photos.length ? `${photos.length} photo${photos.length === 1 ? '' : 's'}` : null].filter(Boolean).join(' · ');
+  }
+}
+function renderSelection() {
+  document.querySelectorAll<HTMLInputElement>('input[data-service]').forEach(input => { input.checked = selected.has(input.dataset.service!); });
+  document.querySelectorAll<HTMLButtonElement>('[data-add]').forEach(button => {
+    const on = selected.has(button.dataset.add!);
+    button.setAttribute('aria-pressed', String(on));
+    const off = button.querySelector<HTMLElement>('[data-label-off]');
+    const added = button.querySelector<HTMLElement>('[data-label-on]');
+    if (off) off.hidden = on;
+    if (added) added.hidden = !on;
+  });
+  document.querySelectorAll<HTMLElement>('[data-bundle-note]').forEach(note => {
+    note.textContent = selected.size > 1 ? `${selected.size} services, one visit. We’ll check bundle savings with your quote.` : 'One service or several. The same careful approach.';
+  });
+  form?.querySelectorAll<HTMLElement>('[data-scope]').forEach(scope => {
+    const on = selected.has(scope.dataset.scope!);
+    scope.hidden = !on;
+    scope.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select').forEach(input => { input.disabled = !on; });
+  });
+  try { sessionStorage.setItem('clear-flow-services', JSON.stringify([...selected])); } catch { /* Selection still works without storage. */ }
+  renderSummary();
+}
+function setService(id: string, on: boolean) {
+  if (!Object.hasOwn(serviceNames, id)) return;
+  if (on) selected.add(id); else selected.delete(id);
+  renderSelection();
+  if (stage === 0) setStatus(defaultStatus);
+}
+function showStage(nextStage: number, focus = true) {
+  if (!form) return;
+  stage = Math.max(0, Math.min(nextStage, panels.length - 1));
+  highestStage = Math.max(highestStage, stage);
+  panels.forEach((panel, i) => {
+    panel.hidden = i !== stage;
+    if (i === stage && !reducedMotion) panel.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 240, easing: 'cubic-bezier(.22,1,.36,1)' });
+  });
+  form.querySelectorAll<HTMLButtonElement>('.quote-progress [data-step-go]').forEach(button => {
+    const index = Number(button.dataset.stepGo);
+    button.disabled = index > highestStage;
+    button.classList.toggle('is-complete', index < stage);
+    if (index === stage) button.setAttribute('aria-current', 'step'); else button.removeAttribute('aria-current');
+  });
+  form.querySelector<HTMLElement>('[data-step-back]')!.hidden = stage === 0;
+  form.querySelector<HTMLElement>('[data-step-next]')!.hidden = stage === 3;
+  form.querySelector<HTMLElement>('[type="submit"]')!.hidden = stage !== 3;
+  const next = form.querySelector<HTMLButtonElement>('[data-step-next]');
+  if (next) next.childNodes[0].textContent = stage === 2 && !photos.length ? 'Skip photos ' : stage === 2 ? 'Review my quote ' : 'Continue ';
+  setStatus(defaultStatus);
+  renderSummary();
+  if (focus) {
+    panels[stage].querySelector<HTMLElement>('h3')?.focus({ preventScroll: true });
+    form.scrollIntoView({ behavior: scrollBehavior, block: 'start' });
+  }
+}
+function fieldError(name: string, message: string) {
+  if (!form) return;
+  const input = form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement | null;
+  input?.setAttribute('aria-invalid', 'true');
+  const error = form.querySelector<HTMLElement>(`[data-error="${name}"]`);
+  if (error) error.textContent = message;
+  setStatus(message, true);
+  input?.focus();
+}
+function validateStep(index: number): boolean {
+  if (!form) return false;
+  if (index === 0 && selected.size === 0) {
+    showStage(0);
+    setStatus('Choose at least one service to start your quote.', true);
+    form.querySelector<HTMLInputElement>('input[data-service]')?.focus();
+    return false;
+  }
+  if (index === 1) {
+    const city = form.elements.namedItem('city') as HTMLSelectElement;
+    if (!city.value) { showStage(1); fieldError('city', 'Choose your city so we can plan the visit.'); return false; }
+    const invalid = panels[1].querySelector<HTMLInputElement>('input:not(:disabled):invalid');
+    if (invalid) { showStage(1); setStatus('Add a whole number between 1 and 10,000, or leave the count blank.', true); invalid.focus(); return false; }
+  }
+  if (index === 3) {
+    const name = form.elements.namedItem('name') as HTMLInputElement;
+    const phone = form.elements.namedItem('phone') as HTMLInputElement;
+    if (!name.value.trim()) { showStage(3); fieldError('name', 'Please add your name.'); return false; }
+    const digits = phone.value.replace(/\D/g, '');
+    if (!/^\d{10}$/.test(digits) && !/^1\d{10}$/.test(digits)) { showStage(3); fieldError('phone', 'Add a 10-digit US phone number.'); return false; }
+  }
+  return true;
+}
+function openQuote() { showStage(0); }
+
+renderSelection();
+if (form) {
+  form.noValidate = true;
+  showStage(0, false);
+  form.querySelectorAll<HTMLButtonElement>('[data-step-go]').forEach(button => button.addEventListener('click', () => {
+    const next = Number(button.dataset.stepGo);
+    if (next <= highestStage) showStage(next);
+  }));
+  form.querySelector('[data-step-next]')?.addEventListener('click', () => { if (validateStep(stage)) showStage(stage + 1); });
+  form.querySelector('[data-step-back]')?.addEventListener('click', () => showStage(stage - 1));
+  form.addEventListener('input', event => {
+    const input = event.target as HTMLInputElement;
+    input.removeAttribute('aria-invalid');
+    const error = form.querySelector<HTMLElement>(`[data-error="${input.name}"]`);
+    if (error) error.textContent = '';
+    setStatus(defaultStatus);
+    renderSummary();
+  });
+  form.addEventListener('change', renderSummary);
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (![0, 1, 3].every(validateStep)) return;
+    const submit = form.querySelector<HTMLButtonElement>('[type="submit"]')!;
+    if (submit.disabled) return;
+    submit.disabled = true;
+    submit.setAttribute('aria-busy', 'true');
+    setStatus('Sending your property details…');
+    const payload = new FormData(form);
+    payload.delete('photos');
+    photos.forEach(photo => payload.append('photos', photo, photo.name));
+    try {
+      const response = await fetch(form.action, { method: 'POST', body: payload, headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(30000) });
+      const result = await response.json().catch(() => ({ success: false }));
+      if (!response.ok || !result.success) throw new Error(result.message || 'We couldn’t send your request. Please try again, or call 760-422-3069.');
+      form.querySelector<HTMLElement>('[data-form-fields]')!.hidden = true;
+      const done = form.querySelector<HTMLElement>('[data-form-done]')!;
+      done.hidden = false;
+      done.focus();
+      previewUrls.forEach(url => URL.revokeObjectURL(url));
+      photos = [];
+      selected.clear();
+      renderSelection();
+    } catch (error) {
+      setStatus(error instanceof Error && error.name !== 'TimeoutError' ? error.message : 'Sending took too long. Please try again, or call 760-422-3069.', true);
+    } finally { submit.disabled = false; submit.removeAttribute('aria-busy'); }
+  });
+
+  const upload = form.querySelector<HTMLInputElement>('[name="photos"]')!;
+  const previewList = form.querySelector<HTMLUListElement>('[data-photo-previews]')!;
+  const photoError = form.querySelector<HTMLElement>('[data-photo-error]')!;
+  const renderPhotos = () => {
+    previewUrls.forEach(url => URL.revokeObjectURL(url));
+    previewUrls = [];
+    previewList.replaceChildren();
+    photos.forEach((file, index) => {
+      const li = document.createElement('li');
+      const img = document.createElement('img');
+      const url = URL.createObjectURL(file);
+      previewUrls.push(url);
+      img.src = url; img.alt = `Selected property photo ${index + 1}`;
+      const label = document.createElement('span'); label.textContent = file.name;
+      const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = 'Remove'; remove.setAttribute('aria-label', `Remove ${file.name}`);
+      remove.addEventListener('click', () => { photos.splice(index, 1); photoError.textContent = ''; upload.removeAttribute('aria-invalid'); renderPhotos(); });
+      li.append(img, label, remove); previewList.append(li);
+    });
+    renderSummary();
+    if (stage === 2) showStage(2, false);
+  };
+  upload.addEventListener('change', () => {
+    const incoming = [...(upload.files ?? [])];
+    upload.value = '';
+    let error = '';
+    for (const file of incoming) {
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) { error = 'Choose JPG, PNG or WebP photos. Export HEIC photos as JPG first.'; continue; }
+      if (file.size > 4 * 1024 * 1024 || !file.size) { error = 'Each photo must be between 1 byte and 4 MB.'; continue; }
+      if (photos.some(p => p.name === file.name && p.size === file.size && p.lastModified === file.lastModified)) continue;
+      if (photos.length >= 3) { error = 'You can include up to 3 photos. Remove one to choose another.'; continue; }
+      photos.push(file);
+    }
+    photoError.textContent = error;
+    if (error) upload.setAttribute('aria-invalid', 'true'); else upload.removeAttribute('aria-invalid');
+    renderPhotos();
+  });
+}
+
+document.addEventListener('change', event => {
+  const input = event.target as HTMLInputElement;
+  if (input.matches?.('input[data-service]')) setService(input.dataset.service!, input.checked);
+});
+document.querySelectorAll<HTMLButtonElement>('[data-add]').forEach(button => button.addEventListener('click', () => setService(button.dataset.add!, !selected.has(button.dataset.add!))));
+document.querySelector<HTMLFormElement>('[data-starter]')?.addEventListener('submit', event => { event.preventDefault(); openQuote(); });
+document.querySelector('[data-select-solar]')?.addEventListener('click', () => { setService('solar', true); showStage(0, false); });
+document.querySelector('[data-recurring-interest]')?.addEventListener('click', () => {
+  const interest = form?.querySelector<HTMLInputElement>('[data-maintenance]');
+  if (interest) interest.checked = true;
+  showStage(0, false);
+});
+document.querySelectorAll<HTMLAnchorElement>('a[href="#quote"]').forEach(link => link.addEventListener('click', event => {
+  if (!form) return;
+  event.preventDefault();
+  openQuote();
+}));
+
 const header = document.querySelector<HTMLElement>('[data-header]');
 const hero = document.querySelector<HTMLElement>('[data-hero]');
 if (header && !hero) header.classList.add('is-solid');
 if (header && hero) {
-	const sentinel = document.createElement('div');
-	sentinel.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:64px;pointer-events:none';
-	hero.prepend(sentinel);
-	new IntersectionObserver(([entry]) => {
-		header.classList.toggle('is-solid', !entry.isIntersecting);
-	}).observe(sentinel);
+  const sentinel = document.createElement('span'); sentinel.className = 'header-sentinel'; hero.prepend(sentinel);
+  new IntersectionObserver(([entry]) => header.classList.toggle('is-solid', !entry.isIntersecting)).observe(sentinel);
 }
-
-// Close the mobile menu when one of its links is used.
 const menu = document.getElementById('menu');
-document.querySelectorAll('[data-close-menu]').forEach((link) => {
-	link.addEventListener('click', () => menu?.hidePopover?.());
-});
+document.querySelectorAll('[data-close-menu]').forEach(link => link.addEventListener('click', () => menu?.hidePopover?.()));
+const menuToggle = document.querySelector<HTMLElement>('[data-menu-toggle]');
+menu?.addEventListener('toggle', () => { const open = menu.matches(':popover-open'); menuToggle?.setAttribute('aria-expanded', String(open)); if (open) menu.querySelector<HTMLElement>('[data-close-menu]')?.focus(); });
 
-// One selection of services, mirrored everywhere it can be changed: the hero
-// starter, each service's "Add to quote", and the quote form itself. The form's
-// checkboxes are what actually get submitted.
-const selected = new Set<string>(
-	[...document.querySelectorAll<HTMLInputElement>('input[data-service]:checked')].map((input) => input.dataset.service!),
-);
-
-function renderSelection() {
-	document.querySelectorAll<HTMLInputElement>('input[data-service]').forEach((input) => {
-		input.checked = selected.has(input.dataset.service!);
-	});
-	document.querySelectorAll<HTMLButtonElement>('[data-add]').forEach((button) => {
-		const on = selected.has(button.dataset.add!);
-		button.setAttribute('aria-pressed', String(on));
-		button.querySelector<HTMLElement>('[data-label-off]')!.hidden = on;
-		button.querySelector<HTMLElement>('[data-label-on]')!.hidden = !on;
-	});
-}
-
-function setService(id: string, on: boolean) {
-	if (on) selected.add(id);
-	else selected.delete(id);
-	renderSelection();
-}
-
-renderSelection();
-
-document.addEventListener('change', (event) => {
-	const input = event.target as HTMLInputElement;
-	if (input.matches?.('input[data-service]')) setService(input.dataset.service!, input.checked);
-});
-
-document.querySelectorAll<HTMLButtonElement>('[data-add]').forEach((button) => {
-	button.addEventListener('click', () => setService(button.dataset.add!, !selected.has(button.dataset.add!)));
-});
-
-// The hero starter hands off to the full form instead of navigating.
-const nameField = document.getElementById('q-name') as HTMLInputElement | null;
-document.querySelector<HTMLFormElement>('[data-starter]')?.addEventListener('submit', (event) => {
-	event.preventDefault();
-	document.getElementById('quote')?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
-	nameField?.focus({ preventScroll: true });
-});
-
-// Services index: the active row drives which photo shows and where it sits.
 const servicesBody = document.querySelector<HTMLElement>('[data-services]');
 if (servicesBody) {
-	const rows = [...servicesBody.querySelectorAll<HTMLElement>('[data-svc]')];
-	const images = [...servicesBody.querySelectorAll<HTMLElement>('[data-svc-img]')];
-	const media = servicesBody.querySelector<HTMLElement>('[data-svc-media]');
-	const caption = servicesBody.querySelector<HTMLElement>('[data-svc-caption]');
-	const captions: string[] = JSON.parse(
-		servicesBody.querySelector<HTMLTemplateElement>('[data-captions]')?.innerHTML ?? '[]',
-	);
-	const frame = media?.querySelector<HTMLElement>('.svc-media__frame');
-
-	const activate = (index: number) => {
-		rows.forEach((row, i) => row.classList.toggle('is-active', i === index));
-		images.forEach((img, i) => img.classList.toggle('is-active', i === index));
-		if (caption && captions[index]) caption.textContent = captions[index];
-		if (media && frame) {
-			// Keep the photo level with its row, but never past the end of the list.
-			const max = servicesBody.offsetHeight - frame.offsetHeight - 40;
-			const y = Math.max(0, Math.min(rows[index].offsetTop - rows[0].offsetTop, max));
-			media.style.setProperty('--media-y', `${y}px`);
-		}
-	};
-
-	rows.forEach((row, i) => {
-		row.addEventListener('pointerenter', () => activate(i));
-		row.addEventListener('focusin', () => activate(i));
-	});
+  const rows = [...servicesBody.querySelectorAll<HTMLElement>('[data-svc]')];
+  const images = [...servicesBody.querySelectorAll<HTMLElement>('[data-svc-img]')];
+  const activate = (index: number) => { rows.forEach((row, i) => row.classList.toggle('is-active', i === index)); images.forEach((image, i) => image.classList.toggle('is-active', i === index)); };
+  rows.forEach((row, i) => { row.addEventListener('pointerenter', () => activate(i)); row.addEventListener('focusin', () => activate(i)); });
 }
 
-// The process path runs from each numeral to the next. It is measured from the
-// laid-out numerals so it lands on them at any width.
-const stepsPath = document.querySelector<SVGSVGElement>('[data-steps-path]');
-if (stepsPath) {
-	const steps = stepsPath.parentElement!;
-	const line = stepsPath.querySelector('polyline')!;
-	const draw = () => {
-		// Layout offsets, not client rects: the reveal animation moves the steps
-		// with transforms, and the line should match where they come to rest.
-		const within = (el: HTMLElement) => {
-			let x = 0;
-			let y = 0;
-			for (let node: HTMLElement | null = el; node && node !== steps; node = node.offsetParent as HTMLElement | null) {
-				x += node.offsetLeft;
-				y += node.offsetTop;
-			}
-			return { x, y };
-		};
-		const nums = [...steps.querySelectorAll<HTMLElement>('.step__num')].map((n) => {
-			const { x, y } = within(n);
-			return { left: x, right: x + n.offsetWidth, mid: y + n.offsetHeight * 0.5 };
-		});
-		if (!nums.length || !steps.offsetWidth) return;
-		stepsPath.setAttribute('viewBox', `0 0 ${steps.offsetWidth} ${steps.offsetHeight}`);
-		const pts: number[][] = [];
-		nums.forEach((n, i) => {
-			const next = nums[i + 1];
-			if (!next) return;
-			pts.push([n.right + 14, n.mid], [next.left - 46, n.mid], [next.left - 10, next.mid]);
-		});
-		line.setAttribute('points', pts.map((p) => p.map((v) => v.toFixed(1)).join(',')).join(' '));
-	};
-	draw();
-	new ResizeObserver(draw).observe(steps);
-	document.fonts?.ready.then(draw);
+const revealables = document.querySelectorAll<HTMLElement>('[data-reveal]');
+const waterLights = document.querySelectorAll<HTMLElement>('[data-water-light]');
+if (!reducedMotion && waterLights.length && 'IntersectionObserver' in window) {
+  const visible = new Set<HTMLElement>();
+  const update = () => waterLights.forEach(light => light.classList.toggle('is-running', visible.has(light) && !document.hidden));
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const light = entry.target as HTMLElement;
+      if (entry.isIntersecting) visible.add(light); else visible.delete(light);
+    });
+    update();
+  }, { threshold: 0 });
+  waterLights.forEach(light => observer.observe(light));
+  document.addEventListener('visibilitychange', update);
 }
-
-// Reveal-on-scroll, the aerial's pins, and the process line all key off one
-// observer that marks elements visible once and lets go.
-const revealables = document.querySelectorAll<HTMLElement>('[data-reveal], [data-pins], [data-draw]');
-if (reducedMotion || !('IntersectionObserver' in window)) {
-	revealables.forEach((el) => el.classList.add('is-visible'));
-} else {
-	const io = new IntersectionObserver(
-		(entries) => {
-			entries.forEach((entry) => {
-				if (!entry.isIntersecting) return;
-				entry.target.classList.add('is-visible');
-				io.unobserve(entry.target);
-			});
-		},
-		{ rootMargin: '0px 0px -12% 0px', threshold: 0.15 },
-	);
-	revealables.forEach((el) => io.observe(el));
-}
-
-// The sticky mobile bar steps aside while the quote form is on screen.
+if (!reducedMotion && 'IntersectionObserver' in window) {
+  const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); } }), { rootMargin: '0px 0px -25px 0px', threshold: .08 });
+  revealables.forEach(el => observer.observe(el));
+} else { revealables.forEach(el => el.classList.add('is-visible')); }
 const mbar = document.querySelector<HTMLElement>('[data-mbar]');
-const quote = document.getElementById('quote');
-if (mbar && quote) {
-	new IntersectionObserver(([entry]) => mbar.classList.toggle('is-hidden', entry.isIntersecting), {
-		threshold: 0.2,
-	}).observe(quote);
+if (mbar && form) {
+  const visibleQuoteControls = new Set<Element>();
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) visibleQuoteControls.add(entry.target);
+      else visibleQuoteControls.delete(entry.target);
+    });
+    const hide = visibleQuoteControls.size > 0;
+    mbar.classList.toggle('is-hidden', hide);
+    mbar.inert = hide;
+    mbar.setAttribute('aria-hidden', String(hide));
+  }, { threshold: 0 });
+  observer.observe(form);
+  const heroQuoteButton = document.querySelector<HTMLElement>('[data-starter] button[type="submit"]');
+  if (heroQuoteButton) observer.observe(heroQuoteButton);
 }
 
-// Quote form: validate in place, send in the background, swap in a thank-you.
-const form = document.querySelector<HTMLFormElement>('[data-quote-form]');
-if (form) {
-	const status = form.querySelector<HTMLElement>('[data-form-status]')!;
-	const fields = form.querySelector<HTMLElement>('[data-form-fields]')!;
-	const done = form.querySelector<HTMLElement>('[data-form-done]')!;
-	const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
-	const defaultNote = status.textContent?.trim() ?? '';
-
-	const setStatus = (text: string, isError = false) => {
-		status.textContent = text;
-		status.classList.toggle('is-error', isError);
-	};
-
-	const checks: [HTMLInputElement, (value: string) => string | null][] = [
-		[form.elements.namedItem('name') as HTMLInputElement, (v) => (v.trim() ? null : 'Please add your name.')],
-		[
-			form.elements.namedItem('phone') as HTMLInputElement,
-			(v) => (v.replace(/\D/g, '').length >= 10 ? null : 'Please add a phone number we can reach you on.'),
-		],
-	];
-
-	form.addEventListener('submit', async (event) => {
-		event.preventDefault();
-
-		for (const [input] of checks) input.removeAttribute('aria-invalid');
-		const failed = checks.find(([input, check]) => check(input.value) !== null);
-		if (failed) {
-			const [input, check] = failed;
-			input.setAttribute('aria-invalid', 'true');
-			setStatus(check(input.value)!, true);
-			input.focus();
-			return;
-		}
-
-		submit.disabled = true;
-		setStatus('Sending…');
-
-		try {
-			const response = await fetch(form.action, {
-				method: 'POST',
-				body: new FormData(form),
-				headers: { Accept: 'application/json' },
-			});
-			const result = await response.json().catch(() => ({ success: false }));
-			if (!response.ok || !result.success) throw new Error(result.message ?? 'Send failed');
-
-			fields.hidden = true;
-			done.hidden = false;
-			done.focus();
-		} catch {
-			setStatus("That didn't send. Please call 760-422-3069 and we'll quote you by phone.", true);
-			submit.disabled = false;
-		}
-	});
-
-	form.addEventListener('input', (event) => {
-		const input = event.target as HTMLInputElement;
-		if (input.getAttribute('aria-invalid') === 'true') {
-			input.removeAttribute('aria-invalid');
-			setStatus(defaultNote);
-		}
-	});
+const model = document.querySelector<HTMLElement>('[data-soiling]');
+if (model) {
+  const annual = model.querySelector<HTMLInputElement>('[data-annual-energy]')!;
+  const loss = model.querySelector<HTMLInputElement>('[data-soiling-loss]')!;
+  const renderModel = () => {
+    const energy = Math.min(200000, Math.max(0, Number(annual.value) || 0));
+    const percentage = Number(loss.value);
+    const lost = Math.round(energy * percentage / 100);
+    model.querySelector<HTMLElement>('[data-loss-output]')!.textContent = lost.toLocaleString();
+    model.querySelector<HTMLElement>('[data-percent-output]')!.textContent = `${percentage}%`;
+    model.querySelector<HTMLElement>('[data-clean-energy]')!.textContent = `${energy.toLocaleString()} kWh`;
+    model.querySelector<HTMLElement>('[data-dust-energy]')!.textContent = `${(energy - lost).toLocaleString()} kWh`;
+    model.querySelector<HTMLElement>('.energy-bars__dust')!.style.width = `${100 - percentage}%`;
+  };
+  annual.addEventListener('input', renderModel); loss.addEventListener('input', renderModel); renderModel();
 }
+// Only opt into enhancement styling once every controller is initialized.
+document.documentElement.classList.add('js');
+
+if (new URLSearchParams(window.location.search).get('delivery') === 'failed') setStatus('Your request did not send. Please try again, or call or text 760-422-3069.', true);

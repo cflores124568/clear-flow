@@ -1,0 +1,62 @@
+---
+interface Props { id: string; }
+const { id } = Astro.props;
+type Point = [number, number];
+// A warped network of shared light paths forms an original caustic field.
+// Each shared edge is drawn once to keep the vector texture lightweight.
+const refract = (x: number, y: number): Point => [
+  x + 64 * Math.sin(y * .021 + x * .009) + 28 * Math.sin(y * .041 - x * .012),
+  y + 48 * Math.sin(x * .018 - y * .015) + 20 * Math.sin(x * .043 + y * .033),
+];
+const number = (value: number) => value.toFixed(1);
+const contour = (points: Point[]) => {
+  let d = `M ${number(points[0][0])} ${number(points[0][1])}`;
+  points.slice(0, -1).forEach((p, i) => {
+    const before = points[Math.max(0, i - 1)];
+    const next = points[i + 1];
+    const after = points[Math.min(points.length - 1, i + 2)];
+    d += ` C ${number(p[0] + (next[0] - before[0]) / 6)} ${number(p[1] + (next[1] - before[1]) / 6)}, ${number(next[0] - (after[0] - p[0]) / 6)} ${number(next[1] - (after[1] - p[1]) / 6)}, ${number(next[0])} ${number(next[1])}`;
+  });
+  return d;
+};
+const paths: string[] = [];
+const edges = new Set<string>();
+const width = Math.sqrt(3) * 99;
+for (let row = -1; row < 8; row++) {
+  for (let column = -1; column < 9; column++) {
+    const x = column * width + (row % 2 ? width / 2 : 0);
+    const y = row * 111.375;
+    const vertices: Point[] = Array.from({ length: 6 }, (_, i) => {
+      const angle = Math.PI / 6 + i * Math.PI / 3;
+      return [x + Math.cos(angle) * 99, y + Math.sin(angle) * 74.25];
+    });
+    vertices.forEach((start, i) => {
+      const end = vertices[(i + 1) % vertices.length];
+      const key = [start.map(number).join(','), end.map(number).join(',')].sort().join('|');
+      if (edges.has(key)) return;
+      edges.add(key);
+      const points = Array.from({ length: 5 }, (_, j) => refract(start[0] + (end[0] - start[0]) * j / 4, start[1] + (end[1] - start[1]) * j / 4));
+      paths.push(contour(points));
+    });
+  }
+}
+---
+<div class="water-light" data-water-light aria-hidden="true">
+  <svg viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <defs><g id={id}>{paths.map(d => <path d={d} />)}</g></defs>
+    <use href={`#${id}`} fill="none" stroke="var(--brand-blue)" stroke-width="3.6" opacity=".18" />
+    <use href={`#${id}`} fill="none" stroke="var(--brand-aqua)" stroke-width="1.4" opacity=".4" />
+  </svg>
+</div>
+<style>
+.water-light { position: absolute; inset: 0; overflow: hidden; pointer-events: none; opacity: .45; }
+svg { position: absolute; width: 120%; height: 120%; left: -10%; top: -10%; }
+@media (prefers-reduced-motion: no-preference) {
+  svg { animation: water-drift 24s var(--ease) infinite; animation-play-state: paused; }
+  .water-light.is-running svg { animation-play-state: running; }
+}
+@keyframes water-drift {
+  0%, 100% { transform: translate3d(0,0,0) rotate(-.5deg) scale(1.02); }
+  50% { transform: translate3d(-12px,8px,0) rotate(.5deg) scale(1.04); }
+}
+</style>

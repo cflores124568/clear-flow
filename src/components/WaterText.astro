@@ -1,0 +1,18 @@
+---
+interface Props { text: string; }
+const { text } = Astro.props;
+---
+<em class="water-text" data-water-text><span class="water-text__copy" data-water-copy>{text}</span><canvas class="water-text__surface" aria-hidden="true"></canvas></em>
+
+<script>
+  import { initWaterText } from '../scripts/water-text';
+  document.querySelectorAll<HTMLElement>('[data-water-text]').forEach(initWaterText);
+</script>
+
+<style>
+.water-text { position: relative; display: inline-block; color: var(--aqua-light); font-style: normal; white-space: nowrap; }
+.water-text__surface { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
+.water-text.is-ready .water-text__surface { opacity: 1; }
+.water-text.is-ready .water-text__copy { color: transparent; }
+@media (forced-colors: active) { .water-text__surface { display: none; } .water-text.is-ready .water-text__copy { color: CanvasText; } }
+</style>

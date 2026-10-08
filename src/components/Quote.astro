@@ -1,294 +1,175 @@
 ---
 import Icon from './Icon.astro';
-import { email, phone, services, type ServiceId } from '../data/site';
-
-interface Props {
-	// Services ticked when the page loads, e.g. the one a service page is about.
-	preselect?: ServiceId[];
-	// On the contact page the section is the page itself: it gets the h1 and
-	// room for the header above it.
-	standalone?: boolean;
-}
-
+import { cities, coreServices, phone, textHref, type ServiceId } from '../data/site';
+interface Props { preselect?: ServiceId[]; standalone?: boolean; }
 const { preselect = [], standalone = false } = Astro.props;
 const Heading = standalone ? 'h1' : 'h2';
+const steps = ['Services', 'Property', 'Photos', 'Your quote'];
 ---
-
-<section class:list={['quote', { 'quote--standalone': standalone }]} id="quote" aria-labelledby="quote-title" data-hero={standalone ? '' : undefined}>
-	<div class="container quote__grid">
-		<div class="quote__lead">
-			<p class="label quote__label">Get a quote</p>
-			<Heading id="quote-title" class="display quote__title">Let's clear it up.</Heading>
-			<a class="quote__phone" href={phone.href}>{phone.display}</a>
-			<a class="link quote__tap" href={phone.href}>
-				<Icon name="phone" />
-				Tap to call
-			</a>
-			<a class="link quote__email" href={email.href}>
-				<Icon name="envelope" />
-				{email.display}
-			</a>
-		</div>
-
-		<form class="form" action="/api/quote/" method="post" data-quote-form novalidate>
-			<div class="form__fields" data-form-fields>
-				<h3 class="form__title">Request a quote</h3>
-
-				<fieldset class="form__services">
-					<legend class="sr-only">Services</legend>
-					<div class="chips">
-						{
-							services.map((s) => (
-								<label class="chip">
-									<input type="checkbox" name="services" value={s.id} data-service={s.id} checked={preselect.includes(s.id)} />
-									<span>{s.chip}</span>
-								</label>
-							))
-						}
-					</div>
-				</fieldset>
-
-				<div class="field">
-					<label for="q-name">Name</label>
-					<input id="q-name" name="name" type="text" autocomplete="name" placeholder="Your name" required maxlength="120" />
-				</div>
-				<div class="field">
-					<label for="q-phone">Phone</label>
-					<input
-						id="q-phone"
-						name="phone"
-						type="tel"
-						inputmode="tel"
-						autocomplete="tel"
-						placeholder="Your phone number"
-						required
-						maxlength="40"
-					/>
-				</div>
-
-				<div class="form__trap" aria-hidden="true">
-					<label for="q-botcheck">Leave this empty</label>
-					<input id="q-botcheck" type="text" name="botcheck" tabindex="-1" autocomplete="off" />
-				</div>
-
-				<button class="btn form__submit" type="submit">
-					Send request
-					<Icon name="arrowRight" />
-				</button>
-				<p class="form__note" data-form-status role="status" aria-live="polite">
-					Estimates are free. We'll reply with a quote for your property.
-				</p>
-			</div>
-
-			<div class="form__done" data-form-done hidden tabindex="-1">
-				<Icon name="check" class="form__done-icon" />
-				<h3 class="form__title">Request sent.</h3>
-				<p>Thanks. We'll be in touch with your quote. Need it sooner? Call <a href={phone.href}>{phone.display}</a>.</p>
-			</div>
-		</form>
-	</div>
+<section class:list={['quote', { 'quote--standalone': standalone }]} id="quote" aria-labelledby="quote-title">
+  <div class="container quote__grid">
+    <div class="quote__lead" data-reveal>
+      <p class="label">Your home. Your combination.</p>
+      <Heading id="quote-title" class="display h2 quote__title">A clearer home.<br /><em>A simpler day.</em></Heading>
+      <p class="lede">Pick what needs care. Tell us a little about your property. We’ll bring it together in one clear quote.</p>
+      <div class="quote__promise"><span class="quote__promise-number">24<span>h</span></span><div><strong>Your exact quote, in under 24 hours.</strong><p>Free estimate. No booking commitment.</p></div></div>
+      <p class="quote__bundle">More than one service? We’ll check bundle savings when we price your visit.</p>
+      <a class="link" href={phone.href}><Icon name="phone" />Prefer a conversation? {phone.display}</a>
+      <a class="quote__text link" href={textHref}>Or start with a text<Icon name="arrowRight" /></a>
+    </div>
+    <div class="quote__shell">
+      <form class="form" action="/api/quote/" method="post" enctype="multipart/form-data" data-quote-form>
+        <div class="form__fields" data-form-fields>
+          <div class="form__top"><span class="label">Build my quote</span><span class="form__free">Always a free estimate</span></div>
+          <nav class="quote-progress" aria-label="Quote progress" data-progress>
+            {steps.map((step, i) => <button type="button" data-step-go={i} aria-current={i === 0 ? 'step' : undefined} disabled={i > 0}><span>{String(i + 1).padStart(2, '0')}</span>{step}</button>)}
+          </nav>
+          <noscript><p class="form__note">If a previous request did not send, call or text <a href={phone.href}>{phone.display}</a>, or complete the form to try again.</p></noscript>
+          <section class="quote-step" data-step="0" aria-labelledby="step-services">
+            <h3 class="form__title" id="step-services" tabindex="-1">What can we take care of?</h3>
+            <p class="form__intro">Choose one service, or make it a full-property visit.</p>
+            <fieldset class="form__services"><legend class="sr-only">Services</legend><div class="chips">{coreServices.map((s) => <label class="chip"><input type="checkbox" name="services" value={s.id} data-service={s.id} aria-label={s.chip} checked={preselect.includes(s.id)} /><span>{s.chip}</span></label>)}</div></fieldset>
+            <details class="form__extra" open={preselect.includes('birds')}><summary>Need bird proofing around your panels?</summary><label class="chip"><input type="checkbox" name="services" value="birds" data-service="birds" aria-label="Bird proofing" checked={preselect.includes('birds')} /><span>Bird proofing</span></label></details>
+            <p class="form__bundle" data-bundle-note aria-live="polite">One service or several. The same careful approach.</p>
+          </section>
+          <section class="quote-step" data-step="1" aria-labelledby="step-property">
+            <h3 class="form__title" id="step-property" tabindex="-1">A little about your property.</h3>
+            <p class="form__intro">An approximate size is fine. We’ll confirm the details with you.</p>
+            <div class="field-grid">
+              <div class="field"><label for="q-city">City</label><select id="q-city" name="city" required aria-describedby="error-city"><option value="">Choose your city</option>{cities.map(city => <option>{city}</option>)}<option>Other Coachella Valley city</option></select><span class="field__error" data-error="city" id="error-city"></span></div>
+              <div class="field"><label for="q-size">Home size</label><select id="q-size" name="propertySize"><option value="Not sure">Not sure yet</option><option>Under 1,500 sq ft</option><option>1,500–2,500 sq ft</option><option>2,500–4,000 sq ft</option><option>Over 4,000 sq ft</option><option>Commercial property</option></select></div>
+            </div>
+            <fieldset class="form__stories"><legend>How many stories?</legend><div class="story-options"><label><input type="radio" name="stories" value="One story" checked /><span>One</span></label><label><input type="radio" name="stories" value="Two stories" /><span>Two</span></label><label><input type="radio" name="stories" value="Three or more stories" /><span>Three+</span></label><label><input type="radio" name="stories" value="Not sure" /><span>Not sure</span></label></div></fieldset>
+            <div class="field-grid scope-fields">
+              <div class="field" data-scope="solar"><label for="q-panels">Solar panels <small>approx.</small></label><input id="q-panels" name="panelCount" type="number" min="1" max="10000" inputmode="numeric" placeholder="e.g. 24" /></div>
+              <div class="field" data-scope="windows"><label for="q-windows">Window count <small>approx.</small></label><input id="q-windows" name="windowCount" type="number" min="1" max="10000" inputmode="numeric" placeholder="e.g. 18" /></div>
+              <div class="field" data-scope="pressure"><label for="q-surfaces">Surfaces to wash</label><select id="q-surfaces" name="surfaces"><option>Not sure yet</option><option>Driveway / walkway</option><option>Patio / pool deck</option><option>Driveway + patio</option><option>Full exterior</option></select></div>
+              <div class="field" data-scope="junk"><label for="q-junk">What needs hauling?</label><select id="q-junk" name="junkAmount"><option>Not sure yet</option><option>A few items</option><option>About a pickup load</option><option>Garage / storage cleanout</option><option>Yard debris</option></select></div>
+            </div>
+            <div class="field"><label for="q-notes">Anything we should know? <small>optional</small></label><textarea id="q-notes" name="notes" rows="2" maxlength="1200" placeholder="Access, timing, or a particular area that needs attention…"></textarea></div>
+          </section>
+          <section class="quote-step" data-step="2" aria-labelledby="step-photos">
+            <h3 class="form__title" id="step-photos" tabindex="-1">A photo says a little more.</h3>
+            <p class="form__intro">A quick view of the panels, windows, surfaces or items helps us price the visit. This step is optional.</p>
+            <div class="photo-upload"><Icon name="plus" /><label for="q-photos">Add property photos</label><span>JPG, PNG or WebP · up to 3 photos · 4 MB each</span><input id="q-photos" name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple aria-describedby="photo-help" /></div>
+            <p id="photo-help" class="photo-help">Keep faces and private information out of the frame. Photos go only with your quote request.</p>
+            <ul class="photo-previews" data-photo-previews aria-label="Selected photos"></ul>
+            <p class="field__error" data-photo-error role="status"></p>
+          </section>
+          <section class="quote-step" data-step="3" aria-labelledby="step-contact">
+            <h3 class="form__title" id="step-contact" tabindex="-1">Where should we send your quote?</h3>
+            <p class="form__intro">We’ll follow up personally, with a price for your property.</p>
+            <div class="quote-review" data-quote-review><div><span>Your visit</span><button class="form__edit" type="button" data-step-go="0">Edit</button></div><p data-quote-summary>Choose your services above.</p><small data-property-summary></small></div>
+            <div class="field-grid">
+              <div class="field"><label for="q-name">Your name</label><input id="q-name" name="name" type="text" autocomplete="name" placeholder="Full name" required maxlength="120" aria-describedby="error-name" /><span class="field__error" data-error="name" id="error-name"></span></div>
+              <div class="field"><label for="q-phone">Phone number</label><input id="q-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(760) 000-0000" required maxlength="40" aria-describedby="error-phone" /><span class="field__error" data-error="phone" id="error-phone"></span></div>
+            </div>
+            <fieldset class="form__preference"><legend>Best way to reach you</legend><label><input type="radio" name="contactPreference" value="Text" checked /> Text</label><label><input type="radio" name="contactPreference" value="Call" /> Call</label></fieldset>
+            <label class="maintenance-choice"><input type="checkbox" name="maintenance" value="Interested in recurring care" data-maintenance /><span>I’d also like to hear about recurring care.<small>No commitment. Just an option for your quote.</small></span></label>
+            <p class="form__privacy">By sending, you’re asking Clear Flow to contact you about this request. <a href="/privacy/">Privacy policy</a></p>
+          </section>
+          <div class="form__trap" aria-hidden="true"><label for="q-botcheck">Leave this empty</label><input id="q-botcheck" type="text" name="botcheck" tabindex="-1" autocomplete="off" /></div>
+          <div class="form__controls"><button class="form__back" type="button" data-step-back>← Back</button><button class="btn form__next" type="button" data-step-next>Continue<Icon name="arrowRight" /></button><button class="btn form__submit" type="submit">Request my quote<Icon name="arrowRight" /></button></div>
+          <p class="form__note" data-form-status role="status" aria-live="polite">Your exact quote in under 24 hours. No obligation.</p>
+          <noscript><p class="form__note">Complete the fields above and send your request. Photos are optional.</p></noscript>
+        </div>
+        <div class="form__done" data-form-done hidden tabindex="-1"><Icon name="check" class="form__done-icon" /><h3 class="form__title">Consider it in motion.</h3><p>Your request is with Clear Flow. We’ll be in touch with your exact quote in under 24 hours.</p><a class="link" href={phone.href}>Need to add something? {phone.display}</a></div>
+      </form>
+    </div>
+  </div>
 </section>
-
 <style>
-	.quote {
-		padding-block: var(--section);
-		background: var(--navy);
-		color: #fff;
-	}
-
-	@media (prefers-color-scheme: dark) {
-		.quote {
-			background: var(--navy-deep);
-		}
-	}
-
-	.quote--standalone {
-		min-height: 100svh;
-		padding-top: clamp(8rem, 14vw, 10rem);
-		display: flex;
-		align-items: center;
-	}
-
-	.quote__grid {
-		display: grid;
-		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-		gap: clamp(2.5rem, 6vw, 6rem);
-		align-items: center;
-	}
-
-	.quote__label {
-		color: var(--teal);
-	}
-
-	.quote__title {
-		margin-top: 1rem;
-		font-size: clamp(3rem, 6.6vw, 6.25rem);
-	}
-
-	.quote__phone {
-		display: block;
-		width: fit-content;
-		margin-top: clamp(1.5rem, 3vw, 2.5rem);
-		font-size: clamp(3rem, 8vw, 7.25rem);
-		font-family: var(--font-display);
-		font-weight: 500;
-		letter-spacing: -0.01em;
-		line-height: 1;
-		text-decoration: none;
-		font-variant-numeric: tabular-nums;
-		white-space: nowrap;
-	}
-
-	.quote__phone:hover {
-		color: var(--teal);
-	}
-
-	.quote__tap {
-		margin-top: 1.25rem;
-	}
-
-	.quote__email {
-		display: flex;
-		width: fit-content;
-		max-width: 100%;
-		margin-top: 0.75rem;
-		overflow-wrap: anywhere;
-	}
-
-	.form {
-		padding: clamp(1.5rem, 3vw, 2.5rem);
-		border-radius: var(--radius);
-		background: var(--panel);
-		color: var(--ink);
-	}
-
-	.form__title {
-		font-size: clamp(1.75rem, 2.6vw, 2.375rem);
-		font-family: var(--font-display);
-		font-weight: 600;
-		letter-spacing: -0.01em;
-		line-height: 1.05;
-	}
-
-	.form__services {
-		margin: 1.5rem 0 0;
-		padding: 0;
-		border: 0;
-	}
-
-	.field {
-		margin-top: 1.25rem;
-	}
-
-	.field label {
-		display: block;
-		margin-bottom: 0.45rem;
-		font-weight: 500;
-	}
-
-	.field input {
-		width: 100%;
-		min-height: 3.25rem;
-		padding: 0 1rem;
-		border: 1px solid var(--hair);
-		border-radius: var(--radius);
-		background: var(--panel);
-		font-size: 1.0625rem;
-		transition: border-color 0.2s var(--ease);
-	}
-
-	.field input::placeholder {
-		color: var(--muted);
-	}
-
-	.field input:hover {
-		border-color: color-mix(in srgb, var(--hair), var(--ink) 25%);
-	}
-
-	.field input:focus-visible {
-		outline: none;
-		border-color: var(--teal);
-		box-shadow: 0 0 0 3px color-mix(in srgb, var(--teal) 30%, transparent);
-	}
-
-	.field input[aria-invalid='true'] {
-		border-color: #c2412d;
-	}
-
-	.form__trap {
-		position: absolute;
-		left: -9999px;
-		width: 1px;
-		height: 1px;
-		overflow: hidden;
-	}
-
-	.form__submit {
-		width: 100%;
-		margin-top: 1.75rem;
-	}
-
-	.form__submit[disabled] {
-		opacity: 0.7;
-		cursor: progress;
-	}
-
-	.form__note {
-		margin-top: 0.9rem;
-		text-align: center;
-		font-size: 0.9375rem;
-		color: var(--muted);
-	}
-
-	.form__note.is-error {
-		color: #c2412d;
-	}
-
-	@media (prefers-color-scheme: dark) {
-		.field input[aria-invalid='true'] {
-			border-color: #f08a76;
-		}
-
-		.form__note.is-error {
-			color: #f08a76;
-		}
-	}
-
-	.form__done {
-		padding-block: 2rem;
-		text-align: center;
-		outline: none;
-	}
-
-	.form__done :global(.form__done-icon) {
-		justify-content: center;
-		width: 3.5rem;
-		height: 3.5rem;
-		margin: 0 auto 1.25rem;
-		align-items: center;
-		border-radius: 50%;
-		background: var(--teal);
-		color: var(--on-teal);
-		font-size: 1.5rem;
-	}
-
-	.form__done p {
-		margin-top: 0.75rem;
-		color: var(--muted);
-	}
-
-	@media (max-width: 1023px) {
-		.quote__grid {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	.form__services .chips {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-	}
-
-	.form__services .chip span {
-		width: 100%;
-	}
+.quote { padding-block: var(--section); scroll-margin-top: 1rem; }
+.quote--standalone { padding-top: 10rem; min-height: 100dvh; }
+.quote__grid { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1fr); gap: clamp(3rem, 7vw, 7rem); align-items: start; }
+.quote__lead { padding-top: 2rem; }
+.quote__title { margin-top: 1.4rem; }
+.quote__lead .lede { margin-top: 1.7rem; max-width: 35ch; font-size: .88rem; }
+.quote__title em { color: var(--teal); }
+.quote__promise { display: flex; align-items: center; gap: 1.2rem; margin-top: 2.8rem; padding-block: 1.3rem; border-block: 1px solid var(--hair); }
+.quote__promise-number { font-family: var(--font-display); font-size: 3.7rem; line-height: 1; }
+.quote__promise-number span { font-size: 1.5rem; }
+.quote__promise strong { font-size: .85rem; font-weight: 600; }
+.quote__promise p { color: var(--muted); font-size: .78rem; margin-top: .3rem; }
+.quote__bundle { font-size: .81rem; color: var(--muted); max-width: 39ch; margin-block: 1.25rem 1.4rem; }
+.quote__lead .link { font-size: .8rem; }
+.quote__text { display: flex; width: fit-content; }
+.quote__shell { padding: .45rem; border-radius: 16px; background: linear-gradient(135deg, #fff 0%, var(--water-edge) 47%, var(--blue-wash) 100%); box-shadow: 0 26px 72px -30px rgb(29 95 150 / .18), inset 0 1px 0 #fff, inset 0 -1px 0 rgb(29 95 150 / .12); }
+.form { scroll-margin-top: .5rem; border-radius: 10px; background: linear-gradient(145deg, var(--panel), var(--water)); padding: clamp(1.35rem, 3.2vw, 2.6rem); min-height: 30rem; box-shadow: inset 0 1px 0 #fff, inset 0 0 0 1px rgb(255 255 255 / .8), 0 2px 7px rgb(29 95 150 / .04); }
+.form__top { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+.form__top .label { font-size: .75rem; }
+.form__free { font-size: .75rem; color: var(--muted); }
+.quote-progress { display: none; }
+:global(.js) .quote-progress { display: grid; grid-template-columns: repeat(4, 1fr); margin-block: 1.6rem 2rem; }
+.quote-progress button { display: flex; flex-direction: column; gap: .4rem; text-align: left; background: none; padding: 0 0 .75rem; border: 0; border-bottom: 2px solid var(--hair); font-size: .75rem; font-weight: 500; cursor: pointer; transition: color 250ms var(--ease), border-color 250ms var(--ease); }
+.quote-progress button span { font-size: .75rem; }
+.quote-progress button[aria-current='step'] { color: var(--teal-ink); border-color: var(--teal); }
+.quote-progress button.is-complete { border-color: var(--brand-aqua); color: var(--teal-ink); }
+.quote-progress button:disabled { cursor: default; color: var(--muted); }
+.quote-step { margin-top: 2rem; }
+:global(.js) .quote-step { margin-top: 0; min-height: 14.6rem; }
+.form__title { font-family: var(--font-display); font-size: clamp(1.35rem, 1.85vw, 1.7rem); font-weight: 500; line-height: 1.2; letter-spacing: -.025em; word-spacing: .025em; outline: none; }
+.form__intro { font-size: .875rem; color: var(--muted); margin-top: .7rem; max-width: 50ch; }
+.form__services { margin: 1.3rem 0 0; padding: 0; border: 0; }
+.form__services .chips { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+.form__services :global(.chip span) { font-size: .85rem; width: 100%; min-height: 3.4rem; }
+.form__extra { margin-top: 1rem; font-size: .8rem; color: var(--muted); }
+.form__extra summary { cursor: pointer; padding-block: .3rem; }
+.form__extra .chip { display: inline-block; margin-top: .6rem; }
+.form__bundle { margin-top: 1.1rem; color: var(--teal-ink); font-size: .8rem; padding-left: .7rem; border-left: 2px solid var(--brand-aqua); }
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.field { margin-top: 1rem; min-width: 0; }
+.field label, .form__stories legend, .form__preference legend { display: block; font-size: .78rem; font-weight: 600; margin-bottom: .45rem; }
+.field small { color: var(--muted); font-weight: 400; font-size: .75rem; margin-left: .3rem; }
+.field input, .field select, .field textarea { width: 100%; min-height: 3.1rem; padding: .7rem .8rem; border: 0; border-radius: 5px; background: var(--blue-wash); box-shadow: inset 0 1px 2px rgb(29 95 150 / .06), inset 0 -1px 0 rgb(255 255 255 / .85); font-size: 1rem; transition: background-color 250ms var(--ease), box-shadow 250ms var(--ease); }
+.field select { font-size: .81rem; padding-right: .4rem; }
+.field textarea { resize: vertical; min-height: 5rem; font-size: .8rem; }
+.field input::placeholder, .field textarea::placeholder { color: var(--muted); font-size: .75rem; }
+.field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible { outline-offset: 2px; background: var(--panel); }
+.field [aria-invalid='true'] { outline: 1px solid #a84832; }
+.field__error { display: block; font-size: .75rem; color: #a84832; margin-top: .3rem; }
+.form__stories, .form__preference { border: 0; padding: 0; margin: 1.25rem 0 0; }
+.story-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: .4rem; }
+.story-options label { position: relative; cursor: pointer; }
+.story-options input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; }
+.story-options span { display: block; padding: .7rem .2rem; border-radius: 4px; background: var(--blue-wash); text-align: center; font-size: .8rem; transition: background-color 250ms var(--ease); }
+.story-options input:checked + span { background: var(--brand-blue); color: var(--panel); }
+.story-options input:focus-visible + span { outline: 2px solid var(--teal); outline-offset: 2px; }
+.photo-upload { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-height: 11rem; gap: .4rem; margin-top: 1.5rem; border: 1px dashed var(--brand-blue); border-radius: 8px; background: var(--water); text-align: center; }
+.photo-upload :global(.icon) { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; background: var(--water-wash); color: var(--brand-blue); border-radius: 3px; margin-bottom: .3rem; }
+.photo-upload label { font-size: .78rem; font-weight: 600; }
+.photo-upload span { color: var(--muted); font-size: .75rem; }
+.photo-upload input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.photo-upload:focus-within { outline: 2px solid var(--teal); outline-offset: 3px; }
+.photo-help { margin-top: .7rem; font-size: .75rem; color: var(--muted); }
+.photo-previews { list-style: none; padding: 0; margin: 1rem 0 0; }
+.photo-previews li { display: flex; align-items: center; gap: .7rem; margin-top: .5rem; font-size: .78rem; overflow-wrap: anywhere; }
+.photo-previews img { width: 3rem; height: 3rem; object-fit: cover; border-radius: 3px; }
+.photo-previews button { margin-left: auto; flex: none; min-width: 44px; min-height: 44px; background: none; border: 0; color: var(--teal-ink); cursor: pointer; font-size: .75rem; }
+.quote-review { margin-top: 1.3rem; padding: 1rem; border-radius: 6px; background: var(--water-wash); }
+.quote-review > div { display: flex; justify-content: space-between; align-items: center; font-size: .75rem; color: var(--muted); }
+.quote-review p { font-size: .77rem; font-weight: 500; margin-top: .3rem; }
+.quote-review small { display: block; font-size: .75rem; margin-top: .3rem; color: var(--muted); }
+.form__edit { background: none; border: 0; padding: .3rem; min-height: 32px; text-decoration: underline; font-size: .75rem; color: var(--teal-ink); cursor: pointer; }
+.form__preference label { display: inline-flex; align-items: center; gap: .35rem; margin-right: 1rem; font-size: .75rem; min-height: 44px; }
+input[type='radio'], input[type='checkbox'] { accent-color: var(--teal); }
+.maintenance-choice { display: flex; gap: .65rem; margin-top: .6rem; align-items: flex-start; font-size: .78rem; cursor: pointer; }
+.maintenance-choice input { margin-top: .3rem; width: 1rem; height: 1rem; flex: none; }
+.maintenance-choice small { display: block; color: var(--muted); font-size: .75rem; margin-top: .2rem; }
+.form__privacy { color: var(--muted); font-size: .75rem; margin-top: 1.3rem; }
+.form__trap { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(100%); }
+.form__controls { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1.75rem; }
+.form__next, .form__back { display: none; }
+:global(.js) .form__next, :global(.js) .form__back { display: inline-flex; }
+.form__back { min-height: 44px; background: none; border: 0; padding: 0 .5rem; font-size: .75rem; cursor: pointer; color: var(--muted); }
+.form__submit { margin-left: auto; }
+.form__note { margin-top: 1rem; font-size: .75rem; color: var(--muted); }
+.form__note.is-error { color: #a84832; }
+.form__done { padding-block: 3rem; }
+.form__done :global(.form__done-icon) { display: grid; place-items: center; width: 3.5rem; height: 3.5rem; margin-bottom: 1.5rem; background: var(--water-wash); border-radius: 3px; color: var(--teal); }
+.form__done p { color: var(--muted); font-size: .85rem; margin-top: 1rem; }
+.form__done a { margin-top: 1rem; font-size: .8rem; }
+@media (max-width: 1023px) { .form__free { display: none; } .field-grid { grid-template-columns: 1fr; } .scope-fields { grid-template-columns: 1fr 1fr; } .field select { font-size: 1rem; } .quote__grid { gap: 2.5rem; grid-template-columns: 1fr 1.1fr; } .quote__lead { padding-top: 0; } .quote__promise { align-items: flex-start; } }
+@media (max-width: 767px) { .field select, .field textarea { font-size: 1rem; } .field-grid { grid-template-columns: 1fr; } .scope-fields { grid-template-columns: 1fr 1fr; } .quote__grid { grid-template-columns: 1fr; gap: 2.5rem; } .quote__lead .lede { max-width: 40ch; } .quote__promise { margin-top: 1.7rem; align-items: center; } .quote__shell { margin-inline: -.3rem; } .form__free { display: none; } .form__services :global(.chip span) { font-size: .8rem; padding-inline: .65rem; } .field-grid { gap: .7rem; } .form__next { min-width: 10rem; } .quote--standalone { padding-top: 8rem; } }
+@media (max-width: 359px) { .field-grid { grid-template-columns: 1fr; } .form { padding-inline: 1rem; } .form__services .chips { grid-template-columns: 1fr; } }
 </style>

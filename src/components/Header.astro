@@ -36,8 +36,8 @@ const here = Astro.url.pathname;
 				Get a quote
 				<Icon name="arrowRight" />
 			</a>
-			<button class="header__menu" type="button" popovertarget="menu" aria-label="Open menu">
-				<Icon name="list" />
+			<button class="header__menu" type="button" popovertarget="menu" aria-label="Open menu" aria-expanded="false" data-menu-toggle>
+				<span class="menu-line"></span><span class="menu-line"></span>
 			</button>
 		</div>
 	</div>
@@ -73,8 +73,11 @@ const here = Astro.url.pathname;
 <style>
 	.header {
 		position: fixed;
-		inset: 0 0 auto;
-		z-index: 40;
+		inset: 1.1rem var(--gutter) auto;
+		border-radius: 10px;
+		max-width: 1320px;
+		margin-inline: auto;
+		z-index: var(--z-header);
 		color: #fff;
 		transition:
 			background-color 0.4s var(--ease),
@@ -87,19 +90,20 @@ const here = Astro.url.pathname;
 		background: color-mix(in srgb, var(--surface) 86%, transparent);
 		backdrop-filter: blur(14px) saturate(1.4);
 		-webkit-backdrop-filter: blur(14px) saturate(1.4);
-		box-shadow: 0 1px 0 var(--hair);
+		box-shadow: var(--shadow), inset 0 0 0 1px rgb(255 255 255 / .6);
 	}
 
 	.header__bar {
 		display: flex;
 		align-items: center;
-		gap: 2.5rem;
-		height: 5.25rem;
-		transition: height 0.4s var(--ease);
+		gap: 2rem;
+		height: 4.5rem;
+		padding-inline: 1.3rem;
+
 	}
 
 	.is-solid .header__bar {
-		height: 4.25rem;
+		height: 4.5rem;
 	}
 
 	.header__logo {
@@ -109,17 +113,18 @@ const here = Astro.url.pathname;
 	}
 
 	.header__logo :global(.logo) {
-		height: 2.1rem;
-		transition: height 0.4s var(--ease);
+		height: 1.65rem;
+
 	}
 
 	.is-solid .header__logo :global(.logo) {
-		height: 1.75rem;
+		height: 1.65rem;
 	}
 
 	.header__nav {
 		display: flex;
-		gap: 2.25rem;
+		gap: 1.8rem;
+		font-size: .73rem;
 		font-weight: 500;
 	}
 
@@ -139,13 +144,13 @@ const here = Astro.url.pathname;
 	.header__actions {
 		display: flex;
 		align-items: center;
-		gap: 2rem;
+		gap: 1.6rem;
 		margin-left: auto;
 	}
 
 	.header__cta {
 		min-height: 2.9rem;
-		padding-inline: 1.25rem;
+		padding: .35rem .4rem .35rem 1.1rem;
 	}
 
 	.header__menu {
@@ -159,6 +164,9 @@ const here = Astro.url.pathname;
 		background: none;
 		cursor: pointer;
 		font-size: 1.5rem;
+		position: relative;
+		flex-direction: column;
+		gap: 6px;
 	}
 
 	.menu {
@@ -186,7 +194,7 @@ const here = Astro.url.pathname;
 	}
 
 	.menu :global(.menu__logo) {
-		height: 1.75rem;
+		height: 1.65rem;
 	}
 
 	.menu .header__menu {
@@ -204,7 +212,7 @@ const here = Astro.url.pathname;
 		padding: 0.9rem 0;
 		border-bottom: 1px solid var(--hair);
 		font-family: var(--font-display);
-		font-size: 2rem;
+		font-size: 3rem;
 		font-weight: 600;
 		letter-spacing: -0.01em;
 		text-decoration: none;
@@ -220,15 +228,18 @@ const here = Astro.url.pathname;
 		text-decoration: none;
 	}
 
-	@media (max-width: 1024px) {
+	@media (max-width: 1100px) {
+		.header__menu { display: inline-flex; }
 		.header__nav {
 			display: none;
 		}
 	}
 
 	@media (max-width: 767px) {
+		.header { inset: .8rem 1rem auto; }
+		.header__bar { padding-inline: .8rem; gap: 1rem; }
 		.header__bar {
-			height: 4.25rem;
+			height: 4.5rem;
 		}
 
 		.header__logo :global(.logo) {
@@ -244,4 +255,11 @@ const here = Astro.url.pathname;
 			display: inline-flex;
 		}
 	}
+.header__phone { font-size: .73rem; }
+	.menu-line { display: block; width: 21px; height: 1px; background: currentColor; transition: transform 250ms var(--spring); }
+	.header__menu[aria-expanded="true"] .menu-line:first-child { transform: translateY(3.5px) rotate(45deg); }
+	.header__menu[aria-expanded="true"] .menu-line:last-child { transform: translateY(-3.5px) rotate(-45deg); }
+	.menu__top .header__menu { flex-direction: row; }
+	@media (prefers-reduced-motion: no-preference) { .menu:popover-open li { animation: menu-enter 350ms var(--ease) both; } .menu:popover-open li:nth-child(2) { animation-delay: 30ms; } .menu:popover-open li:nth-child(3) { animation-delay: 60ms; } .menu:popover-open li:nth-child(4) { animation-delay: 90ms; } }
+	@keyframes menu-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 </style>
