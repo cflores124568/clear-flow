@@ -9,12 +9,11 @@ Every file lives in `src/assets/photos/` and keeps the same name, so a swap is a
 | `hero-clean.jpg` | 2400 × 1350 | Hero (clean side of the wipe) | Run `./scripts/make-dusty.sh` to rebuild `hero-dusty.jpg` |
 | `aerial.jpg` | 2400 × 1350 | "One visit. The whole property." | Re-measure the four pin positions in `src/components/Property.astro` |
 | `svc-solar.jpg` | 1600 × 1200 | Services hover photo 01 | — |
-| `svc-windows.jpg` | 1600 × 1200 | Services hover photo 02 | — |
-| `svc-pressure.jpg` | 1600 × 1200 | Services hover photo 03 | — |
-| `svc-junk.jpg` | 1600 × 1200 | Services hover photo 04 | — |
+| `svc-birds.jpg` | 1600 × 1200 | Services hover photo 02 | — |
+| `svc-windows.jpg` | 1600 × 1200 | Services hover photo 03 | — |
+| `svc-pressure.jpg` | 1600 × 1200 | Services hover photo 04 | — |
+| `svc-junk.jpg` | 1600 × 1200 | Services hover photo 05 | — |
 | `method-window.jpg` | 1200 × 1333 | "Careful is the whole point." | — |
-
-Bird proofing has no photo of its own yet and reuses `svc-solar.jpg`. When a real one exists (critter guard mesh around a rooftop array, 1600 × 1200), save it as `src/assets/photos/svc-birds.jpg`, import it in `src/data/photos.ts` and point `birds` at it.
 
 The 2026 flyers are not a photo source: their before/after solar shots look AI-generated, and the window-cleaning shots appear to be Canva stock, which can't be lifted out for standalone web use.
 
@@ -70,6 +69,10 @@ If a result still looks staged, regenerate with: "Less perfect. Plainer house, h
 ### svc-junk.jpg (1600 × 1200, 4:3)
 
 > Two crew members in sun shirts and gloves carrying an old upholstered loveseat down a driveway toward a dump trailer hitched to a white pickup. The trailer already holds a mattress, broken patio chairs, yard waste bags and cardboard boxes. An open garage behind them is half cleared out. Early-morning light, faces turned away.
+
+### svc-birds.jpg (1600 × 1200, 4:3)
+
+> On a concrete S-tile roof, a crew member in a harness and sun hood kneels at the edge of a rooftop solar array, pressing a strip of black PVC-coated half-inch wire mesh against the panel frame with one gloved hand and fixing it with a small stainless clip with the other. The mesh closes the gap between the panel edge and the roof tiles. Along the finished side the mesh runs neat and continuous; further along, the gap is still open, with twigs, feathers and white droppings visible underneath. A roll of mesh and a small bucket of clips sit on the tiles beside them. The harness is tied off to a visible roof anchor. Early-morning side light, neighboring roofs and the mountains behind. No birds in frame.
 
 ### method-window.jpg (1200 × 1333, 9:10 portrait)
 

@@ -49,7 +49,7 @@ export const services: Service[] = [
 		name: 'Bird Proofing',
 		chip: 'Bird proofing',
 		line: 'Critter guard that keeps pigeons out from under your panels.',
-		caption: 'Rooftop solar array',
+		caption: 'Fitting critter guard around a rooftop array',
 		lede: "Pigeons and other critters nest in the gap under rooftop panels. We clear out what's there and fit critter guard around the array so they can't get back in.",
 		includes: [
 			{ title: 'Nest and debris cleanout', body: 'Nesting material and droppings cleared from under the panels.' },
