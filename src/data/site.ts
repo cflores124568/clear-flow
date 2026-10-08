@@ -16,6 +16,19 @@ export const email = {
 export const textHref = 'sms:+17604223069';
 export const cities = ['Cathedral City', 'Palm Springs', 'Rancho Mirage', 'Palm Desert', 'La Quinta', 'Indio', 'Indian Wells', 'Desert Hot Springs'];
 
+// City centers for the service-area map, as [longitude, latitude]. Pins mark
+// the cities served, not an office or job site.
+export const cityCenters: Record<string, [number, number]> = {
+	'Desert Hot Springs': [-116.5017, 33.9611],
+	'Palm Springs': [-116.5453, 33.8303],
+	'Cathedral City': [-116.4653, 33.7797],
+	'Rancho Mirage': [-116.4128, 33.7397],
+	'Palm Desert': [-116.3745, 33.7222],
+	'Indian Wells': [-116.3408, 33.7175],
+	'La Quinta': [-116.31, 33.6634],
+	'Indio': [-116.2156, 33.7206],
+};
+
 export type ServiceId = 'solar' | 'birds' | 'windows' | 'pressure' | 'junk';
 
 export type Service = {

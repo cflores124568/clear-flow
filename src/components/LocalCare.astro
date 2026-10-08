@@ -1,24 +1,70 @@
 ---
-import { cities, phone } from '../data/site';
+import { Picture } from 'astro:assets';
+import { cities, cityCenters, phone } from '../data/site';
 import Icon from './Icon.astro';
+import serviceMap from '../assets/maps/clear-flow-service-area-map.png';
 ---
 <section class="local-care" aria-labelledby="local-title"><div class="container">
-  <div class="local-care__top"><div data-reveal><p class="label">Close to home</p><h2 class="display h2" id="local-title">For the place<br /><em>we call home.</em></h2></div><div class="local-care__copy" data-reveal><p class="lede">From mountain-side glass to sun-soaked patios, we care for homes across the Coachella Valley.</p><p>One local point of contact. A quote built around your property. Care that carries through to the curb.</p><a class="link" href={phone.href}>Talk to Clear Flow<Icon name="arrowRight" /></a></div></div>
-  <ul class="city-list" aria-label="Cities we serve" data-reveal>{cities.map(city => <li>{city}</li>)}</ul>
+  <div class="local-care__top"><div data-reveal><p class="label">Close to home</p><h2 class="display local-care__title" id="local-title">For the place <em>we call home.</em></h2></div><div class="local-care__copy" data-reveal><p class="lede">From mountain-side glass to sun-soaked patios, we care for homes across the Coachella Valley.</p><p>One local point of contact. A quote built around your property. Care that carries through to the curb.</p><a class="link" href={phone.href}>Talk to Clear Flow<Icon name="arrowRight" /></a></div></div>
+  <figure class="local-map" data-reveal data-service-map data-cities={JSON.stringify(cityCenters)}><div class="local-map__frame" data-map-frame><div class="local-map__canvas" data-map-canvas></div><div class="local-map__fallback"><Picture src={serviceMap} widths={[640, 960, 1280, 1536]} sizes="(min-width: 1440px) 1320px, 92vw" formats={['avif', 'webp']} fallbackFormat="jpg" alt="Illustrative Coachella Valley service-area map with water-drop markers for Desert Hot Springs, Palm Springs, Cathedral City, Rancho Mirage, Palm Desert, Indian Wells, La Quinta and Indio, between the San Jacinto, Santa Rosa and San Bernardino mountains." loading="lazy" /></div></div><figcaption>Each drop marks a city we serve, not an office address.</figcaption></figure>
+  <div class="local-care__cities" data-reveal><p id="cities-title">Cities we serve</p><ul class="city-list" aria-labelledby="cities-title">{cities.map(city => <li>{city}</li>)}</ul></div>
   <div class="local-care__standards" data-reveal><p>What you can count on.</p><span>Licensed &amp; Insured</span><span>Soft-brush, pure-water solar</span><span>Free, property-specific estimates</span></div>
 </div></section>
 <section class="recurring" aria-labelledby="recurring-title"><div class="container recurring__grid"><div data-reveal><p class="label">A little care, on a rhythm</p><h2 class="display h2" id="recurring-title">Keep the clear.<br /><em>Skip the remembering.</em></h2></div><div class="recurring__copy" data-reveal><p class="lede">Ask us to include a recurring care option with your quote. We’ll help find a schedule that suits your home and the season.</p><dl><div><dt>Solar panels</dt><dd>A quarterly starting point</dd></div><div><dt>Windows &amp; exterior surfaces</dt><dd>A twice-yearly starting point</dd></div></dl><p class="recurring__note">We’ll adjust for dust exposure, surface condition and your preferences.</p><a class="link" href="#quote" data-recurring-interest>Include recurring care in my quote<Icon name="arrowRight" /></a></div></div></section>
+<script>
+  // MapLibre is large; fetch it only as the map nears the viewport.
+  const root = document.querySelector<HTMLElement>('[data-service-map]');
+  if (root) {
+    const load = () => import('../scripts/service-map').then(module => module.initServiceMap(root)).catch(() => root.classList.add('is-fallback'));
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(entries => { if (entries.some(entry => entry.isIntersecting)) { observer.disconnect(); load(); } }, { rootMargin: '600px 0px' });
+      observer.observe(root);
+    } else load();
+  }
+</script>
 <style>
 .local-care { padding-block: var(--section); }
 .local-care__top, .recurring__grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(3rem,8vw,8rem); align-items: center; }
+.local-care__top { align-items: end; }
 .local-care h2, .recurring h2 { margin-top: 1.4rem; }
+.local-care__title { font-size: clamp(1.75rem, 2.4vw, 2.25rem); }
 h2 em { color: var(--teal); }
 .local-care__copy .lede, .recurring .lede { font-size: 1rem; }
 .local-care__copy > p + p { margin-top: 1.3rem; font-size: .875rem; color: var(--muted); max-width: 45ch; }
 .local-care__copy .link { margin-top: 1.5rem; font-size: .875rem; }
-.city-list { display: flex; flex-wrap: wrap; gap: .9rem 2rem; list-style: none; margin: 3rem 0 0; padding: 1.8rem 0; border-block: 1px solid var(--hair); font-family: var(--font-display); font-size: 1.3rem; letter-spacing: -.025em; }
-.city-list li::after { content: '·'; margin-left: 2rem; color: var(--brand-aqua); }
-.city-list li:last-child::after { display: none; }
+.local-map { margin: clamp(2.5rem,5vw,4rem) 0 0; }
+.local-map__frame { position: relative; aspect-ratio: 3 / 2; overflow: hidden; border-radius: 3px; background: #efe9dc; box-shadow: var(--shadow), 0 0 0 1px var(--hair); }
+.local-map__canvas { position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--ease); }
+.local-map.is-ready .local-map__canvas { opacity: 1; }
+.local-map__fallback :global(img) { width: 100%; height: auto; }
+/* No JavaScript or no WebGL: the approved illustration stands in for the live map. */
+:global(.js) .local-map:not(.is-fallback) .local-map__fallback, :global(html:not(.js)) .local-map__canvas, .local-map.is-fallback .local-map__canvas { display: none; }
+:global(html:not(.js)) .local-map__frame, .local-map.is-fallback .local-map__frame { aspect-ratio: auto; }
+.local-map figcaption { padding-top: .6rem; font-size: .75rem; color: var(--muted); }
+.local-map :global(.map-pin) { width: 22px; height: 29px; filter: drop-shadow(0 3px 3px rgb(32 52 64 / .28)); }
+.local-map :global(.map-pin svg) { display: block; width: 100%; height: 100%; }
+.local-map :global(.map-pin span) { position: absolute; top: 62%; left: calc(100% + 5px); translate: 0 -50%; font-family: var(--font-display); font-size: .82rem; font-weight: 600; letter-spacing: -.01em; line-height: 1; color: var(--navy); white-space: nowrap; pointer-events: none; text-shadow: 0 0 2px var(--surface), 0 0 4px var(--surface), 0 0 8px var(--surface); }
+.local-map :global(.map-pin--left span) { left: auto; right: calc(100% + 5px); }
+.local-map :global(:is(.map-pin--below, .map-pin--below-left, .map-pin--below-right) span) { top: calc(100% + 3px); }
+.local-map :global(:is(.map-pin--above, .map-pin--above-left, .map-pin--above-right) span) { top: auto; bottom: calc(100% + 3px); }
+.local-map :global(:is(.map-pin--below, .map-pin--above) span) { left: 50%; translate: -50% 0; }
+.local-map :global(:is(.map-pin--below-right, .map-pin--above-right) span) { left: 0; translate: 0 0; }
+.local-map :global(:is(.map-pin--below-left, .map-pin--above-left) span) { left: auto; right: 0; translate: 0 0; }
+.local-map :global(.map-pin--hidden span) { visibility: hidden; }
+.local-map :global(.maplibregl-ctrl-group) { border-radius: 3px; background: var(--panel); box-shadow: 0 8px 20px -10px rgb(32 52 64 / .4), 0 0 0 1px var(--hair); }
+.local-map :global(.maplibregl-ctrl-group button) { width: 40px; height: 40px; transition: background-color 250ms var(--ease); }
+.local-map :global(.maplibregl-ctrl-group button:not(:disabled):hover) { background-color: var(--water); }
+.local-map :global(.maplibregl-ctrl-group button + button) { border-top-color: var(--hair); }
+.local-map :global(.maplibregl-ctrl-attrib) { font-family: var(--font); font-size: .66rem; color: var(--muted); background: rgb(246 243 236 / .86); }
+.local-map :global(.maplibregl-ctrl-attrib a) { color: var(--ink); }
+.local-map :global(.maplibregl-cooperative-gesture-screen) { font-family: var(--font); font-size: .95rem; background: rgb(32 52 64 / .62); }
+@media (pointer: coarse) { .local-map :global(.maplibregl-ctrl-group button) { width: 44px; height: 44px; } }
+.local-care__cities { display: grid; grid-template-columns: 11rem 1fr; gap: 1rem 2rem; align-items: baseline; margin-top: 2.5rem; padding-block: 1.8rem; border-block: 1px solid var(--hair); }
+.local-care__cities > p { font-size: .8rem; font-weight: 600; color: var(--teal-ink); }
+.city-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .9rem 2rem; list-style: none; margin: 0; padding: 0; font-family: var(--font-display); font-size: 1.15rem; letter-spacing: -.025em; }
+.city-list li { display: flex; align-items: flex-start; gap: .7rem; line-height: 1.35; }
+/* A small brand drop, echoing the map's service-city markers. */
+.city-list li::before { content: ''; flex: none; width: .5rem; height: .5rem; margin-top: calc((1lh - .5rem) / 2); border-radius: 0 50% 50% 50%; rotate: 45deg; background: linear-gradient(135deg, var(--brand-aqua) 0 62%, var(--brand-blue) 62%); }
 .local-care__standards { display: flex; flex-wrap: wrap; gap: .7rem 2rem; margin-top: 1.6rem; font-size: .8rem; }
 .local-care__standards p { color: var(--muted); margin-right: auto; }
 .local-care__standards span::before { content: '✓'; color: var(--teal); margin-right: .55rem; }
@@ -29,5 +75,6 @@ h2 em { color: var(--teal); }
 .recurring dd { margin: 0; color: var(--muted); text-align: right; }
 .recurring__note { font-size: .8rem; color: var(--muted); margin-top: .7rem; }
 .recurring .link { font-size: .875rem; margin-top: 1.5rem; }
-@media(max-width:767px) { .local-care__top, .recurring__grid { grid-template-columns: 1fr; gap: 1.7rem; } .city-list { font-size: 1.15rem; gap: .6rem 1rem; margin-top: 2rem; } .city-list li::after { margin-left: 1rem; } .local-care__standards { flex-direction: column; } .recurring dl > div { flex-direction: column; gap: .35rem; } .recurring dd { text-align: left; } }
+@media(max-width:1023px) { .local-care__cities { grid-template-columns: 1fr; } .city-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media(max-width:767px) { .local-care__top, .recurring__grid { grid-template-columns: 1fr; gap: 1.7rem; } .local-map__frame { aspect-ratio: 4 / 5; } .local-map :global(.map-pin) { width: 19px; height: 25px; } .local-map :global(.map-pin span) { font-size: .74rem; } .city-list { font-size: 1.05rem; gap: .75rem 1rem; } .local-care__standards { flex-direction: column; } .recurring dl > div { flex-direction: column; gap: .35rem; } .recurring dd { text-align: left; } }
 </style>

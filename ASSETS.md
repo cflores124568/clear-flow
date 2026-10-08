@@ -15,6 +15,14 @@ The site leads with the owner's existing generated property and service images. 
 
 The service section follows the hero and precedes the quote builder. Desktop service hover/focus changes a large, sticky image and its caption; mobile shows a separate image before each service's copy and quote control. The aerial retains all four interactive quote pins. Astro generates responsive AVIF/WebP/JPEG derivatives; hero images load eagerly with high fetch priority and section images load lazily. Fonts are served locally.
 
+## Service-area map
+
+The homepage "Close to home" section shows a live, zoomable map (`src/scripts/service-map.ts`, MapLibre GL). The basemap is CARTO's Positron vector style, recolored to the site's sand, navy and logo aqua/blue; terrain shading comes from the public Mapzen terrain tiles on AWS Open Data. The map credits "© CARTO, © OpenStreetMap contributors" and the terrain sources, as both require. CARTO's free commercial tier covers 1 million requests a month; the key is set through `PUBLIC_CARTO_BASEMAPS_KEY` (see README).
+
+Eight brand drops mark the city centers in `src/data/site.ts` (`cityCenters`), not offices or job sites. Their labels are real HTML text placed to avoid each other; on the narrowest phones a label with no room is held back until zooming in makes space, and the section's HTML city list always names all eight. MapLibre and its stylesheet load only as the section nears the viewport. Page scrolling is preserved: the map zooms with Ctrl/⌘ + scroll or two fingers, and offers zoom and fullscreen controls.
+
+`src/assets/maps/clear-flow-service-area-map.png` (1536 × 1024), the approved generated illustration, is the fallback when JavaScript or WebGL is unavailable. It is rendered complete with responsive AVIF/WebP sources. Its prompt and notes stay with the original in `output/design/`. The illustration's roads and terrain are simplified and not navigation data.
+
 The old `hero-dusty.jpg` layer remains in the source tree but is not rendered as a before/after transformation. No original generated image was deleted or replaced on disk.
 
 Regional alternatives from the first redesign pass are also retained, but are no longer rendered:

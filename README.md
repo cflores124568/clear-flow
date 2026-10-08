@@ -33,6 +33,7 @@ Set these Cloudflare Pages environment variables:
 - `RESEND_API_KEY`: authorized email API key.
 - `QUOTE_TO`: recipient inboxes, comma separated.
 - `QUOTE_FROM`: a sender on a verified Resend domain.
+- `PUBLIC_CARTO_BASEMAPS_KEY`: CARTO basemaps key for the homepage service-area map. It is read at build time and is publishable (it is sent on every map tile request), so restrict it to the site's domain in the CARTO basemaps dashboard. For local builds, put it in the untracked `.env`.
 
 Build command: `npm run build`. Output: `dist/`. Deploy the repository with the `functions/` directory so `/api/quote/` is included. `astro.config.mjs` sets `site` to `https://clear-flow.pages.dev`; update it if the canonical domain changes. A missing delivery configuration produces a visible call/text fallback. No live email was sent during redesign verification.
 

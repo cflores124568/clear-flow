@@ -56,3 +56,14 @@ Authentic reviews and before/after job media have not been supplied. The current
 - Checked actual 390px and 320px layouts: all four homepage service photos are visible, with no horizontal overflow. All property targets remain 44px and do not overlap at 320px. Corrected hero source sizing for its tall mobile crop so the image is not upscaled from a small width-based source.
 - Verified service image/caption switching, shared selection between service rows, hero selectors, aerial pins and the quote, and the mobile services → property → optional photos → contact/review journey. No real quote was submitted, and test selections were cleared afterward.
 - Built HTML imports the correct distinct service asset on every service route. Responsive AVIF/WebP/JPEG variants compile for all 13 routes. The quote endpoint and water renderer are unchanged.
+
+## Live service-area map follow-up
+
+- Replaced the static illustration with a live MapLibre map on CARTO's vector basemap, tinted to the site palette, with terrain shading and eight brand-drop city markers. The approved illustration (`src/assets/maps/`) remains the no-JavaScript/no-WebGL fallback.
+- Production build, all five delivery tests and `git diff --check` pass.
+- Production preview in Chromium at 320, 390, 768 and 1280px: the map renders, all eight drops sit on their city centers, and visible labels stay inside the map without overlapping any drop, label or control. At 320px the Indian Wells label is held back for lack of room; its drop and the HTML list remain. No document overflow.
+- Every CARTO request carried the key; no CARTO or terrain request failed. MapLibre's script and stylesheet were not requested on page load, only as the section approached.
+- Zoom buttons change the view, fullscreen opens and closes, and an unmodified mouse wheel over the map scrolls the page. Map controls are 40px, or 44px on touch screens. Markers are hidden from assistive tech; the H2 and the eight-city HTML list remain.
+- With WebGL blocked, and with JavaScript disabled, the illustration renders instead of the map.
+- Existing behavior: recurring care checks the maintenance interest and opens the builder; a service selection syncs across chips and property pins; the builder advances. No quote was submitted.
+- Console: no warnings or errors at 390, 768 and 1280px. At 320px the headless software renderer (SwiftShader) logged four "GPU stall due to ReadPixels" driver performance warnings; these come from the test GPU, not site code.
