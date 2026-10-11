@@ -1,7 +1,7 @@
 // Live service-area map: CARTO's vector basemap, tinted to the site palette,
 // with Mapzen terrain shading and one brand drop per service city. Loaded
 // only when the section approaches the viewport.
-import { AttributionControl, FullscreenControl, LngLatBounds, Map, Marker, NavigationControl, setWorkerUrl } from 'maplibre-gl';
+import { AttributionControl, FullscreenControl, LngLatBounds, Map, Marker, NavigationControl, Popup, setWorkerUrl } from 'maplibre-gl';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import stylesheetUrl from 'maplibre-gl/dist/maplibre-gl.css?url';
 
@@ -96,12 +96,39 @@ function placeLabels(root: HTMLElement) {
 }
 
 function pin(city: string) {
-  const el = document.createElement('div');
+  const el = document.createElement('button');
+  el.type = 'button';
   el.className = 'map-pin map-pin--right';
   el.dataset.city = city;
+  el.setAttribute('aria-label', `Explore services in ${city}`);
+  el.setAttribute('aria-expanded', 'false');
   el.innerHTML = `<svg viewBox="0 0 100 130" aria-hidden="true"><path fill="#3FB6C6" d="M50 0C50 0 0 58 0 84a50 46 0 0 0 100 0C100 58 50 0 50 0Z"/><path fill="#1D5F96" d="M0 84C14 70 36 96 58 92S92 72 100 80a50 46 0 0 1-100 4Z"/><path fill="#FFFFFF" fill-opacity=".55" d="M24 74c2-12 10-26 18-36-4 12-8 26-6 38-4 3-10 2-12-2Z"/></svg><span></span>`;
   el.querySelector('span')!.textContent = city;
   return el;
+}
+
+type MapCity = { name: string; center: [number, number]; href: string; services: { name: string; href: string }[] };
+
+function cityDetails(city: MapCity) {
+  const content = document.createElement('section');
+  content.setAttribute('aria-label', `${city.name} services`);
+  const title = document.createElement('h3');
+  title.textContent = city.name;
+  const list = document.createElement('ul');
+  for (const service of city.services) {
+    const item = document.createElement('li');
+    const link = document.createElement('a');
+    link.href = service.href;
+    link.textContent = service.name;
+    item.append(link);
+    list.append(item);
+  }
+  const overview = document.createElement('a');
+  overview.href = city.href;
+  overview.className = 'city-popup__overview';
+  overview.textContent = 'Explore all city services →';
+  content.append(title, list, overview);
+  return content;
 }
 
 // Linked at runtime so MapLibre's stylesheet arrives with the map, not with every page view.
@@ -124,9 +151,9 @@ function padding(el: HTMLElement) {
 export async function initServiceMap(root: HTMLElement) {
   const canvas = root.querySelector<HTMLElement>('[data-map-canvas]');
   if (!canvas) return;
-  const centers = JSON.parse(root.dataset.cities ?? '{}') as Record<string, [number, number]>;
+  const cities = JSON.parse(root.dataset.cities ?? '[]') as MapCity[];
   const bounds = new LngLatBounds();
-  Object.values(centers).forEach(center => bounds.extend(center));
+  cities.forEach(city => bounds.extend(city.center));
   const fail = () => root.classList.add('is-fallback');
   await loadStylesheet();
 
@@ -149,7 +176,8 @@ export async function initServiceMap(root: HTMLElement) {
         ? { url: `${url}${url.includes('?') ? '&' : '?'}key=${encodeURIComponent(cartoKey)}` }
         : { url }),
     });
-  } catch {
+  } catch (error) {
+    console.warn('Unable to initialize the service-area map.', error);
     fail();
     return;
   }
@@ -159,6 +187,9 @@ export async function initServiceMap(root: HTMLElement) {
   map.addControl(new AttributionControl({ compact: false }), 'bottom-right');
   map.once('style.load', () => tint(map));
   map.once('load', () => root.classList.add('is-ready'));
+  const sizePopup = () => root.style.setProperty('--map-popup-height', `${Math.max(160, canvas.clientHeight - 80)}px`);
+  sizePopup();
+  map.on('resize', sizePopup);
   // Keep the whole service area framed as the layout changes, until the visitor moves the map.
   let explored = false;
   map.on('movestart', event => { if (event.originalEvent) explored = true; });
@@ -168,10 +199,34 @@ export async function initServiceMap(root: HTMLElement) {
   map.on('error', event => {
     if (!map.loaded() && !map.isStyleLoaded() && String((event.error as { url?: string })?.url ?? '').includes('style.json')) fail();
   });
-  // The HTML city list carries these names for assistive tech; the pins are visual.
-  Object.entries(centers).forEach(([city, center]) => {
-    const marker = new Marker({ element: pin(city), anchor: 'bottom' }).setLngLat(center).addTo(map);
-    marker.getElement().setAttribute('aria-hidden', 'true');
-    marker.getElement().removeAttribute('tabindex');
+  let activePopup: Popup | undefined;
+  cities.forEach(city => {
+    const button = pin(city.name);
+    new Marker({ element: button, anchor: 'bottom' }).setLngLat(city.center).addTo(map);
+    const popup = new Popup({ className: 'city-popup', maxWidth: '272px', offset: 32, focusAfterOpen: false })
+      .setLngLat(city.center).setDOMContent(cityDetails(city));
+    button.addEventListener('click', event => {
+      event.stopPropagation();
+      if (popup.isOpen()) { popup.remove(); return; }
+      activePopup?.remove();
+      activePopup = popup;
+      button.setAttribute('aria-expanded', 'true');
+      popup.addTo(map);
+      explored = true;
+      // Leave room above the selected point for the service menu, including on narrow maps.
+      const menuHeight = popup.getElement().offsetHeight;
+      const offsetY = Math.min(canvas.clientHeight / 2 - 40, Math.max(0, menuHeight + 40 - canvas.clientHeight / 2));
+      map.once('moveend', () => {
+        if (popup.isOpen()) popup.getElement().scrollIntoView({ block: 'center', behavior: 'smooth' });
+      });
+      map.easeTo({ center: city.center, offset: [0, offsetY], duration: 300 });
+    });
+    popup.on('close', () => button.setAttribute('aria-expanded', 'false'));
+    popup.on('open', () => {
+      popup.getElement().querySelector<HTMLAnchorElement>('a')?.focus({ preventScroll: true });
+      popup.getElement().addEventListener('keydown', event => {
+        if (event.key === 'Escape') { popup.remove(); button.focus(); }
+      });
+    });
   });
 }

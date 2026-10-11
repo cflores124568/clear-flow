@@ -7,4 +7,6 @@ export default defineConfig({
 	// Cloudflare Pages serves the directory build; links and canonicals use trailing slashes.
 	trailingSlash: 'always',
 	devToolbar: { enabled: false },
+	// The viewport-loaded map must be available before Vite's initial dependency crawl ends.
+	vite: { optimizeDeps: { include: ['maplibre-gl'] } },
 });

@@ -1,13 +1,17 @@
 ---
 import { Picture } from 'astro:assets';
-import { cityCenters, phone } from '../data/site';
-import { serviceAreas, areaHref } from '../data/service-areas';
+import { cityCenters, phone, services } from '../data/site';
+import { serviceAreas, areaHref, cityServiceHref } from '../data/service-areas';
 import Icon from './Icon.astro';
 import serviceMap from '../assets/maps/clear-flow-service-area-map.png';
+const mapCities = Object.entries(cityCenters).map(([name, center]) => {
+  const area = serviceAreas.find(area => area.name === name)!;
+  return { name, center, href: areaHref(area), services: services.map(service => ({ name: service.name, href: cityServiceHref(area, service) })) };
+});
 ---
 <section class="local-care" aria-labelledby="local-title"><div class="container">
   <div class="local-care__top"><div data-reveal><p class="label">Close to home</p><h2 class="display local-care__title" id="local-title">For the place <em>we call home.</em></h2></div><div class="local-care__copy" data-reveal><p class="lede">From mountain-side glass to sun-soaked patios, we care for homes across the Coachella Valley.</p><p>One local point of contact. A quote built around your property. Care that carries through to the curb.</p><a class="link" href={phone.href}>Talk to Clear Flow<Icon name="arrowRight" /></a></div></div>
-  <figure class="local-map" data-reveal data-service-map data-cities={JSON.stringify(cityCenters)}><div class="local-map__frame" data-map-frame><div class="local-map__canvas" data-map-canvas></div><div class="local-map__fallback"><Picture src={serviceMap} widths={[640, 960, 1280, 1536]} sizes="(min-width: 1440px) 1320px, 92vw" formats={['avif', 'webp']} fallbackFormat="jpg" alt="Illustrative Coachella Valley service-area map with water-drop markers for Desert Hot Springs, Palm Springs, Cathedral City, Rancho Mirage, Palm Desert, Indian Wells, La Quinta and Indio, between the San Jacinto, Santa Rosa and San Bernardino mountains." loading="lazy" /></div></div><figcaption>Each drop marks a city we serve, not an office address.</figcaption></figure>
+  <figure class="local-map" data-reveal data-service-map data-cities={JSON.stringify(mapCities)}><div class="local-map__frame" data-map-frame><div class="local-map__canvas" data-map-canvas role="region" aria-label="Interactive Coachella Valley service-area map"></div><div class="local-map__fallback"><Picture src={serviceMap} widths={[640, 960, 1280, 1536]} sizes="(min-width: 1440px) 1320px, 92vw" formats={['avif', 'webp']} fallbackFormat="jpg" alt="Illustrative Coachella Valley service-area map with water-drop markers for Desert Hot Springs, Palm Springs, Cathedral City, Rancho Mirage, Palm Desert, Indian Wells, La Quinta and Indio, between the San Jacinto, Santa Rosa and San Bernardino mountains." loading="lazy" /></div></div><figcaption><span class="local-map__hint">Select a drop to explore that city’s services. Drag to pan; use + / − to zoom.</span><span class="local-map__offline">Live map unavailable. Choose a city from the links below.</span> Each drop marks a city we serve, not an office address.</figcaption></figure>
   <div class="local-care__cities" data-reveal><p id="cities-title">Cities we serve</p><ul class="city-list" aria-labelledby="cities-title">{serviceAreas.map(area => <li><a href={areaHref(area)}>{area.name}</a></li>)}</ul></div>
   <div class="local-care__standards" data-reveal><p>What you can count on.</p><span>Licensed &amp; Insured</span><span>Soft-brush, pure-water solar</span><span>Free, property-specific estimates</span></div>
 </div></section>
@@ -16,7 +20,10 @@ import serviceMap from '../assets/maps/clear-flow-service-area-map.png';
   // MapLibre is large; fetch it only as the map nears the viewport.
   const root = document.querySelector<HTMLElement>('[data-service-map]');
   if (root) {
-    const load = () => import('../scripts/service-map').then(module => module.initServiceMap(root)).catch(() => root.classList.add('is-fallback'));
+    const load = () => import('../scripts/service-map').then(module => module.initServiceMap(root)).catch(error => {
+      console.warn('Unable to load the service-area map.', error);
+      root.classList.add('is-fallback');
+    });
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(entries => { if (entries.some(entry => entry.isIntersecting)) { observer.disconnect(); load(); } }, { rootMargin: '600px 0px' });
       observer.observe(root);
@@ -42,8 +49,12 @@ h2 em { color: var(--teal); }
 :global(.js) .local-map:not(.is-fallback) .local-map__fallback, :global(html:not(.js)) .local-map__canvas, .local-map.is-fallback .local-map__canvas { display: none; }
 :global(html:not(.js)) .local-map__frame, .local-map.is-fallback .local-map__frame { aspect-ratio: auto; }
 .local-map figcaption { padding-top: .6rem; font-size: .75rem; color: var(--muted); }
-.local-map :global(.map-pin) { width: 22px; height: 29px; filter: drop-shadow(0 3px 3px rgb(32 52 64 / .28)); }
-.local-map :global(.map-pin svg) { display: block; width: 100%; height: 100%; }
+.local-map__hint, .local-map__offline { display: none; }
+.local-map.is-ready:not(.is-fallback) .local-map__hint, :global(html:not(.js)) .local-map__offline, .local-map.is-fallback .local-map__offline { display: inline; }
+.local-map :global(.map-pin) { width: 44px; height: 44px; padding: 0; border: 0; background: transparent; cursor: pointer; filter: drop-shadow(0 3px 3px rgb(32 52 64 / .28)); }
+.local-map :global(.map-pin:focus-visible) { outline: 2px solid var(--brand-blue); outline-offset: 3px; border-radius: 3px; }
+.local-map :global(.map-pin svg) { position: absolute; bottom: 0; left: 50%; translate: -50% 0; display: block; width: 22px; height: 29px; }
+.local-map :global(.map-pin:hover svg), .local-map :global(.map-pin[aria-expanded='true'] svg) { filter: brightness(1.1); }
 .local-map :global(.map-pin span) { position: absolute; top: 62%; left: calc(100% + 5px); translate: 0 -50%; font-family: var(--font-display); font-size: .82rem; font-weight: 600; letter-spacing: -.01em; line-height: 1; color: var(--navy); white-space: nowrap; pointer-events: none; text-shadow: 0 0 2px var(--surface), 0 0 4px var(--surface), 0 0 8px var(--surface); }
 .local-map :global(.map-pin--left span) { left: auto; right: calc(100% + 5px); }
 .local-map :global(:is(.map-pin--below, .map-pin--below-left, .map-pin--below-right) span) { top: calc(100% + 3px); }
@@ -59,6 +70,15 @@ h2 em { color: var(--teal); }
 .local-map :global(.maplibregl-ctrl-attrib) { font-family: var(--font); font-size: .66rem; color: var(--muted); background: rgb(246 243 236 / .86); }
 .local-map :global(.maplibregl-ctrl-attrib a) { color: var(--ink); }
 .local-map :global(.maplibregl-cooperative-gesture-screen) { font-family: var(--font); font-size: .95rem; background: rgb(32 52 64 / .62); }
+.local-map :global(.city-popup .maplibregl-popup-content) { max-height: var(--map-popup-height); overflow-y: auto; padding: 1.4rem 1.25rem 1rem; border-radius: 3px; background: var(--panel); color: var(--ink); font-family: var(--font); box-shadow: var(--shadow); }
+.local-map :global(.city-popup h3) { margin: 0 1.25rem .5rem 0; font-family: var(--font-display); font-size: 1.15rem; letter-spacing: -.025em; }
+.local-map :global(.city-popup ul) { list-style: none; margin: 0; padding: 0; }
+.local-map :global(.city-popup a) { display: block; padding: .65rem 0; color: var(--brand-blue); font-size: .82rem; text-decoration: none; text-underline-offset: .2em; }
+.local-map :global(.city-popup a:hover) { text-decoration: underline; }
+.local-map :global(.city-popup li + li) { border-top: 1px solid var(--hair); }
+.local-map :global(.city-popup .city-popup__overview) { margin-top: .5rem; border-top: 1px solid var(--hair); font-weight: 700; }
+.local-map :global(.city-popup .maplibregl-popup-close-button) { width: 44px; height: 44px; font-size: 1.25rem; color: var(--ink); }
+.local-map :global(.city-popup.maplibregl-popup-anchor-bottom .maplibregl-popup-tip) { border-top-color: var(--panel); }
 @media (pointer: coarse) { .local-map :global(.maplibregl-ctrl-group button) { width: 44px; height: 44px; } }
 .local-care__cities { display: grid; grid-template-columns: 11rem 1fr; gap: 1rem 2rem; align-items: baseline; margin-top: 2.5rem; padding-block: 1.8rem; border-block: 1px solid var(--hair); }
 .local-care__cities > p { font-size: .8rem; font-weight: 600; color: var(--teal-ink); }
@@ -79,5 +99,5 @@ h2 em { color: var(--teal); }
 .recurring__note { font-size: .8rem; color: var(--muted); margin-top: .7rem; }
 .recurring .link { font-size: .875rem; margin-top: 1.5rem; }
 @media(max-width:1023px) { .local-care__cities { grid-template-columns: 1fr; } .city-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media(max-width:767px) { .local-care__top, .recurring__grid { grid-template-columns: 1fr; gap: 1.7rem; } .local-map__frame { aspect-ratio: 4 / 5; } .local-map :global(.map-pin) { width: 19px; height: 25px; } .local-map :global(.map-pin span) { font-size: .74rem; } .city-list { font-size: 1.05rem; gap: .75rem 1rem; } .local-care__standards { flex-direction: column; } .recurring dl > div { flex-direction: column; gap: .35rem; } .recurring dd { text-align: left; } }
+@media(max-width:767px) { .local-care__top, .recurring__grid { grid-template-columns: 1fr; gap: 1.7rem; } .local-map__frame { aspect-ratio: 4 / 5; } .local-map :global(.map-pin svg) { width: 19px; height: 25px; } .local-map :global(.map-pin span) { font-size: .74rem; } .city-list { font-size: 1.05rem; gap: .75rem 1rem; } .local-care__standards { flex-direction: column; } .recurring dl > div { flex-direction: column; gap: .35rem; } .recurring dd { text-align: left; } }
 </style>
