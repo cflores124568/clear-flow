@@ -4,11 +4,12 @@ import Page from '../layouts/Page.astro';
 import Quote from './Quote.astro';
 import Icon from './Icon.astro';
 import { services, phone, textHref, type Service } from '../data/site';
-import { areaHref, cityServiceHref, cityServiceContent, serviceAreas, type ServiceArea } from '../data/service-areas';
+import { areaHref, cityServiceHref, cityServiceContent, cityPhotos, serviceAreas, type ServiceArea } from '../data/service-areas';
 
 interface Props { area: ServiceArea; service: Service; }
 const { area, service } = Astro.props;
 const content = cityServiceContent(area, service);
+const cityPhoto = cityPhotos[area.slug];
 const otherServices = services.filter(item => item.id !== service.id);
 const otherAreas = serviceAreas.filter(item => item.slug !== area.slug);
 const serviceSchema = {
@@ -40,7 +41,7 @@ const serviceSchema = {
 
   <section class="area-section" aria-labelledby="scope-title">
     <div class="container area-scope">
-      <div><h2 class="display area-section__title" id="scope-title">What’s included.</h2><p class="area-section__intro">{service.lede}</p><p class="area-section__intro">Tell us about your {area.name} property so we can confirm access, scope and the right combination of services.</p></div>
+      <div><h2 class="display area-section__title" id="scope-title">What’s included.</h2><p class="area-section__intro">{service.lede}</p><p class="area-section__intro">Tell us about your {area.name} property so we can confirm access, scope and the right combination of services.</p>{cityPhoto && <figure class="area-scope__photo"><Image src={cityPhoto.photo} widths={[480, 720]} sizes="(min-width: 768px) 40vw, 100vw" alt={cityPhoto.photoAlt} /></figure>}</div>
       <ul>{service.includes.map(item => <li><h3>{item.title}</h3><p>{item.body}</p></li>)}</ul>
     </div>
   </section>
@@ -53,10 +54,10 @@ const serviceSchema = {
   </section>
 
   <section class="area-section" aria-labelledby="other-services-title">
-    <div class="container"><h2 class="display area-section__title" id="other-services-title">More care in {area.name}.</h2><ul class="area-links">{otherServices.map(item => <li><a href={cityServiceHref(area, item)}>{item.name}<Icon name="arrowRight" /></a></li>)}</ul></div>
+    <div class="container"><h2 class="display area-section__title" id="other-services-title">More care in {area.name}.</h2><ul class="area-tiles">{otherServices.map(item => { const other = cityServiceContent(area, item); return <li><Image src={other.photo} widths={[320, 560]} sizes="(min-width: 768px) 23vw, 50vw" alt={other.photoAlt} /><a href={cityServiceHref(area, item)}>{item.name}<Icon name="arrowRight" /></a></li>; })}</ul></div>
   </section>
 
   <section class="area-section" aria-labelledby="other-cities-title">
-    <div class="container"><h2 class="display area-section__title" id="other-cities-title">Another city, the same care.</h2><ul class="area-links">{otherAreas.map(item => <li><a href={cityServiceHref(item, service)}>{item.name}<Icon name="arrowRight" /></a></li>)}</ul></div>
+    <div class="container"><h2 class="display area-section__title" id="other-cities-title">Another city, the same care.</h2><ul class="area-tiles">{otherAreas.map(item => { const other = cityServiceContent(item, service); return <li><Image src={other.photo} widths={[320, 560]} sizes="(min-width: 768px) 23vw, 50vw" alt={other.photoAlt} /><a href={cityServiceHref(item, service)}>{item.name}<Icon name="arrowRight" /></a></li>; })}</ul></div>
   </section>
 </Page>

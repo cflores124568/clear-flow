@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import Page from '../../layouts/Page.astro';
 import Icon from '../../components/Icon.astro';
-import { serviceAreas, areaHref } from '../../data/service-areas';
+import { serviceAreas, areaHref, cityPhotos } from '../../data/service-areas';
 import aerial from '../../assets/photos/aerial.jpg';
 ---
 
@@ -17,7 +17,7 @@ import aerial from '../../assets/photos/aerial.jpg';
       </div>
       <div class="area-directory">
         <h2 class="display">Where we work.</h2><p>Eight cities. The same careful approach.</p>
-        <ul class="area-links">{serviceAreas.map(area => <li><a href={areaHref(area)}>{area.name}<Icon name="arrowRight" /></a></li>)}</ul>
+        <ul class="area-links area-links--thumbs">{serviceAreas.map(area => <li>{cityPhotos[area.slug] && <Image src={cityPhotos[area.slug].photo} widths={[64, 128]} sizes="64px" alt={cityPhotos[area.slug].photoAlt} />}<a href={areaHref(area)}>{area.name}<Icon name="arrowRight" /></a></li>)}</ul>
         <a class="area-directory__more" href="/services/">Explore all services<Icon name="arrowRight" /></a>
       </div>
     </div>
