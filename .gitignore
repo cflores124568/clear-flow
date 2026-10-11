@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # local Pages Function secrets
 .dev.vars
+
+# local design references and generation working files
+output/
