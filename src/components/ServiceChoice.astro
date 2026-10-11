@@ -1,0 +1,24 @@
+---
+import Icon from './Icon.astro';
+import type { Service } from '../data/site';
+
+interface Props {
+  service: Pick<Service, 'id' | 'name' | 'chip'>;
+  name?: 'service' | 'services';
+  checked?: boolean;
+  fullName?: boolean;
+}
+
+const { service, name = 'services', checked = false, fullName = false } = Astro.props;
+const label = fullName ? service.name : service.chip;
+---
+
+<label class="chip">
+  <input type="checkbox" name={name} value={service.id} data-service={service.id} aria-label={label} checked={checked} />
+  <span>
+    <Icon name={service.id} class="chip__icon" />
+    <span class="chip__name">{label}</span>
+    <Icon name="plus" class="chip__add" />
+    <Icon name="check" class="chip__check" />
+  </span>
+</label>

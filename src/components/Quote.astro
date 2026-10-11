@@ -1,10 +1,12 @@
 ---
 import Icon from './Icon.astro';
+import ServiceChoice from './ServiceChoice.astro';
 import { cities, coreServices, services, phone, textHref, type ServiceId } from '../data/site';
 interface Props { preselect?: ServiceId[]; standalone?: boolean; variant?: 'default' | 'navy'; city?: string; }
 const { preselect = [], standalone = false, variant = 'default', city } = Astro.props;
 const navy = variant === 'navy';
 const displayServices = navy ? [...coreServices, ...services.filter(service => service.id === 'birds')] : coreServices;
+const birdService = services.find(service => service.id === 'birds')!;
 const Heading = standalone ? 'h1' : 'h2';
 const steps = ['Services', 'Property', 'Photos', navy ? 'Contact' : 'Your quote'];
 ---
@@ -32,8 +34,8 @@ const steps = ['Services', 'Property', 'Photos', navy ? 'Contact' : 'Your quote'
           <section class="quote-step" data-step="0" aria-labelledby="step-services">
             <h3 class="form__title" id="step-services" tabindex="-1">{navy ? 'What would you like done?' : 'What can we take care of?'}</h3>
             <p class="form__intro">{navy ? 'Select one or more services.' : 'Choose one service, or make it a full-property visit.'}</p>
-            <fieldset class="form__services"><legend class="sr-only">Services</legend><div class="chips">{displayServices.map((s) => <label class="chip"><input type="checkbox" name="services" value={s.id} data-service={s.id} aria-label={navy ? s.name : s.chip} checked={preselect.includes(s.id)} /><span>{navy ? s.name : s.chip}</span></label>)}</div></fieldset>
-            {!navy && <details class="form__extra" open={preselect.includes('birds')}><summary>Need bird proofing around your panels?</summary><label class="chip"><input type="checkbox" name="services" value="birds" data-service="birds" aria-label="Bird proofing" checked={preselect.includes('birds')} /><span>Bird proofing</span></label></details>}
+            <fieldset class="form__services"><legend class="sr-only">Services</legend><div class="chips">{displayServices.map((service) => <ServiceChoice service={service} checked={preselect.includes(service.id)} fullName={navy} />)}</div></fieldset>
+            {!navy && <details class="form__extra" open={preselect.includes('birds')}><summary>Need bird proofing around your panels?</summary><ServiceChoice service={birdService} checked={preselect.includes('birds')} /></details>}
             <p class="form__bundle" data-bundle-note aria-live="polite">One service or several. The same careful approach.</p>
           </section>
           <section class="quote-step" data-step="1" aria-labelledby="step-property">
@@ -115,8 +117,8 @@ const steps = ['Services', 'Property', 'Photos', navy ? 'Contact' : 'Your quote'
 .form__title { font-family: var(--font-display); font-size: clamp(1.35rem, 1.85vw, 1.7rem); font-weight: 500; line-height: 1.2; letter-spacing: -.025em; word-spacing: .025em; outline: none; }
 .form__intro { font-size: .875rem; color: var(--muted); margin-top: .7rem; max-width: 50ch; }
 .form__services { margin: 1.3rem 0 0; padding: 0; border: 0; }
-.form__services .chips { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
-.form__services :global(.chip span) { font-size: .85rem; width: 100%; min-height: 3.4rem; }
+.form__services .chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: .65rem; }
+.form__services :global(.chip > span) { font-size: .85rem; width: 100%; min-height: 3.4rem; }
 .form__extra { margin-top: 1rem; font-size: .8rem; color: var(--muted); }
 .form__extra summary { cursor: pointer; padding-block: .3rem; }
 .form__extra .chip { display: inline-block; margin-top: .6rem; }
@@ -198,16 +200,16 @@ input[type='radio'], input[type='checkbox'] { accent-color: var(--teal); }
 .quote--navy .form__services, .quote--navy .form__stories, .quote--navy .form__preference { min-inline-size: 0; }
 .quote--navy .story-options { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .quote--navy .form__services :global(.chip input) { opacity: 1; inset: 50% auto auto 1rem; transform: translateY(-50%); width: 1.35rem; height: 1.35rem; z-index: 1; accent-color: var(--brand-aqua); }
-.quote--navy .form__services :global(.chip span) { min-height: 3.4rem; padding: .8rem 1rem .8rem 3.3rem; background: transparent; border-bottom: 1px solid var(--hair); border-radius: 3px; font-size: .96rem; }
-.quote--navy .form__services :global(.chip span::after) { content: none; }
+.quote--navy .form__services :global(.chip > span) { grid-template-columns: 1.25rem minmax(0, 1fr); min-height: 3.4rem; padding: .8rem 1rem .8rem 3.3rem; background: transparent; border-bottom: 1px solid var(--hair); border-radius: 3px; font-size: .96rem; }
+.quote--navy .form__services :global(.chip__add), .quote--navy .form__services :global(.chip__check), .quote--navy .form__services :global(.chip input:checked + span .chip__check) { display: none; }
 .quote--navy .form__services :global(.chip input:checked + span) { color: var(--ink); background: var(--water-wash); border-color: transparent; box-shadow: none; }
-.quote--navy .form__services :global(.chip:hover span) { background: var(--water); transform: none; }
+.quote--navy .form__services :global(.chip:hover > span) { background: var(--water); transform: none; }
 .quote--navy .form__services :global(.chip input:checked:hover + span) { background: var(--water-wash); }
 .quote--navy .form__controls { margin-top: 1.5rem; }
 .quote--navy .form__next, .quote--navy .form__submit { flex: 1; justify-content: center; min-height: 3.4rem; }
 .quote--navy .form__note { text-align: center; }
 @media (max-width: 1023px) { .form__free { display: none; } .field-grid { grid-template-columns: 1fr; } .scope-fields { grid-template-columns: 1fr 1fr; } .field select { font-size: 1rem; } .quote__grid { gap: 2.5rem; grid-template-columns: 1fr 1.1fr; } .quote__lead { padding-top: 0; } .quote__promise { align-items: flex-start; } }
-@media (max-width: 767px) { .field select, .field textarea { font-size: 1rem; } .field-grid { grid-template-columns: 1fr; } .scope-fields { grid-template-columns: 1fr 1fr; } .quote__grid { grid-template-columns: 1fr; gap: 2.5rem; } .quote__lead .lede { max-width: 40ch; } .quote__promise { margin-top: 1.7rem; align-items: center; } .quote__shell { margin-inline: -.3rem; } .form__free { display: none; } .form__services :global(.chip span) { font-size: .8rem; padding-inline: .65rem; } .field-grid { gap: .7rem; } .form__next { min-width: 10rem; } .quote--standalone { padding-top: 8rem; } }
+@media (max-width: 767px) { .field select, .field textarea { font-size: 1rem; } .field-grid { grid-template-columns: 1fr; } .scope-fields { grid-template-columns: 1fr 1fr; } .quote__grid { grid-template-columns: 1fr; gap: 2.5rem; } .quote__lead .lede { max-width: 40ch; } .quote__promise { margin-top: 1.7rem; align-items: center; } .quote__shell { margin-inline: -.3rem; } .form__free { display: none; } .form__services :global(.chip > span) { font-size: .8rem; padding-inline: .65rem; } .field-grid { gap: .7rem; } .form__next { min-width: 10rem; } .quote--standalone { padding-top: 8rem; } }
 @media (max-width: 359px) { .field-grid { grid-template-columns: 1fr; } .form { padding-inline: 1rem; } .form__services .chips { grid-template-columns: 1fr; } }
-@media (max-width: 767px) { .quote--navy .quote__grid { grid-template-columns: minmax(0, 1fr); gap: 2rem; } .quote--navy .quote__shell { margin-inline: 0; } .quote--navy .quote-progress button { font-size: .73rem; } .quote--navy .form__services :global(.chip span) { font-size: .9rem; } }
+@media (max-width: 767px) { .quote--navy .quote__grid { grid-template-columns: minmax(0, 1fr); gap: 2rem; } .quote--navy .quote__shell { margin-inline: 0; } .quote--navy .quote-progress button { font-size: .73rem; } .quote--navy .form__services :global(.chip > span) { font-size: .9rem; } }
 </style>

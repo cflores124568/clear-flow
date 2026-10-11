@@ -1,6 +1,7 @@
 ---
 import { Picture } from 'astro:assets';
 import Icon from './Icon.astro';
+import ServiceChoice from './ServiceChoice.astro';
 import WaterText from './WaterText.astro';
 import heroPhoto from '../assets/photos/hero-clean.jpg';
 import { coreServices } from '../data/site';
@@ -18,7 +19,7 @@ import { coreServices } from '../data/site';
       <fieldset class="starter__set">
         <legend class="starter__legend">What would you like taken care of?</legend>
         <div class="chips">
-          {coreServices.map((s) => <label class="chip"><input type="checkbox" name="service" value={s.id} data-service={s.id} aria-label={s.chip} /><span>{s.chip}</span></label>)}
+          {coreServices.map((service) => <ServiceChoice service={service} name="service" />)}
         </div>
       </fieldset>
       <div class="starter__actions">
@@ -43,8 +44,9 @@ import { coreServices } from '../data/site';
 .starter { margin-top: 2rem; max-width: 42rem; }
 .starter__set { margin: 0; padding: 0; border: 0; min-width: 0; }
 .starter__legend { padding: 0; margin-bottom: .65rem; font-size: .68rem; color: var(--on-dark); }
-.starter :global(.chip span) { background: color-mix(in srgb, var(--brand-aqua) 8%, transparent); color: var(--panel); box-shadow: inset 0 0 0 1px rgb(246 243 236 / .26); font-size: .72rem; min-height: 2.75rem; border-radius: 3px; }
-.starter :global(.chip:hover span) { background: color-mix(in srgb, var(--brand-aqua) 20%, transparent); }
+.starter :global(.chip > span) { background: color-mix(in srgb, var(--brand-aqua) 8%, transparent); color: var(--panel); box-shadow: inset 0 0 0 1px rgb(246 243 236 / .26); font-size: .72rem; min-height: 2.75rem; border-radius: 3px; }
+.starter :global(.chip__icon) { color: var(--brand-aqua); }
+.starter :global(.chip:hover > span) { background: color-mix(in srgb, var(--brand-aqua) 20%, transparent); }
 .starter :global(.chip input:checked + span) { background: var(--brand-blue); color: var(--panel); box-shadow: inset 0 0 0 1px var(--brand-aqua); }
 .starter :global(.chip input:focus-visible + span) { outline-color: var(--brand-aqua); }
 .starter__actions { display: flex; align-items: center; gap: 1.2rem; margin-top: 1.25rem; }
@@ -72,12 +74,12 @@ import { coreServices } from '../data/site';
   .hero__break { display: none; }
   .starter { margin-top: 1.6rem; }
   .starter .chips { display: grid; grid-template-columns: 1fr 1fr; }
-  .starter :global(.chip span) { width: 100%; height: 100%; font-size: .74rem; padding-inline: .85rem; }
+  .starter :global(.chip > span) { width: 100%; height: 100%; font-size: .74rem; padding-inline: .85rem; }
   .starter__actions { align-items: flex-start; flex-direction: column; gap: .7rem; }
   .starter__go { width: 100%; }
   .starter__note { align-self: center; }
   .hero__scroll { display: none; }
   .proof-strip { flex-wrap: wrap; gap: .7rem 1.3rem; padding-block: 1rem; font-size: .61rem; justify-content: center; }
 }
-@media (max-width: 359px) { .starter :global(.chip span) { padding-inline: .55rem; gap: .35rem; } }
+@media (max-width: 359px) { .starter :global(.chip > span) { padding-inline: .55rem; gap: .35rem; } }
 </style>

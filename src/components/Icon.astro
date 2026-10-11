@@ -1,15 +1,22 @@
 ---
-// Phosphor Light glyphs, inlined so they inherit currentColor and need no request.
-import phone from '@phosphor-icons/core/assets/light/phone-light.svg?raw';
-import envelope from '@phosphor-icons/core/assets/light/envelope-simple-light.svg?raw';
-import arrowRight from '@phosphor-icons/core/assets/light/arrow-right-light.svg?raw';
-import plus from '@phosphor-icons/core/assets/light/plus-light.svg?raw';
-import minus from '@phosphor-icons/core/assets/light/minus-light.svg?raw';
-import check from '@phosphor-icons/core/assets/light/check-light.svg?raw';
-import list from '@phosphor-icons/core/assets/light/list-light.svg?raw';
-import x from '@phosphor-icons/core/assets/light/x-light.svg?raw';
+// One Phosphor Regular family, inlined to inherit currentColor without a request.
+import phone from '@phosphor-icons/core/assets/regular/phone.svg?raw';
+import envelope from '@phosphor-icons/core/assets/regular/envelope-simple.svg?raw';
+import arrowRight from '@phosphor-icons/core/assets/regular/arrow-right.svg?raw';
+import plus from '@phosphor-icons/core/assets/regular/plus.svg?raw';
+import minus from '@phosphor-icons/core/assets/regular/minus.svg?raw';
+import check from '@phosphor-icons/core/assets/regular/check.svg?raw';
+import list from '@phosphor-icons/core/assets/regular/list.svg?raw';
+import x from '@phosphor-icons/core/assets/regular/x.svg?raw';
+import solar from '@phosphor-icons/core/assets/regular/solar-panel.svg?raw';
+import windows from '@phosphor-icons/core/assets/regular/grid-four.svg?raw';
+import pressure from '@phosphor-icons/core/assets/regular/spray-bottle.svg?raw';
+import junk from '@phosphor-icons/core/assets/regular/truck.svg?raw';
+import birds from '@phosphor-icons/core/assets/regular/bird.svg?raw';
+import message from '@phosphor-icons/core/assets/regular/chat-circle-text.svg?raw';
+import calendar from '@phosphor-icons/core/assets/regular/calendar-blank.svg?raw';
 
-const icons = { phone, envelope, arrowRight, plus, minus, check, list, x };
+const icons = { phone, envelope, arrowRight, plus, minus, check, list, x, solar, windows, pressure, junk, birds, message, calendar };
 
 interface Props {
 	name: keyof typeof icons;
@@ -20,4 +27,4 @@ const { name, class: className } = Astro.props;
 const svg = icons[name].replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
 ---
 
-<span class:list={['icon', className]} set:html={svg} />
+<span class:list={['icon', className]} aria-hidden="true" set:html={svg} />

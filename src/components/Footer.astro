@@ -1,9 +1,10 @@
 ---
 import Logo from './Logo.astro';
+import Icon from './Icon.astro';
 import { email, phone, textHref, serviceHref, services } from '../data/site';
 ---
 <footer class="footer"><div class="container">
-  <div class="footer__top"><div><a class="footer__logo" href="/" aria-label="Clear Flow home"><Logo /></a><p>Exterior care, considered.<br />Coachella Valley, California.</p></div><div class="footer__contact"><a href={phone.href}>{phone.display}</a><a href={textHref}>Call or text</a><a class="footer__email" href={email.href}>{email.display}</a></div></div>
+  <div class="footer__top"><div><a class="footer__logo" href="/" aria-label="Clear Flow home"><Logo /></a><p>Exterior care, considered.<br />Coachella Valley, California.</p></div><div class="footer__contact"><a href={phone.href}><Icon name="phone" />{phone.display}</a><a href={textHref}><Icon name="message" />Call or text</a><a class="footer__email" href={email.href}><Icon name="envelope" /><span class="footer__email-address">{email.display}</span></a></div></div>
   <nav class="footer__services" aria-label="Explore our services">{services.map(service => <a href={serviceHref(service)}>{service.name}</a>)}</nav>
   <div class="footer__base"><span>© {new Date().getFullYear()} Clear Flow · Licensed &amp; Insured</span><nav aria-label="More information"><a href="/service-areas/">Service areas</a><a href="/about/">About</a><a href="/faq/">FAQ</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a></nav></div>
   <p class="footer__credit">Property and service imagery is illustrative.</p>
@@ -15,6 +16,9 @@ import { email, phone, textHref, serviceHref, services } from '../data/site';
 .footer__logo :global(.logo) { height: 2rem; }
 .footer__top p { margin-top: .8rem; font-size: .73rem; color: var(--muted); }
 .footer__contact { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+.footer__contact > a { display: inline-flex; align-items: center; gap: .6rem; max-width: 100%; }
+.footer__contact :global(.icon) { font-size: 1.1rem; color: var(--teal-ink); }
+.footer__email-address { min-width: 0; }
 .footer__contact > a:first-child { font-family: var(--font-display); font-size: clamp(1.6rem,3vw,2.4rem); letter-spacing: -.045em; line-height: 1.2; text-decoration: none; white-space: nowrap; }
 .footer__contact > a:nth-child(2) { font-size: .64rem; min-height: 36px; display: inline-flex; align-items: center; text-underline-offset: .3em; color: var(--muted); }
 .footer__email { font-size: .71rem; text-decoration: none; color: var(--muted); overflow-wrap: anywhere; }
