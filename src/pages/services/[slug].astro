@@ -6,6 +6,7 @@ import Icon from '../../components/Icon.astro';
 import Quote from '../../components/Quote.astro';
 import { phone, serviceHref, services, type Service } from '../../data/site';
 import { servicePhotos, servicePhotoAlts } from '../../data/photos';
+import { serviceAreas, cityServiceHref } from '../../data/service-areas';
 
 export function getStaticPaths() {
 	return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
@@ -78,6 +79,7 @@ const others = services.filter((s) => s.id !== service.id);
 		</div>
 	</section>
 
+	<section class="area-section" aria-labelledby="service-cities-title"><div class="container"><h2 class="display area-section__title" id="service-cities-title">{service.name} across the valley.</h2><ul class="area-links">{serviceAreas.map(area => <li><a href={cityServiceHref(area, service)}>{area.name}<Icon name="arrowRight" /></a></li>)}</ul></div></section>
 	<Quote preselect={[service.id]} />
 </Page>
 

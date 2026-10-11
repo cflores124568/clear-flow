@@ -1,0 +1,25 @@
+---
+import { Image } from 'astro:assets';
+import Page from '../../layouts/Page.astro';
+import Icon from '../../components/Icon.astro';
+import { serviceAreas, areaHref } from '../../data/service-areas';
+import aerial from '../../assets/photos/aerial.jpg';
+---
+
+<Page theme="navy" quoteHref="/contact/#quote" title="Coachella Valley service areas | Clear Flow" description="Explore Clear Flow’s solar panel cleaning, window cleaning, bird proofing, pressure washing and junk removal services across eight Coachella Valley cities.">
+  <section class="area-landing" aria-labelledby="areas-title">
+    <div class="container area-landing__grid">
+      <div>
+        <nav class="area-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li aria-current="page">Service areas</li></ol></nav>
+        <h1 class="display area-title" id="areas-title"><span>Local care across</span>{' '}<span class="area-title__city">Coachella Valley.</span></h1>
+        <p class="area-intro">Choose your city to explore services and request a quote built around your property.</p>
+        <figure class="area-photo"><Image src={aerial} widths={[480, 720, 1100]} sizes="(min-width: 768px) 45vw, 100vw" alt="Property illustration: a desert home with solar panels, windows, a driveway and a haul-away trailer" loading="eager" fetchpriority="high" /></figure>
+      </div>
+      <div class="area-directory">
+        <h2 class="display">Where we work.</h2><p>Eight cities. The same careful approach.</p>
+        <ul class="area-links">{serviceAreas.map(area => <li><a href={areaHref(area)}>{area.name}<Icon name="arrowRight" /></a></li>)}</ul>
+        <a class="area-directory__more" href="/services/">Explore all services<Icon name="arrowRight" /></a>
+      </div>
+    </div>
+  </section>
+</Page>

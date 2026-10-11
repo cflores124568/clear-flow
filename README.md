@@ -53,6 +53,14 @@ Native controls, restrained spring curves, transform/opacity reveals, reduced-mo
 
 The solar soiling section is an adjustable educational scenario: expected annual kWh × assumed loss. Its assumptions are visible and editable; it makes no guaranteed recovery or ROI claim. Quarterly solar and twice-yearly window/exterior care are proposed starting points to discuss with the business, not automatic subscriptions.
 
+## City and service pages
+
+The navy layout follows the approved quote-page mockup: the original two-tone drop logo, navy background, aqua selected service rows and blue actions. `/service-areas/` links to eight city overviews; each overview links to all five services. The shared dynamic route generates 40 pages at `/service-areas/{city}/{service}/`, with the corresponding city and service preselected in the existing quote builder. Visitors can change the city, add or remove services, upload photos and review the request before sending. Previous service selections continue to merge across navigation; property and contact details are not persisted.
+
+Coverage comes from `src/data/site.ts`. The reusable page is `src/components/CityServicePage.astro`; city/service copy, FAQs and individual image overrides live in `src/data/service-areas.ts`. Each combination has an editable image slot. The scaffold defaults to the existing five illustrative service photographs and the existing property images for city overviews. Replace those slots with distinct approved photos and local content as they become available. A photo override requires a corresponding `photoAlt`; full website mockup PNGs are design references, not production photograph assets.
+
+Run `npm run build` to generate all routes, then `node scripts/check-city-pages.mjs` to verify coverage, metadata, native city/service preselections, links and the shared quote markup in every generated city page.
+
 ## Validation
 
 `npm test` exercises the quote delivery function with a mocked provider: property payload, actual attachment bytes, HTML escaping, duplicate/unknown services, required fields, counts, photo signatures/limits, streamed request limits, honeypot, provider/network failures and no-JavaScript redirects. The browser quote journey was also tested locally with a mocked email provider; production credentials and real inbox receipt still require a deployment smoke test.

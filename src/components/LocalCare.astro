@@ -1,13 +1,14 @@
 ---
 import { Picture } from 'astro:assets';
-import { cities, cityCenters, phone } from '../data/site';
+import { cityCenters, phone } from '../data/site';
+import { serviceAreas, areaHref } from '../data/service-areas';
 import Icon from './Icon.astro';
 import serviceMap from '../assets/maps/clear-flow-service-area-map.png';
 ---
 <section class="local-care" aria-labelledby="local-title"><div class="container">
   <div class="local-care__top"><div data-reveal><p class="label">Close to home</p><h2 class="display local-care__title" id="local-title">For the place <em>we call home.</em></h2></div><div class="local-care__copy" data-reveal><p class="lede">From mountain-side glass to sun-soaked patios, we care for homes across the Coachella Valley.</p><p>One local point of contact. A quote built around your property. Care that carries through to the curb.</p><a class="link" href={phone.href}>Talk to Clear Flow<Icon name="arrowRight" /></a></div></div>
   <figure class="local-map" data-reveal data-service-map data-cities={JSON.stringify(cityCenters)}><div class="local-map__frame" data-map-frame><div class="local-map__canvas" data-map-canvas></div><div class="local-map__fallback"><Picture src={serviceMap} widths={[640, 960, 1280, 1536]} sizes="(min-width: 1440px) 1320px, 92vw" formats={['avif', 'webp']} fallbackFormat="jpg" alt="Illustrative Coachella Valley service-area map with water-drop markers for Desert Hot Springs, Palm Springs, Cathedral City, Rancho Mirage, Palm Desert, Indian Wells, La Quinta and Indio, between the San Jacinto, Santa Rosa and San Bernardino mountains." loading="lazy" /></div></div><figcaption>Each drop marks a city we serve, not an office address.</figcaption></figure>
-  <div class="local-care__cities" data-reveal><p id="cities-title">Cities we serve</p><ul class="city-list" aria-labelledby="cities-title">{cities.map(city => <li>{city}</li>)}</ul></div>
+  <div class="local-care__cities" data-reveal><p id="cities-title">Cities we serve</p><ul class="city-list" aria-labelledby="cities-title">{serviceAreas.map(area => <li><a href={areaHref(area)}>{area.name}</a></li>)}</ul></div>
   <div class="local-care__standards" data-reveal><p>What you can count on.</p><span>Licensed &amp; Insured</span><span>Soft-brush, pure-water solar</span><span>Free, property-specific estimates</span></div>
 </div></section>
 <section class="recurring" aria-labelledby="recurring-title"><div class="container recurring__grid"><div data-reveal><p class="label">A little care, on a rhythm</p><h2 class="display h2" id="recurring-title">Keep the clear.<br /><em>Skip the remembering.</em></h2></div><div class="recurring__copy" data-reveal><p class="lede">Ask us to include a recurring care option with your quote. We’ll help find a schedule that suits your home and the season.</p><dl><div><dt>Solar panels</dt><dd>A quarterly starting point</dd></div><div><dt>Windows &amp; exterior surfaces</dt><dd>A twice-yearly starting point</dd></div></dl><p class="recurring__note">We’ll adjust for dust exposure, surface condition and your preferences.</p><a class="link" href="#quote" data-recurring-interest>Include recurring care in my quote<Icon name="arrowRight" /></a></div></div></section>
@@ -63,6 +64,8 @@ h2 em { color: var(--teal); }
 .local-care__cities > p { font-size: .8rem; font-weight: 600; color: var(--teal-ink); }
 .city-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .9rem 2rem; list-style: none; margin: 0; padding: 0; font-family: var(--font-display); font-size: 1.15rem; letter-spacing: -.025em; }
 .city-list li { display: flex; align-items: flex-start; gap: .7rem; line-height: 1.35; }
+.city-list a { color: inherit; text-decoration: none; text-underline-offset: .25em; }
+.city-list a:hover { color: var(--brand-blue); text-decoration: underline; }
 /* A small brand drop, echoing the map's service-city markers. */
 .city-list li::before { content: ''; flex: none; width: .5rem; height: .5rem; margin-top: calc((1lh - .5rem) / 2); border-radius: 0 50% 50% 50%; rotate: 45deg; background: linear-gradient(135deg, var(--brand-aqua) 0 62%, var(--brand-blue) 62%); }
 .local-care__standards { display: flex; flex-wrap: wrap; gap: .7rem 2rem; margin-top: 1.6rem; font-size: .8rem; }

@@ -142,6 +142,7 @@ export const coreServices = services.filter((service) => service.id !== 'birds')
 
 export const nav = [
 	{ href: '/services/', label: 'Services' },
+	{ href: '/service-areas/', label: 'Service areas' },
 	{ href: '/about/', label: 'About' },
 	{ href: '/faq/', label: 'FAQ' },
 	{ href: '/contact/', label: 'Contact' },

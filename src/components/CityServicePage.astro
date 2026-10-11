@@ -1,0 +1,62 @@
+---
+import { Image } from 'astro:assets';
+import Page from '../layouts/Page.astro';
+import Quote from './Quote.astro';
+import Icon from './Icon.astro';
+import { services, phone, textHref, type Service } from '../data/site';
+import { areaHref, cityServiceHref, cityServiceContent, serviceAreas, type ServiceArea } from '../data/service-areas';
+
+interface Props { area: ServiceArea; service: Service; }
+const { area, service } = Astro.props;
+const content = cityServiceContent(area, service);
+const otherServices = services.filter(item => item.id !== service.id);
+const otherAreas = serviceAreas.filter(item => item.slug !== area.slug);
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: `${service.name} in ${area.name}`,
+  serviceType: service.name,
+  areaServed: { '@type': 'City', name: area.name },
+  provider: { '@type': 'HomeAndConstructionBusiness', name: 'Clear Flow', telephone: '+1-760-422-3069', url: Astro.site?.href },
+  url: Astro.site ? new URL(cityServiceHref(area, service), Astro.site).href : undefined,
+};
+---
+
+<Page theme="navy" title={`${service.name} in ${area.name} | Clear Flow`} description={`${service.name} in ${area.name}. ${service.line} Request a property-specific quote or call ${phone.display}.`}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <Quote variant="navy" city={area.name} preselect={[service.id]}>
+    <div slot="lead">
+      <nav class="area-breadcrumbs" aria-label="Breadcrumb">
+        <ol><li><a href="/service-areas/">Service areas</a></li><li><a href={areaHref(area)}>{area.name}</a></li><li aria-current="page">{service.name}</li></ol>
+      </nav>
+      <h1 id="quote-title" class="display area-title"><span>{service.name}</span>{' '}<span class="area-title__city">in {area.name}.</span></h1>
+      <p class="area-intro">{content.lede}</p>
+      <figure class="area-photo">
+        <Image src={content.photo} widths={[480, 720, 1100]} sizes="(min-width: 768px) 45vw, 100vw" alt={content.photoAlt} loading="eager" fetchpriority="high" />
+      </figure>
+      <div class="area-contact"><a href={phone.href}>Call {phone.display}</a><a href={textHref}>Start with a text</a></div>
+    </div>
+  </Quote>
+
+  <section class="area-section" aria-labelledby="scope-title">
+    <div class="container area-scope">
+      <div><h2 class="display area-section__title" id="scope-title">What’s included.</h2><p class="area-section__intro">{service.lede}</p><p class="area-section__intro">Tell us about your {area.name} property so we can confirm access, scope and the right combination of services.</p></div>
+      <ul>{service.includes.map(item => <li><h3>{item.title}</h3><p>{item.body}</p></li>)}</ul>
+    </div>
+  </section>
+
+  <section class="area-section" aria-labelledby="local-faq-title">
+    <div class="container">
+      <h2 class="display area-section__title" id="local-faq-title">Before your visit.</h2>
+      <div class="area-faqs">{content.faqs.map(faq => <details name="city-service-faq"><summary>{faq.q}</summary><p>{faq.a}</p></details>)}</div>
+    </div>
+  </section>
+
+  <section class="area-section" aria-labelledby="other-services-title">
+    <div class="container"><h2 class="display area-section__title" id="other-services-title">More care in {area.name}.</h2><ul class="area-links">{otherServices.map(item => <li><a href={cityServiceHref(area, item)}>{item.name}<Icon name="arrowRight" /></a></li>)}</ul></div>
+  </section>
+
+  <section class="area-section" aria-labelledby="other-cities-title">
+    <div class="container"><h2 class="display area-section__title" id="other-cities-title">Another city, the same care.</h2><ul class="area-links">{otherAreas.map(item => <li><a href={cityServiceHref(item, service)}>{item.name}<Icon name="arrowRight" /></a></li>)}</ul></div>
+  </section>
+</Page>

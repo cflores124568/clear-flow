@@ -1,0 +1,39 @@
+---
+import { Image } from 'astro:assets';
+import Page from '../../../layouts/Page.astro';
+import Quote from '../../../components/Quote.astro';
+import Icon from '../../../components/Icon.astro';
+import { services, phone } from '../../../data/site';
+import { serviceAreas, cityServiceHref, areaHref, type ServiceArea } from '../../../data/service-areas';
+import hero from '../../../assets/photos/hero-clean.jpg';
+
+export function getStaticPaths() {
+  return serviceAreas.map(area => ({ params: { city: area.slug }, props: { area } }));
+}
+
+interface Props { area: ServiceArea; }
+const { area } = Astro.props;
+---
+
+<Page theme="navy" title={`Exterior cleaning services in ${area.name} | Clear Flow`} description={`Solar panel cleaning, windows, bird proofing, pressure washing and junk removal in ${area.name}. Choose one service or build a combined quote. Call ${phone.display}.`}>
+  <section class="area-landing" aria-labelledby="city-title">
+    <div class="container area-landing__grid">
+      <div>
+        <nav class="area-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/service-areas/">Service areas</a></li><li aria-current="page">{area.name}</li></ol></nav>
+        <h1 class="display area-title" id="city-title"><span>Exterior care</span>{' '}<span class="area-title__city">in {area.name}.</span></h1>
+        <p class="area-intro">Solar panels, windows, pressure washing and junk removal. Start with one service or bring the whole property together.</p>
+        <figure class="area-photo"><Image src={hero} widths={[480, 720, 1100]} sizes="(min-width: 768px) 45vw, 100vw" alt="Property illustration: clean glass, a patio and a pool at a desert home" loading="eager" fetchpriority="high" /></figure>
+      </div>
+      <div class="area-directory">
+        <h2 class="display">What needs care?</h2><p>Explore a service for your {area.name} property.</p>
+        <ul class="area-links" style="grid-template-columns: 1fr">{services.map(service => <li><a href={cityServiceHref(area, service)}>{service.name}<Icon name="arrowRight" /></a></li>)}</ul>
+        <a class="btn area-directory__quote" href="#quote">Build a combined quote<Icon name="arrowRight" /></a>
+        <a class="area-directory__more" href={phone.href}>Call {phone.display}</a>
+      </div>
+    </div>
+  </section>
+  <Quote variant="navy" city={area.name}>
+    <div slot="lead"><h2 id="quote-title" class="display area-title">Tell us what needs care.</h2><p class="area-intro">Choose your services for {area.name}. Add property details. We’ll take it from there.</p></div>
+  </Quote>
+  <section class="area-section" aria-labelledby="other-areas-title"><div class="container"><h2 class="display area-section__title" id="other-areas-title">Explore our service area.</h2><ul class="area-links">{serviceAreas.filter(other => other.slug !== area.slug).map(other => <li><a href={areaHref(other)}>{other.name}<Icon name="arrowRight" /></a></li>)}</ul></div></section>
+</Page>

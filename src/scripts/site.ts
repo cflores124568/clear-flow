@@ -79,7 +79,7 @@ function showStage(nextStage: number, focus = true) {
   form.querySelector<HTMLElement>('[data-step-next]')!.hidden = stage === 3;
   form.querySelector<HTMLElement>('[type="submit"]')!.hidden = stage !== 3;
   const next = form.querySelector<HTMLButtonElement>('[data-step-next]');
-  if (next) next.childNodes[0].textContent = stage === 2 && !photos.length ? 'Skip photos ' : stage === 2 ? 'Review my quote ' : 'Continue ';
+  if (next) next.childNodes[0].textContent = stage === 2 && !photos.length ? 'Skip photos ' : stage === 2 ? 'Review my quote ' : form.dataset.quoteVariant === 'navy' ? stage === 0 ? 'Continue to property ' : 'Continue to photos ' : 'Continue ';
   setStatus(defaultStatus);
   renderSummary();
   if (focus) {

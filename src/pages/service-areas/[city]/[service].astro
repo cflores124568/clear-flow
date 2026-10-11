@@ -1,0 +1,17 @@
+---
+import CityServicePage from '../../../components/CityServicePage.astro';
+import { cityServicePages, type ServiceArea } from '../../../data/service-areas';
+import type { Service } from '../../../data/site';
+
+export function getStaticPaths() {
+  return cityServicePages.map(({ area, service }) => ({
+    params: { city: area.slug, service: service.slug },
+    props: { area, service },
+  }));
+}
+
+interface Props { area: ServiceArea; service: Service; }
+const { area, service } = Astro.props;
+---
+
+<CityServicePage area={area} service={service} />
