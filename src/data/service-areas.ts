@@ -143,6 +143,18 @@ export const cityPhotos: Record<string, { photo: ImageMetadata; photoAlt: string
   'desert-hot-springs': { photo: desertHotSprings, photoAlt: 'Property illustration: a modest desert home looking across the valley to Mount San Jacinto from Desert Hot Springs' },
 };
 
+// One line of local character for each city on the service-area directory.
+export const cityNotes: Record<string, string> = {
+  'cathedral-city': 'Stucco ranch homes and the rocky Cove.',
+  'palm-springs': 'Mid-century glass beneath San Jacinto.',
+  'rancho-mirage': 'Low, wide estates along the fairways.',
+  'palm-desert': 'Tile roofs below the Santa Rosa foothills.',
+  'la-quinta': 'Spanish Colonial homes under the Cove’s rock walls.',
+  'indio': 'Newer neighborhoods beside the date groves.',
+  'indian-wells': 'Stone, travertine and golf-course glass.',
+  'desert-hot-springs': 'Windswept mesa homes with valley views.',
+};
+
 const serviceFaqs: Record<ServiceId, LocalFaq> = {
   solar: { q: 'How are the panels cleaned?', a: 'We use soft brushes and pure water, never a pressure washer on solar glass.' },
   birds: { q: 'Can I combine bird proofing with a panel wash?', a: 'Yes. Include solar panel cleaning in your quote so we can plan the cleanout, mesh installation and wash together.' },

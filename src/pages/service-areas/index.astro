@@ -1,25 +1,44 @@
 ---
 import { Image } from 'astro:assets';
 import Page from '../../layouts/Page.astro';
+import Quote from '../../components/Quote.astro';
 import Icon from '../../components/Icon.astro';
-import { serviceAreas, areaHref, cityPhotos } from '../../data/service-areas';
-import aerial from '../../assets/photos/aerial.jpg';
+import { services, phone } from '../../data/site';
+import { serviceAreas, areaHref, cityPhotos, cityNotes } from '../../data/service-areas';
 ---
 
-<Page theme="navy" quoteHref="/contact/#quote" title="Coachella Valley service areas | Clear Flow" description="Explore Clear Flow’s solar panel cleaning, window cleaning, bird proofing, pressure washing and junk removal services across eight Coachella Valley cities.">
-  <section class="area-landing" aria-labelledby="areas-title">
-    <div class="container area-landing__grid">
-      <div>
-        <nav class="area-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li aria-current="page">Service areas</li></ol></nav>
-        <h1 class="display area-title" id="areas-title"><span>Local care across</span>{' '}<span class="area-title__city">Coachella Valley.</span></h1>
-        <p class="area-intro">Choose your city to explore services and request a quote built around your property.</p>
-        <figure class="area-photo"><Image src={aerial} widths={[480, 720, 1100]} sizes="(min-width: 768px) 45vw, 100vw" alt="Property illustration: a desert home with solar panels, windows, a driveway and a haul-away trailer" loading="eager" fetchpriority="high" /></figure>
+<Page theme="navy" title="Coachella Valley service areas | Clear Flow" description="Explore Clear Flow’s solar panel cleaning, window cleaning, bird proofing, pressure washing and junk removal services across eight Coachella Valley cities.">
+  <section class="area-hub" aria-labelledby="areas-title">
+    <div class="container">
+      <nav class="area-breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li aria-current="page">Service areas</li></ol></nav>
+      <div class="area-hub__head">
+        <h1 class="display area-title area-hub__title" id="areas-title"><span>Local care across</span>{' '}<span class="area-title__city">Coachella Valley.</span></h1>
+        <div>
+          <p class="area-intro">Eight cities, from the Desert Hot Springs mesa to the date groves of Indio. Choose yours to see the services for your home and start a quote.</p>
+          <div class="area-hub__actions"><a class="btn" href="#quote">Build a quote<Icon name="arrowRight" /></a><a class="area-hub__phone" href={phone.href}>Call {phone.display}</a></div>
+        </div>
       </div>
-      <div class="area-directory">
-        <h2 class="display">Where we work.</h2><p>Eight cities. The same careful approach.</p>
-        <ul class="area-links area-links--thumbs">{serviceAreas.map(area => <li>{cityPhotos[area.slug] && <Image src={cityPhotos[area.slug].photo} widths={[64, 128]} sizes="64px" alt={cityPhotos[area.slug].photoAlt} />}<a href={areaHref(area)}>{area.name}<Icon name="arrowRight" /></a></li>)}</ul>
-        <a class="area-directory__more" href="/services/">Explore all services<Icon name="arrowRight" /></a>
-      </div>
+      <h2 class="sr-only">Cities we serve</h2>
+      <ul class="area-cities">
+        {serviceAreas.map((area, i) => cityPhotos[area.slug] && (
+          <li>
+            <Image src={cityPhotos[area.slug].photo} widths={[360, 560, 760]} sizes="(min-width: 1024px) 24vw, 50vw" alt={cityPhotos[area.slug].photoAlt} loading={i < 4 ? 'eager' : 'lazy'} />
+            <h3><a href={areaHref(area)}>{area.name}<Icon name="arrowRight" /></a></h3>
+            {cityNotes[area.slug] && <p>{cityNotes[area.slug]}</p>}
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
+
+  <section class="area-section" aria-labelledby="hub-services-title">
+    <div class="container area-scope">
+      <div><h2 class="display area-section__title" id="hub-services-title">Every service, in every city.</h2><p class="area-section__intro">Book one service or bring the whole property together. Each is quoted for your home and done by the same local crew.</p></div>
+      <ul>{services.map(service => <li><h3><a href={`/services/${service.slug}/`}>{service.name}</a></h3><p>{service.line}</p></li>)}</ul>
+    </div>
+  </section>
+
+  <Quote variant="navy">
+    <div slot="lead"><h2 id="quote-title" class="display area-title">Tell us what needs care.</h2><p class="area-intro">Choose your services and your city. Add property details. We’ll take it from there.</p></div>
+  </Quote>
 </Page>
