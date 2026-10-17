@@ -3,6 +3,7 @@ import Page from '../layouts/Page.astro';
 import PageHero from '../components/PageHero.astro';
 import Faq from '../components/Faq.astro';
 import Quote from '../components/Quote.astro';
+import Reviews from '../components/Reviews.astro';
 ---
 
 <Page
@@ -11,5 +12,6 @@ import Quote from '../components/Quote.astro';
 >
 	<PageHero label="FAQ" title="Questions before you book." lede="Straight answers about choosing services, combining them and getting a quote." />
 	<Faq showHeading={false} />
+	<Reviews />
 	<Quote />
 </Page>

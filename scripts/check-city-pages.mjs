@@ -58,7 +58,9 @@ function checkPage(path, city, service) {
   }
   for (const tag of html.matchAll(/<img\b[^>]*>/g)) {
     const image = attributes(tag[0]);
-    assert.ok(typeof image.alt === 'string' && image.alt.length > 0, `${path}: descriptive image alt`);
+    // Brand icons sit beside link text that names them, so they stay alt="".
+    const decorative = image.src?.startsWith('/brand/') && image.alt === '';
+    assert.ok(decorative || (typeof image.alt === 'string' && image.alt.length > 0), `${path}: descriptive image alt`);
     assert.ok(typeof image.src === 'string' && existsSync(resolve(root, `.${image.src}`)), `${path}: image asset exists`);
     assert.ok(image.width && image.height, `${path}: image dimensions reserve space`);
   }

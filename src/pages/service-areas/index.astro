@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Page from '../../layouts/Page.astro';
 import Quote from '../../components/Quote.astro';
+import Reviews from '../../components/Reviews.astro';
 import Icon from '../../components/Icon.astro';
 import { services, phone } from '../../data/site';
 import { serviceAreas, areaHref, cityPhotos, cityNotes } from '../../data/service-areas';
@@ -37,6 +38,8 @@ import { serviceAreas, areaHref, cityPhotos, cityNotes } from '../../data/servic
       <ul>{services.map(service => <li><h3><a href={`/services/${service.slug}/`}>{service.name}</a></h3><p>{service.line}</p></li>)}</ul>
     </div>
   </section>
+
+  <Reviews />
 
   <Quote variant="navy">
     <div slot="lead"><h2 id="quote-title" class="display area-title">Tell us what needs care.</h2><p class="area-intro">Choose your services and your city. Add property details. We’ll take it from there.</p></div>

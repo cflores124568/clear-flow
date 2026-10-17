@@ -4,6 +4,7 @@ import Page from '../../layouts/Page.astro';
 import PageHero from '../../components/PageHero.astro';
 import Icon from '../../components/Icon.astro';
 import Quote from '../../components/Quote.astro';
+import Reviews from '../../components/Reviews.astro';
 import { phone, serviceHref, services, type Service } from '../../data/site';
 import Comparison from '../../components/Comparison.astro';
 import { servicePhotos, servicePhotoAlts, serviceComparisons } from '../../data/photos';
@@ -84,6 +85,7 @@ const others = services.filter((s) => s.id !== service.id);
 	</section>
 
 	<section class="area-section" aria-labelledby="service-cities-title"><div class="container"><h2 class="display area-section__title" id="service-cities-title">{service.name} across the valley.</h2><ul class="area-links">{serviceAreas.map(area => <li><a href={cityServiceHref(area, service)}>{area.name}<Icon name="arrowRight" /></a></li>)}</ul></div></section>
+	<Reviews />
 	<Quote preselect={[service.id]} />
 </Page>
 

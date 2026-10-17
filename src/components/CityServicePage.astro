@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Page from '../layouts/Page.astro';
 import Quote from './Quote.astro';
+import Reviews from './Reviews.astro';
 import Icon from './Icon.astro';
 import { services, phone, textHref, type Service } from '../data/site';
 import { areaHref, cityServiceHref, cityServiceContent, cityPhotos, serviceAreas, type ServiceArea } from '../data/service-areas';
@@ -45,6 +46,8 @@ const serviceSchema = {
       <ul>{service.includes.map(item => <li><h3>{item.title}</h3><p>{item.body}</p></li>)}</ul>
     </div>
   </section>
+
+  <Reviews />
 
   <section class="area-section" aria-labelledby="local-faq-title">
     <div class="container">
