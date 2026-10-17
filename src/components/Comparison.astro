@@ -1,0 +1,45 @@
+---
+// Before/after drag comparison, after the split photos on the Clear Flow flyers.
+// The range input does the work, so it is keyboard and screen-reader operable;
+// without JavaScript it rests at an even split.
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+	before: ImageMetadata;
+	after: ImageMetadata;
+	alt: string;
+	sizes: string;
+}
+
+const { before, after, alt, sizes } = Astro.props;
+const widths = [480, 760, 1100, 1600];
+---
+<div class="compare" data-compare>
+	<Image class="compare__img" src={after} widths={widths} sizes={sizes} alt={alt} />
+	<div class="compare__before"><Image class="compare__img" src={before} widths={widths} sizes={sizes} alt="" /></div>
+	<span class="compare__tag compare__tag--before" aria-hidden="true">Before</span>
+	<span class="compare__tag compare__tag--after" aria-hidden="true">After</span>
+	<span class="compare__handle" aria-hidden="true"><svg viewBox="0 0 100 130"><path fill="#3FB6C6" d="M50 0C50 0 0 58 0 84a50 46 0 0 0 100 0C100 58 50 0 50 0Z"/><path fill="#1D5F96" d="M0 84C14 70 36 96 58 92S92 72 100 80a50 46 0 0 1-100 4Z"/><path fill="#FFFFFF" fill-opacity=".55" d="M24 74c2-12 10-26 18-36-4 12-8 26-6 38-4 3-10 2-12-2Z"/></svg></span>
+	<input class="compare__range" type="range" min="0" max="100" value="50" aria-label="Before and after: slide to reveal more of the before view" />
+</div>
+<script>
+	document.querySelectorAll<HTMLElement>('[data-compare]').forEach(root => {
+		const range = root.querySelector<HTMLInputElement>('.compare__range')!;
+		const update = () => root.style.setProperty('--pos', `${range.value}%`);
+		range.addEventListener('input', update);
+		update();
+	});
+</script>
+<style>
+.compare { --pos: 50%; position: relative; width: 100%; height: 100%; overflow: hidden; user-select: none; }
+.compare :global(.compare__img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.compare__before { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.compare__tag { position: absolute; top: 1rem; padding: .3rem .6rem; border-radius: 3px; font-size: .7rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; pointer-events: none; }
+.compare__tag--before { left: 1rem; background: var(--navy); color: var(--panel); }
+.compare__tag--after { right: 1rem; background: var(--brand-aqua); color: var(--navy); }
+.compare__handle { position: absolute; inset-block: 0; left: var(--pos); width: 2px; translate: -50% 0; background: var(--panel); pointer-events: none; }
+.compare__handle svg { position: absolute; top: 50%; left: 50%; translate: -50% -50%; width: 44px; height: 44px; padding: 9px 11px; border-radius: 50%; background: var(--panel); box-shadow: 0 6px 18px -6px rgb(32 52 64 / .45); }
+.compare__range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; touch-action: pan-y; }
+.compare:has(.compare__range:focus-visible) .compare__handle svg { outline: 2px solid var(--brand-blue); outline-offset: 3px; }
+</style>

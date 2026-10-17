@@ -77,6 +77,7 @@ export const services: Service[] = [
 			{ title: 'Soft-brush wash', body: 'Every panel, edge to edge, with a brush made for solar glass.' },
 			{ title: 'Pure-water rinse', body: 'Filtered water that dries without spots or residue.' },
 			{ title: 'A look while we are up there', body: "If we see cracked glass or loose wiring, we'll tell you." },
+			{ title: 'Before-and-after photos', body: 'Pictures of your panels from before and after the wash, so you can see the difference.' },
 		],
 	},
 	{
@@ -149,6 +150,10 @@ export const faqs = [
 	{
 		q: 'Do I need to be home?',
 		a: "Not for most exterior work, as long as we can reach the areas being cleaned. We'll confirm the details when we schedule.",
+	},
+	{
+		q: 'Are estimates free?',
+		a: "Yes. Every estimate is free and built around your property, not a flat price list.",
 	},
 	{
 		q: 'How do I request a quote?',

@@ -5,7 +5,8 @@ import PageHero from '../../components/PageHero.astro';
 import Icon from '../../components/Icon.astro';
 import Quote from '../../components/Quote.astro';
 import { phone, serviceHref, services, type Service } from '../../data/site';
-import { servicePhotos, servicePhotoAlts } from '../../data/photos';
+import Comparison from '../../components/Comparison.astro';
+import { servicePhotos, servicePhotoAlts, serviceComparisons } from '../../data/photos';
 import { serviceAreas, cityServiceHref } from '../../data/service-areas';
 
 export function getStaticPaths() {
@@ -18,6 +19,7 @@ interface Props {
 
 const { service } = Astro.props;
 const photo = servicePhotos[service.id];
+const comparison = serviceComparisons[service.id];
 const others = services.filter((s) => s.id !== service.id);
 ---
 
@@ -53,9 +55,11 @@ const others = services.filter((s) => s.id !== service.id);
 			</div>
 			<figure class="included__figure" data-reveal>
 				<div class="included__frame">
-					<Image src={photo} widths={[480, 760, 1100]} sizes="(min-width: 1024px) 40vw, 100vw" alt="" />
+					{comparison
+						? <Comparison {...comparison} sizes="(min-width: 1024px) 40vw, 100vw" />
+						: <Image src={photo} widths={[480, 760, 1100]} sizes="(min-width: 1024px) 40vw, 100vw" alt="" />}
 				</div>
-				<figcaption>{service.caption}</figcaption>
+				<figcaption>{service.caption}{comparison && ' Drag to compare.'}</figcaption>
 			</figure>
 		</div>
 	</section>
