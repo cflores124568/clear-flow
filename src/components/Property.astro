@@ -3,7 +3,7 @@ import { getImage } from 'astro:assets';
 import Icon from './Icon.astro';
 import before from '../assets/property/before.jpg';
 import after from '../assets/property/after.jpg';
-// Rendered in Blender from output/blender/property_clean.py; pin positions come from that script's camera.
+// Rendered in Blender from output/blender/property_clean.py.
 const beforePoster = await getImage({ src: before, width: 1600, format: 'webp' });
 const afterPoster = await getImage({ src: after, width: 1600, format: 'webp' });
 const areas = [
@@ -24,9 +24,8 @@ const areas = [
         </video>
         <p class="property__state" data-property-state aria-hidden="true">Before</p>
         <button class="property__replay" type="button" data-property-replay hidden>Watch it again</button>
-        {areas.map((area, i) => <button class:list={['property-pin', `property-pin--${area.id}`]} type="button" data-add={area.id} aria-pressed="false" aria-label={`Add ${area.detail.toLowerCase()} to quote`}><span data-label-off>{String(i + 1).padStart(2,'0')}</span><span data-label-on hidden>✓</span></button>)}
       </div>
-      <figcaption><span>One home. One thoughtfully planned visit. · Property illustration</span><span>Select a point to add a service.</span></figcaption>
+      <figcaption><span>One home. One thoughtfully planned visit. · Property illustration</span></figcaption>
     </figure>
   </div>
   <ol class="container property__legend">{areas.map((area, i) => <li><span>{String(i + 1).padStart(2,'0')}</span><div><strong>{area.name}</strong><p>{area.detail}</p></div></li>)}</ol>
@@ -67,16 +66,11 @@ const areas = [
 .property__state { position: absolute; left: 1rem; top: 1rem; padding: .35rem .7rem; border-radius: 3px; background: color-mix(in srgb, var(--panel) 88%, transparent); color: var(--ink); font-size: .62rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
 .property__replay { position: absolute; right: 1rem; top: 1rem; min-height: 44px; padding: .5rem 1rem; border: 0; border-radius: 3px; background: var(--teal); color: var(--on-teal); font: inherit; font-size: .72rem; font-weight: 600; cursor: pointer; }
 .property__replay:hover { background: var(--teal-press); }
-.property-pin { position: absolute; display: grid; place-items: center; width: 2.8rem; height: 2.8rem; padding: 0; border: 0; border-radius: 3px; background: var(--panel); color: var(--teal); font-size: .7rem; box-shadow: 0 5px 20px -5px rgb(29 95 150 / .2), inset 0 0 0 4px rgb(63 182 198 / .18); cursor: pointer; translate: -50% -50%; transition: transform 250ms var(--spring), background-color 250ms var(--ease); }
-.property-pin:hover { transform: translateY(-3px); }
-.property-pin[aria-pressed='true'] { background: var(--teal); color: var(--panel); }
-.property-pin { left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); }
-.property-pin--solar { --x: 43.1; --y: 48.6; } .property-pin--windows { --x: 49.3; --y: 60; } .property-pin--pressure { --x: 70.4; --y: 75.5; } .property-pin--junk { --x: 32.4; --y: 74; }
 figcaption { display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: .59rem; padding-top: .9rem; }
 .property__legend { display: grid; grid-template-columns: 1.05fr 1.15fr 1.05fr 1fr; gap: 1.5rem; margin-top: 3rem; list-style: none; }
 .property__legend li { display: flex; gap: 1rem; padding-top: 1.3rem; border-top: 1px solid var(--hair); }
 .property__legend li > span { color: var(--teal-ink); font-size: .65rem; }
 .property__legend strong { font-weight: 500; font-size: .76rem; }
 .property__legend p { font-size: .67rem; color: var(--muted); margin-top: .3rem; }
-@media (max-width: 767px) { .property__copy { grid-template-columns: 1fr; gap: .75rem; } .property__figure { margin-top: 2rem; } .property__drawing { aspect-ratio: 4 / 3; } .property-pin { left: calc((var(--x) - 12.5) / .75 * 1%); } .property__state, .property__replay { font-size: .6rem; } .property__state { left: .6rem; top: .6rem; } .property__replay { right: .6rem; top: .6rem; min-height: 40px; padding: .4rem .75rem; } .property__legend { grid-template-columns: 1fr 1fr; gap: 1.5rem 1rem; margin-top: 2rem; } figcaption { flex-direction: column; gap: .2rem; } .property-pin { width: 2.5rem; height: 2.5rem; } }
+@media (max-width: 767px) { .property__copy { grid-template-columns: 1fr; gap: .75rem; } .property__figure { margin-top: 2rem; } .property__drawing { aspect-ratio: 4 / 3; } .property__state, .property__replay { font-size: .6rem; } .property__state { left: .6rem; top: .6rem; } .property__replay { right: .6rem; top: .6rem; min-height: 40px; padding: .4rem .75rem; } .property__legend { grid-template-columns: 1fr 1fr; gap: 1.5rem 1rem; margin-top: 2rem; } figcaption { flex-direction: column; gap: .2rem; } }
 </style>
