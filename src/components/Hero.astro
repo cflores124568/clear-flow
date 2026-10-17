@@ -9,6 +9,7 @@ import { coreServices } from '../data/site';
 <section class="hero" id="top" aria-labelledby="hero-title" data-hero>
   <div class="hero__media" aria-hidden="true">
     <Picture class="hero__img" src={heroPhoto} widths={[640, 1024, 1536, 2400]} sizes="(max-width: 767px) 1420px, (max-width: 1023px) 1230px, 100vw" formats={['avif', 'webp']} alt="" loading="eager" fetchpriority="high" />
+    <canvas class="hero__water" data-hero-water></canvas>
     <div class="hero__scrim"></div>
   </div>
   <div class="container hero__content">
@@ -31,11 +32,17 @@ import { coreServices } from '../data/site';
   </div>
   <p class="hero__place">Palm Springs, California<span>Desert living, beautifully kept.</span></p>
 </section>
+<script>
+  import { initHeroWater } from '../scripts/hero-water';
+  document.querySelectorAll<HTMLElement>('[data-hero]').forEach(initHeroWater);
+</script>
 <div class="proof-strip" aria-label="Our standards"><span>Licensed &amp; Insured</span><span>Pure-water solar</span><span>One crew, one visit</span><span class="proof-strip__local">Locally focused. Property specific.</span></div>
 <style>
 .hero { position: relative; display: flex; align-items: center; min-height: min(850px, max(690px, 94svh)); padding-block: 9.5rem 4rem; color: var(--panel); overflow: clip; background: var(--navy); }
 .hero__media, .hero__media :global(picture), .hero__scrim { position: absolute; inset: 0; }
 .hero__media :global(.hero__img) { width: 100%; height: 100%; object-fit: cover; object-position: 58% 54%; }
+.hero__water { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .6s var(--ease); }
+.hero__water.is-ready { opacity: 1; }
 .hero__scrim { background: linear-gradient(90deg, rgb(26 44 56 / .84), rgb(26 44 56 / .57) 40%, rgb(26 44 56 / .06) 78%), linear-gradient(180deg, rgb(26 44 56 / .35), transparent 28%, rgb(26 44 56 / .16)); }
 .hero__content { position: relative; }
 .hero__eyebrow { color: var(--aqua-light); margin-bottom: 1.6rem; font-size: .62rem; }
