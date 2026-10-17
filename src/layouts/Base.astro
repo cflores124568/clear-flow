@@ -6,7 +6,7 @@ import '@fontsource-variable/plus-jakarta-sans';
 import '../styles/global.css';
 import { getImage } from 'astro:assets';
 import heroClean from '../assets/photos/hero-clean.jpg';
-import { services, cities, instagram } from '../data/site';
+import { services, cities, instagram, yelp } from '../data/site';
 
 interface Props {
 	title: string;
@@ -27,7 +27,7 @@ const jsonLd = {
 	name: 'Clear Flow',
 	telephone: '+1-760-422-3069',
 	description,
-	sameAs: [instagram.href],
+	sameAs: [instagram.href, yelp.href],
 	areaServed: cities.map((name) => ({ '@type': 'City', name })),
 	...(Astro.site ? { url: Astro.site.href } : {}),
 	makesOffer: services.map((s) => ({

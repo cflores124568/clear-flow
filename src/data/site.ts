@@ -19,6 +19,21 @@ export const instagram = {
 	handle: '@clear_flow760',
 	href: 'https://www.instagram.com/clear_flow760/',
 };
+
+// The burst at /brand/yelp-favicon.svg is Yelp's official favicon, unaltered.
+// Yelp's brand rules allow it as a shortcut link; don't redraw or recolor it,
+// and don't use Yelp's star artwork for ratings.
+export const yelp = {
+	href: 'https://www.yelp.com/biz/clear-flow-cathedral-city',
+	icon: '/brand/yelp-favicon.svg',
+};
+
+// Quoted verbatim from Clear Flow's Yelp page. Edit only to match Yelp.
+export const reviews = [
+	{ name: 'Kat G.', rating: 5, title: 'Solar Panel Cleaning-Exceptional Service and Crystal Clear Results!', body: 'Easy scheduling, punctual, used a drone to evaluate roof condition (no extra charge), before and after pictures of the solar panels, Arnold was knowledgeable and professional. If you want to maximize your solar investment, I highly recommend ClearFlow to maintain and clean your solar panels.' },
+	{ name: 'Barbara C.', rating: 5, body: 'We highly recommend Clear Flow for solar panel cleaning. Clear Flow is very customer focused - they are on-time, efficient, very neat and careful. They do an excellent job cleaning the solar panels and provide before and after pictures. This is a very effective way to take care of a solar system at a reasonable price. Cleaning our panels resulted in an immediate improvement in our solar production. Thank you Clear Flow!' },
+	{ name: 'Ed J.', rating: 5, body: 'This place is amazing ! Arnold was so easy to work with great service I highly recommend it was a great experience' },
+];
 export const cities = ['Cathedral City', 'Palm Springs', 'Rancho Mirage', 'Palm Desert', 'La Quinta', 'Indio', 'Indian Wells', 'Desert Hot Springs'];
 
 // City centers for the service-area map, as [longitude, latitude]. Pins mark
