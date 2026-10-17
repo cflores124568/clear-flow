@@ -1,7 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import ServiceChoice from './ServiceChoice.astro';
-import { cities, coreServices, services, phone, textHref, type ServiceId } from '../data/site';
+import { cities, coreServices, services, phone, textHref, instagram, type ServiceId } from '../data/site';
 interface Props { preselect?: ServiceId[]; standalone?: boolean; variant?: 'default' | 'navy'; city?: string; }
 const { preselect = [], standalone = false, variant = 'default', city } = Astro.props;
 const navy = variant === 'navy';
@@ -21,6 +21,7 @@ const steps = ['Services', 'Property', 'Photos', navy ? 'Contact' : 'Your quote'
       <p class="quote__bundle">More than one service? We’ll check bundle savings when we price your visit.</p>
       <a class="link" href={phone.href}><Icon name="phone" />Prefer a conversation? {phone.display}</a>
       <a class="quote__text link" href={textHref}>Or start with a text<Icon name="arrowRight" /></a>
+      <a class="quote__text link" href={instagram.href} target="_blank" rel="noopener noreferrer"><Icon name="instagram" />See our work on Instagram</a>
       </slot>
     </div>
     <div class="quote__shell">

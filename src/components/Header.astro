@@ -1,7 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
-import { nav as links, phone } from '../data/site';
+import { instagram, nav as links, phone } from '../data/site';
 
 interface Props {
 	quoteHref?: string;
@@ -63,10 +63,15 @@ const here = Astro.url.pathname;
 				<a href={quoteHref} data-close-menu>Get a quote</a>
 			</li>
 		</ul>
-		<a class="menu__phone" href={phone.href}>
-			<Icon name="phone" />
-			{phone.display}
-		</a>
+		<div class="menu__contact">
+			<a class="menu__phone" href={phone.href}>
+				<Icon name="phone" />
+				{phone.display}
+			</a>
+			<a class="menu__social" href={instagram.href} target="_blank" rel="noopener noreferrer" aria-label={`Clear Flow on Instagram, ${instagram.handle}`}>
+				<Icon name="instagram" />
+			</a>
+		</div>
 	</nav>
 </header>
 
@@ -218,14 +223,29 @@ const here = Astro.url.pathname;
 		text-decoration: none;
 	}
 
+	.menu__contact {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-top: auto;
+	}
+
 	.menu__phone {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.6rem;
-		margin-top: auto;
 		font-size: 1.5rem;
 		font-weight: 500;
 		text-decoration: none;
+	}
+
+	.menu__social {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		font-size: 1.5rem;
 	}
 
 	@media (max-width: 1100px) {

@@ -14,6 +14,11 @@ export const email = {
 };
 
 export const textHref = 'sms:+17604223069';
+
+export const instagram = {
+	handle: '@clear_flow760',
+	href: 'https://www.instagram.com/clear_flow760/',
+};
 export const cities = ['Cathedral City', 'Palm Springs', 'Rancho Mirage', 'Palm Desert', 'La Quinta', 'Indio', 'Indian Wells', 'Desert Hot Springs'];
 
 // City centers for the service-area map, as [longitude, latitude]. Pins mark
