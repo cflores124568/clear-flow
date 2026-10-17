@@ -1,7 +1,11 @@
 ---
-import { Picture } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import Icon from './Icon.astro';
-import aerial from '../assets/photos/aerial.jpg';
+import before from '../assets/property/before.jpg';
+import after from '../assets/property/after.jpg';
+// Rendered in Blender from output/blender/property_clean.py; pin positions come from that script's camera.
+const beforePoster = await getImage({ src: before, width: 1600, format: 'webp' });
+const afterPoster = await getImage({ src: after, width: 1600, format: 'webp' });
 const areas = [
   { id: 'solar', name: 'Up on the roof', detail: 'Soft-brush solar care' },
   { id: 'windows', name: 'Through every window', detail: 'Glass, frames & tracks' },
@@ -14,7 +18,12 @@ const areas = [
     <div class="property__copy" data-reveal><div><p class="label">One visit, considered together</p><h2 id="property-title" class="display h2">The whole property.<br /><em>Off your list.</em></h2></div><div class="property__details"><p class="lede">No coordinating four companies. No repeating the same conversation. Just one crew, with the right tools for every part of your home.</p><a class="link" href="#quote">Put your visit together<Icon name="arrowRight" /></a><p class="property__note">Combine services. Ask us about bundle savings.</p></div></div>
     <figure class="property__figure" data-reveal>
       <div class="property__drawing">
-        <Picture src={aerial} widths={[640, 1024, 1600, 2400]} sizes="92vw" formats={['avif', 'webp']} alt="Property illustration: a desert home with solar panels on the roof, broad front windows, a driveway and a haul-away trailer" loading="lazy" />
+        <video class="property__video" data-property-video muted playsinline preload="none" poster={beforePoster.src} data-after-poster={afterPoster.src} aria-label="Property animation: a desert home before and after one Clear Flow visit. Pigeons leave dusty, dropping-covered solar panels, a rinse clears the panels and bird-proofing mesh closes around them, the windows and driveway come clean, and the junk in the front yard is loaded up and hauled away.">
+          <source src="/media/property-clean.webm" type="video/webm" />
+          <source src="/media/property-clean.mp4" type="video/mp4" />
+        </video>
+        <p class="property__state" data-property-state aria-hidden="true">Before</p>
+        <button class="property__replay" type="button" data-property-replay hidden>Watch it again</button>
         {areas.map((area, i) => <button class:list={['property-pin', `property-pin--${area.id}`]} type="button" data-add={area.id} aria-pressed="false" aria-label={`Add ${area.detail.toLowerCase()} to quote`}><span data-label-off>{String(i + 1).padStart(2,'0')}</span><span data-label-on hidden>✓</span></button>)}
       </div>
       <figcaption><span>One home. One thoughtfully planned visit. · Property illustration</span><span>Select a point to add a service.</span></figcaption>
@@ -22,6 +31,28 @@ const areas = [
   </div>
   <ol class="container property__legend">{areas.map((area, i) => <li><span>{String(i + 1).padStart(2,'0')}</span><div><strong>{area.name}</strong><p>{area.detail}</p></div></li>)}</ol>
 </section>
+<script>
+  // Plays once when the figure is mostly in view, then rests on the clean "after" frame.
+  const video = document.querySelector<HTMLVideoElement>('[data-property-video]');
+  const state = document.querySelector<HTMLElement>('[data-property-state]');
+  const replay = document.querySelector<HTMLButtonElement>('[data-property-replay]');
+  if (video && state && replay) {
+    const label = () => { const t = video.currentTime; state.textContent = video.ended || t >= 8.7 ? 'After' : t >= 1.8 ? 'Clear Flow at work' : 'Before'; };
+    const play = () => { replay.hidden = true; video.currentTime = 0; video.play().catch(() => { replay.hidden = false; }); };
+    video.addEventListener('timeupdate', label);
+    video.addEventListener('ended', () => { label(); replay.textContent = 'Watch it again'; replay.hidden = false; });
+    replay.addEventListener('click', play);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+      video.poster = video.dataset.afterPoster ?? video.poster;
+      state.textContent = 'After';
+      replay.textContent = 'Play the before and after';
+      replay.hidden = false;
+    } else {
+      const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { observer.disconnect(); play(); } }, { threshold: .6 });
+      observer.observe(video);
+    }
+  }
+</script>
 <style>
 .property { padding-block: var(--section); background: var(--surface-alt); }
 .property__copy { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,.75fr); gap: 3rem; align-items: end; }
@@ -32,16 +63,20 @@ const areas = [
 .property__note { margin-top: .3rem; font-size: .64rem; color: var(--muted); }
 .property__figure { margin: 3rem 0 0; min-width: 0; }
 .property__drawing { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 3px; background: var(--water-edge); }
-.property__drawing :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+.property__video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.property__state { position: absolute; left: 1rem; top: 1rem; padding: .35rem .7rem; border-radius: 3px; background: color-mix(in srgb, var(--panel) 88%, transparent); color: var(--ink); font-size: .62rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.property__replay { position: absolute; right: 1rem; top: 1rem; min-height: 44px; padding: .5rem 1rem; border: 0; border-radius: 3px; background: var(--teal); color: var(--on-teal); font: inherit; font-size: .72rem; font-weight: 600; cursor: pointer; }
+.property__replay:hover { background: var(--teal-press); }
 .property-pin { position: absolute; display: grid; place-items: center; width: 2.8rem; height: 2.8rem; padding: 0; border: 0; border-radius: 3px; background: var(--panel); color: var(--teal); font-size: .7rem; box-shadow: 0 5px 20px -5px rgb(29 95 150 / .2), inset 0 0 0 4px rgb(63 182 198 / .18); cursor: pointer; translate: -50% -50%; transition: transform 250ms var(--spring), background-color 250ms var(--ease); }
 .property-pin:hover { transform: translateY(-3px); }
 .property-pin[aria-pressed='true'] { background: var(--teal); color: var(--panel); }
-.property-pin--solar { left: 56%; top: 28%; } .property-pin--windows { left: 49%; top: 57%; } .property-pin--pressure { left: 76%; top: 82%; } .property-pin--junk { left: 19%; top: 74%; }
+.property-pin { left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); }
+.property-pin--solar { --x: 43.1; --y: 48.6; } .property-pin--windows { --x: 49.3; --y: 60; } .property-pin--pressure { --x: 70.4; --y: 75.5; } .property-pin--junk { --x: 32.4; --y: 74; }
 figcaption { display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: .59rem; padding-top: .9rem; }
 .property__legend { display: grid; grid-template-columns: 1.05fr 1.15fr 1.05fr 1fr; gap: 1.5rem; margin-top: 3rem; list-style: none; }
 .property__legend li { display: flex; gap: 1rem; padding-top: 1.3rem; border-top: 1px solid var(--hair); }
 .property__legend li > span { color: var(--teal-ink); font-size: .65rem; }
 .property__legend strong { font-weight: 500; font-size: .76rem; }
 .property__legend p { font-size: .67rem; color: var(--muted); margin-top: .3rem; }
-@media (max-width: 767px) { .property__copy { grid-template-columns: 1fr; gap: .75rem; } .property__figure { margin-top: 2rem; } .property__legend { grid-template-columns: 1fr 1fr; gap: 1.5rem 1rem; margin-top: 2rem; } figcaption { flex-direction: column; gap: .2rem; } .property-pin { width: 2.75rem; height: 2.75rem; } }
+@media (max-width: 767px) { .property__copy { grid-template-columns: 1fr; gap: .75rem; } .property__figure { margin-top: 2rem; } .property__drawing { aspect-ratio: 4 / 3; } .property-pin { left: calc((var(--x) - 12.5) / .75 * 1%); } .property__state, .property__replay { font-size: .6rem; } .property__state { left: .6rem; top: .6rem; } .property__replay { right: .6rem; top: .6rem; min-height: 40px; padding: .4rem .75rem; } .property__legend { grid-template-columns: 1fr 1fr; gap: 1.5rem 1rem; margin-top: 2rem; } figcaption { flex-direction: column; gap: .2rem; } .property-pin { width: 2.5rem; height: 2.5rem; } }
 </style>
